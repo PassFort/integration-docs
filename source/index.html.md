@@ -28,7 +28,7 @@ documented here are ones that your integration should implement.
 Code samples are given in the dark area to the right, and will generally take
 the form of abbreviated route handlers for the functionality being described.
 For the Python examples, [Flask 1.0][flask-docs]
-will be used as the implementation example, and [Express 4][express-docs] will  
+will be used as the implementation example, and [Express 4][express-docs] will
 be used for the NodeJS examples.
 
 # Technical Requirements

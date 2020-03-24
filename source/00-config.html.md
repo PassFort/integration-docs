@@ -63,6 +63,11 @@ integration. Most parts of the configuration are common to all integrations,
 but the `check_type` and `check_template` are specific to each type of
 integration and will be discussed in their respective sections.
 
+<aside>
+  If you update the configuration returned by your integration, it will only
+  be updated in PassFort when the integration is re-validated.
+</aside>
+
 ## Pricing
 
 The `pricing` field defines whether you intend to make your integration
@@ -113,7 +118,7 @@ This field is a simple array of strings, which should be the [ISO3 country
 code][wiki-iso3] for the country.
 
 <aside>
-  TODO: How (and should you) declare that an integration supports
+  TODO: How do (and should you) declare that an integration supports
   all countries?
 </aside>
 
@@ -127,8 +132,7 @@ these may also be provided by PassFort directly.
 
 ### Fields
 
-These fields are required to be present on every object in the `fields`
-array:
+These fields are permitted on objects inside the `fields` array:
 
 <table>
   <thead>
@@ -175,5 +179,45 @@ be set up on individual provider configurations, and will be provided to your
 integration on every check.
 
 
+### Fields
+
+These fields are permitted on objects inside the `fields` array:
+
+<table>
+  <thead>
+    <th>Field</th>
+    <th>Type</th>
+    <th>Required?</th>
+    <th>Description</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>type</code></td>
+      <td>One of: <code>"string"</code>, <code>"password"</code></td>
+      <td>Yes</td>
+      <td>
+        The type of the credential field. <code>password</code> is functionally identical
+        to <code>string</code>, but will be rendered as a password input in the UI.
+      </td>
+    </tr>
+    <tr>
+      <td><code>name</code></td>
+      <td><code>string</code></td>
+      <td>Yes</td>
+      <td>
+        The name of the field which will be used when sent to your
+        integration.
+      </td>
+    </tr>
+    <tr>
+      <td><code>label</code></td>
+      <td><code>string</code></td>
+      <td>Yes</td>
+      <td>
+        The name that will be displayed for this field in PassFort.
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 [wiki-iso3]: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3

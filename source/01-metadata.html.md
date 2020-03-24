@@ -46,7 +46,7 @@ up this endpoint**.
 
 <aside>
   If you update the name of the provider returned by the endpoint, it will only
-  be updated when the integration is re-validated.
+  be updated in PassFort when the integration is re-validated.
 </aside>
 
 ### HTTP Request
