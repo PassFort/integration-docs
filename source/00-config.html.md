@@ -130,6 +130,12 @@ provider and authorize itself successfully. For most checks, the customer will
 provide these as part of configuring your integration, but for resold checks
 these may also be provided by PassFort directly.
 
+<aside class="warning">
+  You should not alter existing credential fields once your integration is
+  being used by PassFort customers. This can cause checks through your
+  integration to stop working.
+</aside>
+
 ### Fields
 
 These fields are permitted on objects inside the `fields` array:
@@ -153,7 +159,7 @@ These fields are permitted on objects inside the `fields` array:
     </tr>
     <tr>
       <td><code>name</code></td>
-      <td><code>string</code></td>
+      <td>string</td>
       <td>Yes</td>
       <td>
         The name of the field which will be used when sent to your
@@ -162,7 +168,7 @@ These fields are permitted on objects inside the `fields` array:
     </tr>
     <tr>
       <td><code>label</code></td>
-      <td><code>string</code></td>
+      <td>string</td>
       <td>Yes</td>
       <td>
         The name that will be displayed for this field in PassFort.
@@ -178,6 +184,14 @@ which specify an array of configurable options for your integration that can
 be set up on individual provider configurations, and will be provided to your
 integration on every check.
 
+Per PassFort's general API compatibility policies, we may add new types for
+configuration fields at any time, although existing types will not be removed.
+
+<aside class="warning">
+  You should not alter existing configuration fields once your integration is
+  being used by PassFort customers. This can cause checks through your
+  integration to stop working.
+</aside>
 
 ### Fields
 
@@ -193,16 +207,15 @@ These fields are permitted on objects inside the `fields` array:
   <tbody>
     <tr>
       <td><code>type</code></td>
-      <td>One of: <code>"string"</code>, <code>"password"</code></td>
+      <td>One of: <code>"string"</code>, <code>"boolean"</code>, <code>"MultiSelect"</code></td>
       <td>Yes</td>
       <td>
-        The type of the credential field. <code>password</code> is functionally identical
-        to <code>string</code>, but will be rendered as a password input in the UI.
+        The type of the configuration field.
       </td>
     </tr>
     <tr>
       <td><code>name</code></td>
-      <td><code>string</code></td>
+      <td>string</td>
       <td>Yes</td>
       <td>
         The name of the field which will be used when sent to your
@@ -211,10 +224,41 @@ These fields are permitted on objects inside the `fields` array:
     </tr>
     <tr>
       <td><code>label</code></td>
-      <td><code>string</code></td>
+      <td>string</td>
       <td>Yes</td>
       <td>
         The name that will be displayed for this field in PassFort.
+      </td>
+    </tr>
+    <tr>
+      <td><code>subtext</code></td>
+      <td>string</td>
+      <td>No</td>
+      <td>
+        A short description that will be displayed under the configuration
+        option in PassFort.
+      </td>
+    </tr>
+    <tr>
+      <td><code>options</code></td>
+      <td>array[string]</td>
+      <td>No</td>
+      <td>
+        An <code>array</code> of options which may be chosen; used for both
+        display name and value. Only applicable to (and required for) the
+        <code>MultiSelect</code> field type.
+      </td>
+    </tr>
+    <tr>
+      <td><code>default</code></td>
+      <td>A valid value allowed by the type specified in `type`</td>
+      <td>Yes</td>
+      <td>
+        The default value for this configuration field. For
+        <code>MultiSelect</code> fields, this value may also be `null`.
+        Otherwise, it must be a valid value for the field's type; for example,
+        a <code>boolean</code> field may only have a <code>default</code> of
+        either <code>true</code> or <code>false</code>.
       </td>
     </tr>
   </tbody>
