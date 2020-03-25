@@ -126,9 +126,12 @@ code][wiki-iso3] for the country.
 
 The `credentials` field contains exactly one field, `fields`, which specify
 an array of single values needed for your integration to contact the data
-provider and authorize itself successfully. For most checks, the customer will
-provide these as part of configuring your integration, but for resold checks
-these may also be provided by PassFort directly.
+provider and authorize itself successfully. Customers will provide these as
+part of configuring your integration. For checks with reselling enabled,
+these credentials will not be sent.
+
+Per PassFort's general API compatibility policies, we may add new types for
+configuration fields at any time, although existing types will not be removed.
 
 <aside class="warning">
   You should not alter existing credential fields once your integration is
@@ -251,14 +254,14 @@ These fields are permitted on objects inside the `fields` array:
     </tr>
     <tr>
       <td><code>default</code></td>
-      <td>A valid value allowed by the type specified in `type`</td>
+      <td>A valid value allowed by the type specified in <code>type</code></td>
       <td>Yes</td>
       <td>
         The default value for this configuration field. For
-        <code>MultiSelect</code> fields, this value may also be `null`.
-        Otherwise, it must be a valid value for the field's type; for example,
-        a <code>boolean</code> field may only have a <code>default</code> of
-        either <code>true</code> or <code>false</code>.
+        <code>MultiSelect</code> fields, this value may also be
+        <code>null</code>. Otherwise, it must be a valid value for the field's
+        type; for example, a <code>boolean</code> field may only have a
+        <code>default</code> of either <code>true</code> or <code>false</code>.
       </td>
     </tr>
   </tbody>

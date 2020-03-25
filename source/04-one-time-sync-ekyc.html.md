@@ -1,0 +1,749 @@
+# One-time Sync Identity Check
+
+This section lists all endpoints that must be implemented for a one-time
+synchronous identity check integration.
+
+One-time synchronous identity checks are identity checks with the following
+behaviour:
+
+  * The check result will be returned directly upon request; the response will
+    not be sent until the check is finished (synchronous).
+
+  * If the check request times out, errors or otherwise fails, PassFort will
+    not reattempt the check (one-time).
+
+
+## Get Check Configuration (One-time Sync Identity Check)
+
+```python
+from flask import Flask, jsonify
+
+app = Flask(__name__)
+
+@app.get("/config")
+def get_check_configuration():
+    return jsonify({
+        "check_type": "IDENTITY_CHECK",
+        "check_template": {
+            "type": "ONE_TIME_SYNCHRONOUS",
+            "timeout": 60
+        },
+        "pricing": {
+            "supports_reselling": True,
+            "maximum_cost": 200
+        },
+        "supported_countries": ["GBR", "USA", "CAN"],
+        "credentials": {
+            "fields": [
+               {
+                   "type": "string",
+                   "name": "username",
+                   "label": "Username"
+               },
+               {
+                   "type": "password",
+                   "name": "password",
+                   "label": "Password"
+               }
+            ]
+        },
+        "config": {
+            "fields": [
+                {
+                    "type": "boolean",
+                    "name": "require_dob",
+                    "label": "Date of birth is required for 1+1 and 2+2 results",
+                    "subtext": "The individual's date of birth must be matched in one source for 1+1 and 2+2 results to be achieved",
+                    "default": False
+                }
+            ]
+        }
+    })
+```
+
+```javascript
+const express = require('express')
+const app = express()
+
+app.get('/config', (req, res) => {
+    res.json({
+        check_type: 'IDENTITY_CHECK',
+        check_template: {
+            type: 'ONE_TIME_SYNCHRONOUS',
+            timeout: 60
+        },
+        pricing: {
+            supports_reselling: true,
+            maximum_cost: 200
+        },
+        supported_countries: ['GBR', 'USA', 'CAN'],
+        credentials: {
+            fields: [
+               {
+                   type: 'string',
+                   name: 'username',
+                   label: 'Username'
+               },
+               {
+                   type: 'password',
+                   name: 'password',
+                   label: 'Password'
+               }
+            ]
+        },
+        "config": {
+            "fields": [
+                {
+                    type: 'boolean',
+                    name: 'require_dob',
+                    label: 'Date of birth is required for 1+1 and 2+2 results',
+                    subtext: 'The individual\'s date of birth must be matched in one source for 1+1 and 2+2 results to be achieved',
+                    default: false
+                }
+            ]
+        }
+    })
+})
+```
+
+>This endpoint should return JSON in the following format:
+
+```json
+{
+        "check_type": "IDENTITY_CHECK",
+        "check_template": {
+            "type": "ONE_TIME_SYNCHRONOUS",
+            "timeout": 60
+        },
+        "pricing": {
+            "supports_reselling": true,
+            "maximum_cost": 200
+        },
+        "supported_countries": ["GBR", "USA", "CAN"],
+        "credentials": {
+            "fields": [
+               {
+                   "type": "string",
+                   "name": "username",
+                   "label": "Username"
+               },
+               {
+                   "type": "password",
+                   "name": "password",
+                   "label": "Password"
+               }
+            ]
+        },
+        "config": {
+            "fields": [
+                {
+                    "type": "boolean",
+                    "name": "require_dob",
+                    "label": "Date of birth is required for 1+1 and 2+2 results",
+                    "subtext": "The individual's date of birth must be matched in one source for 1+1 and 2+2 results to be achieved",
+                    "default": false
+                }
+            ]
+        }
+    }
+```
+
+This endpoint specifies the configuration used by PassFort for performing
+one-time synchronous identity checks using your integration.
+
+### HTTP Request
+
+`GET https://my-integration.example.com/config`
+
+### Response fields
+
+Most configuration fields are already discussed in the [configuration
+section](#configuration). Check specific options will be discussed here.
+
+#### Check type
+
+The `check_type` field must be set to `"IDENTITY_CHECK"`.
+
+#### Check template
+
+The `check_template` fields for this check are:
+
+<table>
+  <thead>
+    <th>Field</th>
+    <th>Type</th>
+    <th>Required?</th>
+    <th>Description</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>type</code></td>
+      <td>The value <code>"ONE_TIME_SYNCHRONOUS"</code></td>
+      <td>Yes</td>
+      <td>
+        Which check template to use for this check. For one-time synchronous
+        checks, you must specify <code>"ONE_TIME_SYNCHRONOUS"</code>.
+      </td>
+    </tr>
+    <tr>
+      <td><code>timeout</code></td>
+      <td>number</td>
+      <td>No</td>
+      <td>
+        The number of seconds PassFort should wait without a response before
+        considering identity checks run through this integration to have
+        timed out. Must be an integer. If not specified or set to
+        <code>null</code>, a timeout of 60 seconds will be used.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<aside class="warning">
+  Requests to this endpoint must be verified and the responses must be signed
+  per the <a href="#authentication">authentication section</a>.
+</aside>
+
+## Run One-Time Sync Identity Check
+
+This endpoint exposes your data provider's identity check to PassFort.
+
+### HTTP Request
+
+`POST https://my-integration.example.com/checks`
+
+>A JSON payload following this structure will be sent to the endpoint:
+
+```json
+{
+    "id": "01234567-89ab-cdef-0123-456789abcdef",
+    "demo_result": "ANY",
+    "commercial_relationship": "DIRECT",
+    "check_input": {
+        "entity_type": "INDIVIDUAL",
+        "personal_details": {
+            "name": {
+                "family_name": "Person",
+                "given_names": ["Example"]
+            },
+            "dob": "1985-10-26",
+            "nationality": "GBR"
+        },
+        "address_history": [
+            {
+                "address":  {
+                    "type": "STRUCTURED",
+                    "country": "GBR",
+                    "locality": "London",
+                    "postal_code": "E1 1AA",
+                    "route": "Crown Street",
+                    "street_number": 42,
+                    "original_freeform_address": "42 Crown Street, London, E1 1AA"
+                },
+                "start_date": "1985-10"
+            }
+        ]
+    },
+    "provider_config": {
+        "require_dob": false
+    },
+    "provider_credentials": {
+        "username": "foo",
+        "password": "bar"
+    }
+}
+```
+
+The payload of the request can contain the following fields:
+
+<table>
+  <thead>
+    <th>Field</th>
+    <th>Type</th>
+    <th>Always present?</th>
+    <th>Description</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>id</code></td>
+      <td>UUID</td>
+      <td>Yes</td>
+      <td>
+        Every check instruction will contain a unique ID which can be used to
+        track and identify individual requests without needing to use other
+        information in the request.
+      </td>
+    </tr>
+    <tr>
+      <td><code>demo_result</code></td>
+      <td>
+        One of the <a href="#demo-result-types">specified demo result types</a>
+      </td>
+      <td>No</td>
+      <td>
+        If this field is present, the check must be considered a demo check
+        and you should respond with appropriate demo data. See the
+        <a href="#demo-checks">Demo Checks section</a> for more information.
+      </td>
+    </tr>
+    <tr>
+      <td><code>commercial_relationship</code></td>
+      <td>One of <code>"DIRECT"</code>, <code>"PASSFORT"</code></td>
+      <td>Yes</td>
+      <td>
+        Specified whether the check is for a customer with a direct
+        relationship with your integration's data provider, or if they are
+        using the check through PassFort's pay-as-you-go reselling scheme.
+      </td>
+    </tr>
+    <tr>
+      <td><code>check_input</code></td>
+      <td>An IndividualData object</td>
+      <td>Yes</td>
+      <td>
+        This field contains the profile information on the individual the
+        identity check should be run for. See the
+        <a href="#check-input">PassFort Data Structure check input section</a>
+        for more information on how profile data is structured within PassFort.
+      </td>
+    </tr>
+    <tr>
+      <td><code>provider_config</code></td>
+      <td>A user-defined JSON object</td>
+      <td>Yes</td>
+      <td>
+        This field contains the provider config structured in the way
+        specified by your integration's
+        <a href="#get-check-configuration-one-time-sync-identity-check">
+          configuration endpoint
+        </a>, with the <code>name</code> field corresponding to the key, and
+        the value being the value of the configuration option.
+      </td>
+    </tr>
+    <tr>
+      <td><code>provider_credentials</code></td>
+      <td>A user-defined JSON object</td>
+      <td>No</td>
+      <td>
+        This field contains the credentials structured in the way
+        specified by your integration's
+        <a href="#get-check-configuration-one-time-sync-identity-check">
+          configuration endpoint
+        </a>, with the <code>name</code> field corresponding to the key, and
+        the value being the value of the configuration option. <strong>This
+        field is only sent if <code>commercial_relationship</code> is set to
+        <code>"DIRECT"</code>.</strong>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+```python
+from flask import Flask, jsonify, request
+from integration.testing import create_demo_result
+from integration.provider import make_provider_request, reseller_creds, \
+    to_passfort_field_types
+from integration.errors import ProviderError, ConnectionError
+
+
+app = Flask(__name__)
+
+
+@app.post("/checks")
+def run_check():
+    body = request.json
+    
+    demo_result = body.get('demo_result')
+    check_input = body.get('check_input')
+    
+    # Handle demo data scenarios
+    if demo_result is not None:
+        return jsonify(create_demo_result(demo_result, check_input))
+    
+    commercial_rel = body.get('commercial_relationship')
+    credentials = reseller_creds
+    config = body.get('provider_config')
+    
+    # Use provided creds if check is through direct agreement
+    if commercial_rel == 'DIRECT':
+        credentials = body.get('provider_credentials')
+    
+    # Make call to provider
+    try:
+        result = make_provider_request(credentials, config, check_input)
+    
+        return jsonify({
+            'check_output': {
+                'entity_type': 'INDIVIDUAL',
+                'address_history': [],
+                'electronic_id_check': {
+                    'matches': [
+                        ({
+                            'count': len(database.matched_records),
+                            'database_name': database.name,
+                            'database_type': 
+                                'CIVIL' if database.is_voting_register else 'CREDIT',
+                            'matched_fields': 
+                                to_passfort_field_types(database.matched_fields)
+                        }) for database in result.matched_databases
+                    ]
+                }
+            },
+            'errors': [],
+            'warnings': [],
+            'provider_data': dict(result)
+        })
+    except ConnectionError as e:
+        return jsonify({
+            'errors': [{
+                'type': 'PROVIDER_CONNECTION',
+                'message': f'Failed to contact data provider: {str(e)}'
+            }],
+            'warnings': []
+        })
+    except ProviderError as e:
+        return jsonify({
+            'errors': [{
+                'type': 'PROVIDER_MESSAGE',
+                'message': f'Provider error: {str(e)}'
+            }],
+            'warnings': []
+        })
+```
+
+```javascript
+const express = require("express");
+const app = express();
+
+const { createDemoResult } = require("./testing");
+const {
+  makeProviderRequest,
+  RESELLER_CREDS,
+  toPassfortFieldTypes,
+} = require("./provider");
+
+app.use(express.json());
+
+app.post("/checks", (req, res) => {
+  // Handle demo data scenarios
+  if (req.body.demo_result !== undefined) {
+    return res.json(
+      createDemoResult(req.body.demo_result, req.body.check_input)
+    );
+  }
+
+  // Use provided creds if check is through direct agreement
+  const credentials =
+    req.body.commercial_relationship === "DIRECT"
+      ? res.body.provider_credentials
+      : RESELLER_CREDS;
+
+  return makeProviderRequest(
+    credentials,
+    req.body.provider_config,
+    req.body.check_input
+  )
+    .then((checkResult) => {
+      return res.json({
+        check_output: {
+          entity_type: "INDIVIDUAL",
+          address_history: [],
+          electronic_id_check: {
+            matches: result.matched_databases.map((database) => ({
+              count: database.matched_records.length,
+              database_name: database.name,
+              database_type: database.is_voting_register ? "CIVIL" : "CREDIT",
+              matched_fields: toPassfortFieldTypes(database.matched_fields),
+            })),
+          },
+        },
+        errors: [],
+        warnings: [],
+        provider_data: result.data(),
+      });
+    })
+    .catch((err) => {
+      if (err.type === "CONNECTION") {
+        return res.json({
+          errors: [
+            {
+              type: "PROVIDER_CONNECTION",
+              error: "Failed to contact data provider: " + e.message,
+            },
+          ],
+          warnings: [],
+        });
+      } else {
+        return res.json({
+          errors: [
+            {
+              type: "PROVIDER_MESSAGE",
+              error: "Provider error: " + e.message,
+            },
+          ],
+          warnings: [],
+        });
+      }
+    });
+});
+```
+
+>This endpoint should return JSON in the following format:
+
+```json
+{
+  "check_output": {
+    "entity_type": "INDIVIDUAL",
+    "address_history": [],
+    "electronic_id_check": {
+      "matches": [
+        {
+          "count": 1,
+          "database_name": "Credit File from Lender A",
+          "database_type": "CREDIT",
+          "matched_fields": ["FORENAME", "SURNAME", "ADDRESS", "DOB", "IDENTITY_NUMBER"]
+        },
+        {
+          "count": 1,
+          "database_name": "Electoral Roll",
+          "database_type": "CIVIL",
+          "matched_fields": ["FORENAME", "SURNAME", "ADDRESS"]
+        }
+      ]
+    }
+  },
+  "errors": [],
+  "warnings": [],
+  "provider_data": {}
+}
+```
+
+### Response fields
+
+<table>
+  <thead>
+    <th>Field</th>
+    <th>Type</th>
+    <th>Required?</th>
+    <th>Description</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>check_output</code></td>
+      <td>Object structured per <code>check_output</code> below</td>
+      <td>If check did not error</td>
+      <td>
+        Indicates the result data for this check. See the
+        <code>check_output</code> section for the full structure of
+        this check.
+      </td>
+    </tr>
+    <tr>
+      <td><code>errors</code></td>
+      <td>
+        An array containing one or more
+        <a href="#check-errors">Errors</a>
+      </td>
+      <td>No</td>
+      <td>
+        A list of errors that occurred while running this check. If this is
+        provided and it's not empty, the result of this check will be
+        considered to be errored by PassFort, regardless the other contents
+        of this response.
+      </td>
+    </tr>
+    <tr>
+      <td><code>warnings</code></td>
+      <td>
+        An array containing one or more warnings
+      </td>
+      <td>No</td>
+      <td>
+        Essentially the same as <code>errors</code>, except the
+        <code>sub_type</code> and <code>data</code> fields are not present, and
+        providing warnings will not cause PassFort to consider the check
+        as errored.
+      </td>
+    </tr>
+    <tr>
+      <td><code>provider_data</code></td>
+      <td>
+        Any valid JSON value
+      </td>
+      <td>No</td>
+      <td>
+        This should be the structured JSON data returned by the data provider,
+        or a conversion of the data provider's response, to allow
+        PassFort to investigate issues that may arise with your integration.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+#### `check_output`
+
+<table>
+  <thead>
+    <th>Field</th>
+    <th>Type</th>
+    <th>Required?</th>
+    <th>Description</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>entity_type</code></td>
+      <td>The value <code>"INDIVIDUAL"</code></td>
+      <td>Yes</td>
+      <td>
+        The only supported entity type for Identity Checks
+        is individuals.
+      </td>
+    </tr>
+    <tr>
+      <td><code>address_history</code></td>
+      <td>
+        An array containing the address history, structured as it is
+        in <a href="#passfort-data-structure">the PassFort API</a>.
+      </td>
+      <td>No</td>
+      <td>
+        If supported by the provider, should report the known addresses for
+        this individual when matched.
+      </td>
+    </tr>
+    <tr>
+      <td><code>electronic_id_check.matches</code></td>
+      <td>
+        An array containing one or more Identity Check matches
+      </td>
+      <td>Yes</td>
+      <td>
+        See the Identity Check matches section below.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+#### Identity Check matches
+
+Each object represents zero or more matches in a database returned by the
+data provider.
+
+<table>
+  <thead>
+    <th>Field</th>
+    <th>Type</th>
+    <th>Required?</th>
+    <th>Description</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>count</code></td>
+      <td>number</td>
+      <td>Yes</td>
+      <td>
+        A non-negative integer representing the number of matched entries
+        in this database. Databases without matches should be listed with
+        a count of 0.
+      </td>
+    </tr>
+    <tr>
+      <td><code>database_name</code></td>
+      <td>string</td>
+      <td>Yes</td>
+      <td>The human readable name for the database this match comes from.</td>
+    </tr>
+    <tr>
+      <td><code>database_type</code></td>
+      <td>A supported database type</td>
+      <td>Yes</td>
+      <td>
+        Describes the categorisation of the database, see the supported
+        types listed below.
+       </td>
+    </tr>
+    <tr>
+      <td><code>matched_fields</code></td>
+      <td>An array containing zero or more matched fields</td>
+      <td>Yes</td>
+      <td>
+        Describes which fields were matched on in this database. See
+        the list of matched field types supported below.
+       </td>
+    </tr>
+  </tbody>
+</table>
+
+The database types currently supported are:
+<table>
+ <thead>
+  <th>Database type</th>
+  <th>Description</th>
+</thead>
+<tbody>
+  <tr>
+    <td><code>CREDIT</code></td>
+    <td>
+      A credit scoring database or other similar lending
+      activity database.
+    </td>
+  </tr>
+  <tr>
+    <td><code>CIVIL</code></td>
+    <td>
+      A government or organization maintained database or register of
+      individuals, such as an electoral roll or telephone directory.
+    </td>
+  </tr>
+  <tr>
+    <td><code>MORTALITY</code></td>
+    <td>A database or register of deceased individuals.</td>
+  </tr>
+</tbody>
+</table>
+
+The matched fields currently supported are:
+<table>
+ <thead>
+  <th>Field</th>
+  <th>Description</th>
+</thead>
+<tbody>
+  <tr>
+    <td><code>FORENAME</code></td>
+    <td>A match was found for the individual's given name(s).</td>
+  </tr>
+  <tr>
+    <td><code>SURNAME</code></td>
+    <td>A match was found for the individual's family name.</td>
+  </tr>
+  <tr>
+    <td><code>ADDRESS</code></td>
+    <td>A match was found for the provided address.</td>
+  </tr>
+  <tr>
+    <td><code>DOB</code></td>
+    <td>A match was found for the individual's Date of Birth.</td>
+  </tr>
+  <tr>
+    <td><code>IDENTITY_NUMBER</code></td>
+    <td>
+      A match was found for the individual's government-issued identity
+      number, commonly referred to as a National Identity Number or Social
+      Security Number.
+     </td>
+  </tr>
+  <tr>
+    <td><code>IDENTITY_NUMBER_SUFFIX</code></td>
+    <td>
+      A match was found for a trailing portion of the individual's
+      government-issued identity number.
+     </td>
+  </tr>
+</tbody>
+</table>
+
+<aside class="warning">
+  Requests to this endpoint must be verified and the responses must be signed
+  per the <a href="#authentication">authentication section</a>.
+</aside>

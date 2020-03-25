@@ -8,7 +8,7 @@ language_tabs:
 toc_footers:
   - '&copy; 2020 PassFort'
   - '<a href="https://developer.passfort.com">PassFort Developer Hub</a>'
-  - '<a href="https://help.passfort.com/category/k84bc464f5-developer-documentation">PassFort Developer Help Center</a>'
+  - '<a href="https://help.passfort.com/category/k84bc464f5-developer-documentation">PassFort Help Articles for Developers</a>'
 
 search: true
 ---
@@ -17,8 +17,6 @@ search: true
 The PassFort Integration API allows you to easily connect new data sources
 (integrations) to PassFort by creating a JSON web service which conforms to
 the specifications outlined in this document.
-
-**Please ignore all references to kittens in this document.**
 
 ## Using this documentation
 
@@ -30,6 +28,12 @@ the form of abbreviated route handlers for the functionality being described.
 For the Python examples, [Flask 1.0][flask-docs]
 will be used as the implementation example, and [Express 4][express-docs] will
 be used for the NodeJS examples.
+
+As described in the [Metadata section](#metadata), the Integration API is
+versioned to allow the implementation of integrations to be altered in the
+future; all information in this document corresponds to Version 1 of the
+Integration API Protocol. Versions of the Integration API will not be
+discontinued for as long as existing integrations use them.
 
 # Technical Requirements
 
