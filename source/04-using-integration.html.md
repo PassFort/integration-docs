@@ -1,0 +1,89 @@
+# Using your integration
+
+In order to use your data provider inside PassFort for testing or production
+use, you must register the integration as a custom provider. A custom provider
+allows your integration to be used by a single PassFort institution.
+
+<aside>
+  If you are developing a check to be used by all users of PassFort, your
+  integration will be published once it has gone through appropriate testing
+  and review. You should use a custom provider during the development process.
+</aside>
+
+## Setting up a custom provider
+
+To start setting up your integration, navigate to the _Data providers_ section
+of the _Policy Builder_ tab in the PassFort Portal. Then, click the
+_New data provider_ button in the top-right corner of the page. Choose
+_Individual data provider_ or _Company data provider_ as appropriate for your
+integration.
+
+![Policy builder data providers screenshot](images/validation-add-integration.png)
+
+<aside>
+    If you cannot find the <em>Policy Builder</em> tab, or the
+    <em>New data provider</em> button, contact your PassFort admin to ensure
+    your account has the correct permissions to manage data providers.
+</aside>
+
+In the _New data provider_ modal, first choose the check type for your custom
+provider. Custom integrations are found at the bottom of the list.
+
+![Check type selection in 'New data provider' modal](images/validation-choose-check-type.png)
+
+Then choose a suitable name for your custom provider.
+
+![Provider name entered 'New data provider' modal](images/validation-enter-check-name.png)
+
+Then choose create, after which you will be brought to the Validation screen.
+
+## Validation
+
+Your custom provider has not yet been saved; to begin using your custom
+provider, you must first pass the validation suite for your check type. These
+tests ensure your integration meets basic technical and security standards
+required.
+
+![Validation screen](images/validation-screen.png)
+
+Enter the URL for your integration, as well as the secret key you have chosen.
+See the [authentication section](#authentication) for more information on the
+requirements for your secret key. Once ready, press Run Validation to start the
+validation process. The validation process may take some time, depending on the
+check type and configuration of your integration.
+
+![Validation results display](images/validation-results.png)
+
+Once the validation run has completed, the outcome and information on the tests
+will be displayed below, including basic information detected about your check,
+if available. If validation of your integration passed without any failures or
+errors, you will now be able to click Save to create your custom provider as a
+usable data provider. You can also view the results of individual tests run
+during validation.
+
+![Error returned by the validation suite](images/validation-error.png)
+
+If validation fails or encounters errors, you will not be able to save your
+custom provider until they are addressed. View the test results for information
+on why your custom provider has failed validation. In this case, validation
+failed because a URL was provided for a non-existent domain.
+
+## Revalidating your custom provider
+
+Should you want to retest validation for your custom provider at any point, or
+if you have updated the configuration or settings for your check, you can
+submit the provider for validation again. This allows you to quickly update
+your custom provider's configuration without needing to reconfigure your
+PassFort smart policy.
+
+![Update custom integration section on provider config](images/custom-provider-revalidate.png)
+
+Press the _Update_ button in the _Update custom integration_ section. You will
+be brought back to the validation screen.
+
+<aside class="warning">
+    If you press <em>Save</em> on the validation screen to update your custom
+    provider's validation, the configuration parameters will be reset to the
+    default values to ensure that they are consistent in the event your
+    credentials or config values are changed.
+</aside>

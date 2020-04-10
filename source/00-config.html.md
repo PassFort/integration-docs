@@ -115,12 +115,7 @@ The `supported_countries` field defines which countries your integration is
 able to support. The exact interpretation of this field varies depending on
 the check, but it typically reflects country of residence for individuals.
 This field is a simple array of strings, which should be the [ISO3 country
-code][wiki-iso3] for the country.
-
-<aside>
-  TODO: How do (and should you) declare that an integration supports
-  all countries?
-</aside>
+code][wiki-iso3] for the country. At least one country must be specified.
 
 ## Credentials Fields
 

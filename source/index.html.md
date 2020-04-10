@@ -39,7 +39,11 @@ discontinued for as long as existing integrations use them.
 
 Your integration _must_ be served over HTTPS; integrations are not permitted to
 be served over unencrypted HTTP connections. Additionally, the connection must
-be using TLS 1.2 or above.
+be using TLS 1.2 or above. This requirement is enforced to ensure that
+sensitive information is not transmitted unprotected over the public internet.
+
+Your integration may use plain HTTP for basic testing, but validation will fail
+if your integration does not use HTTPS.
 
 # Authentication
 
@@ -51,10 +55,11 @@ Several usable implementations of the standard can be found on this
 [tracker of HTTP Signatures implementations][signatures-impl-thread] maintained
 by the spec authors.
 
-When implementing an integration, you will be provided with a Base64-encoded
-secret key to use to sign your responses and verify PassFort requests; the key
-ID to use should be the first 8 characters of this key. The only supported
-algorithm is `hmac-sha256`, and the only supported Digest is `SHA-256`.
+When implementing an integration, you must generate a 32 byte key secret key to sign
+and verify all requests and responses your integration handles, unless
+specifically noted in this document; the key ID to use should be the first 8
+characters of the Base64 encoding of this key. The only supported algorithm is
+`hmac-sha256`, and the only supported Digest is `SHA-256`.
 
 You must sign and verify at least `request-target` (the verb and full path of
 the initial request), and the `Digest`, `Date` and `Host` headers.
