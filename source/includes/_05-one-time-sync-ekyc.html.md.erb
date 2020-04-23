@@ -9,144 +9,13 @@ behaviour:
   * The check result will be returned directly upon request; the response will
     not be sent until the check is finished (synchronous).
 
-  * If the check request times out, errors or otherwise fails, PassFort will
-    not reattempt the check (one-time).
+  * The check operates at a point-in-time: there is no ongoing monitoring
+    of the check result (one-time).
 
 
 ## Get Check Configuration (One-time Sync Identity Check)
 
-```python
-from flask import Flask, jsonify
-
-app = Flask(__name__)
-
-@app.get("/config")
-def get_check_configuration():
-    return jsonify({
-        "check_type": "IDENTITY_CHECK",
-        "check_template": {
-            "type": "ONE_TIME_SYNCHRONOUS",
-            "timeout": 60
-        },
-        "pricing": {
-            "supports_reselling": True,
-            "maximum_cost": 200
-        },
-        "supported_countries": ["GBR", "USA", "CAN"],
-        "credentials": {
-            "fields": [
-               {
-                   "type": "string",
-                   "name": "username",
-                   "label": "Username"
-               },
-               {
-                   "type": "password",
-                   "name": "password",
-                   "label": "Password"
-               }
-            ]
-        },
-        "config": {
-            "fields": [
-                {
-                    "type": "boolean",
-                    "name": "require_dob",
-                    "label": "Date of birth is required for 1+1 and 2+2 results",
-                    "subtext": "The individual's date of birth must be matched in one source for 1+1 and 2+2 results to be achieved",
-                    "default": False
-                }
-            ]
-        }
-    })
-```
-
-```javascript
-const express = require('express')
-const app = express()
-
-app.get('/config', (req, res) => {
-    res.json({
-        check_type: 'IDENTITY_CHECK',
-        check_template: {
-            type: 'ONE_TIME_SYNCHRONOUS',
-            timeout: 60
-        },
-        pricing: {
-            supports_reselling: true,
-            maximum_cost: 200
-        },
-        supported_countries: ['GBR', 'USA', 'CAN'],
-        credentials: {
-            fields: [
-               {
-                   type: 'string',
-                   name: 'username',
-                   label: 'Username'
-               },
-               {
-                   type: 'password',
-                   name: 'password',
-                   label: 'Password'
-               }
-            ]
-        },
-        "config": {
-            "fields": [
-                {
-                    type: 'boolean',
-                    name: 'require_dob',
-                    label: 'Date of birth is required for 1+1 and 2+2 results',
-                    subtext: 'The individual\'s date of birth must be matched in one source for 1+1 and 2+2 results to be achieved',
-                    default: false
-                }
-            ]
-        }
-    })
-})
-```
-
->This endpoint should return JSON in the following format:
-
-```json
-{
-        "check_type": "IDENTITY_CHECK",
-        "check_template": {
-            "type": "ONE_TIME_SYNCHRONOUS",
-            "timeout": 60
-        },
-        "pricing": {
-            "supports_reselling": true,
-            "maximum_cost": 200
-        },
-        "supported_countries": ["GBR", "USA", "CAN"],
-        "credentials": {
-            "fields": [
-               {
-                   "type": "string",
-                   "name": "username",
-                   "label": "Username"
-               },
-               {
-                   "type": "password",
-                   "name": "password",
-                   "label": "Password"
-               }
-            ]
-        },
-        "config": {
-            "fields": [
-                {
-                    "type": "boolean",
-                    "name": "require_dob",
-                    "label": "Date of birth is required for 1+1 and 2+2 results",
-                    "subtext": "The individual's date of birth must be matched in one source for 1+1 and 2+2 results to be achieved",
-                    "default": false
-                }
-            ]
-        }
-    }
-```
+<%= partial("includes/partials/config.md.erb", :locals => { :name => "sync_identity_check" }) %>
 
 This endpoint specifies the configuration used by PassFort for performing
 one-time synchronous identity checks using your integration.
@@ -215,43 +84,7 @@ This endpoint exposes your data provider's identity check to PassFort.
 >A JSON payload following this structure will be sent to the endpoint:
 
 ```json
-{
-    "id": "01234567-89ab-cdef-0123-456789abcdef",
-    "demo_result": "ANY",
-    "commercial_relationship": "DIRECT",
-    "check_input": {
-        "entity_type": "INDIVIDUAL",
-        "personal_details": {
-            "name": {
-                "family_name": "Person",
-                "given_names": ["Example"]
-            },
-            "dob": "1985-10-26",
-            "nationality": "GBR"
-        },
-        "address_history": [
-            {
-                "address":  {
-                    "type": "STRUCTURED",
-                    "country": "GBR",
-                    "locality": "London",
-                    "postal_code": "E1 1AA",
-                    "route": "Crown Street",
-                    "street_number": 42,
-                    "original_freeform_address": "42 Crown Street, London, E1 1AA"
-                },
-                "start_date": "1985-10"
-            }
-        ]
-    },
-    "provider_config": {
-        "require_dob": false
-    },
-    "provider_credentials": {
-        "username": "foo",
-        "password": "bar"
-    }
-}
+<%= pretty_json("requests/run_check_sync_identity_check", "json") %>
 ```
 
 The payload of the request can contain the following fields:
@@ -491,31 +324,7 @@ app.post("/checks", (req, res) => {
 >This endpoint should return JSON in the following format:
 
 ```json
-{
-  "check_output": {
-    "entity_type": "INDIVIDUAL",
-    "address_history": [],
-    "electronic_id_check": {
-      "matches": [
-        {
-          "count": 1,
-          "database_name": "Credit File from Lender A",
-          "database_type": "CREDIT",
-          "matched_fields": ["FORENAME", "SURNAME", "ADDRESS", "DOB", "IDENTITY_NUMBER"]
-        },
-        {
-          "count": 1,
-          "database_name": "Electoral Roll",
-          "database_type": "CIVIL",
-          "matched_fields": ["FORENAME", "SURNAME", "ADDRESS"]
-        }
-      ]
-    }
-  },
-  "errors": [],
-  "warnings": [],
-  "provider_data": {}
-}
+<%= pretty_json("responses/run_check_sync_identity_check", "json") %>
 ```
 
 ### Response fields
@@ -548,7 +357,7 @@ app.post("/checks", (req, res) => {
       <td>
         A list of errors that occurred while running this check. If this is
         provided and it's not empty, the result of this check will be
-        considered to be errored by PassFort, regardless the other contents
+        considered to be errored by PassFort, regardless of the other contents
         of this response.
       </td>
     </tr>

@@ -1,0 +1,25 @@
+
+```python
+from flask import Flask, jsonify
+
+app = Flask(__name__)
+
+@app.get("/config")
+def get_check_configuration():
+    return jsonify(<%= pretty_json("config/#{name}", "python", indent="    ") %>)
+```
+
+```javascript
+const express = require('express')
+const app = express()
+
+app.get('/config', (req, res) => {
+    res.json(<%= pretty_json("config/#{name}", "javascript", indent="    ") %>)
+})
+```
+
+>This endpoint should return JSON in the following format:
+
+```json
+<%= pretty_json("config/#{name}", "json") %>
+```

@@ -1,0 +1,155 @@
+# Requests to PassFort
+
+Although the majority of the integrations API consists of endpoints
+to be served by an integration and called by PassFort. There *are*
+several endpoints provided by PassFort to allow an integration to
+do its job. These endpoints are documented in this section.
+
+<aside class="info">
+Requests to PassFort are authenticated in exactly the same way
+as requests in the other direction, using the same shared key.
+See the <a href="#authentication">authentication section</a> for
+more details.
+</aside>
+
+## Callbacks
+
+If your integration follows one of the callback-based check templates,
+such as `ONE_TIME_SYNC_CALLBACK` you will need to make requests to
+PassFort's "callback" endpoint to notify us of certain events (such
+as when a check completed).
+
+### HTTP Request
+
+`POST https://api.passfort.com/integrations/v1/callbacks`
+
+>A JSON payload following this structure should be sent to the endpoint:
+
+```json
+<%= pretty_json("requests/callback", "json") %>
+```
+
+Depending on the nature of the callback, additional fields may also be
+expected. It will be documented in the check-specific documentation,
+if any additional fields are expected.
+
+Regardless of the check type, the payload of the request should contain
+the following fields:
+
+<table>
+  <thead>
+    <th>Field</th>
+    <th>Type</th>
+    <th>Required?</th>
+    <th>Description</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>provider_id</code></td>
+      <td>UUID</td>
+      <td>Yes</td>
+      <td>
+        This should match the provider ID returned by your integration when
+        the check was started.
+      </td>
+    </tr>
+    <tr>
+      <td><code>reference</code></td>
+      <td>string</td>
+      <td>Yes</td>
+      <td>
+        This should match the reference returned by your integration when
+        the check was started.
+      </td>
+    </tr>
+    <tr>
+      <td><code>custom_data</code></td>
+      <td>object</td>
+      <td>No</td>
+      <td>
+        An object containing custom data to be sent to your integration in
+        follow-up requests relating to this check. If we are already storing
+        custom data for this check, the new data will be merged in, overwriting
+        any fields with the same name.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+```python
+requests.post(url, json=<%= pretty_json("requests/callback", "python") %>, auth=outbound_auth())
+```
+
+```javascript
+await outbound_auth().fetch(url, {
+    method:'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    }
+    body: JSON.stringify(<%= pretty_json("requests/callback", "javascript", indent="    ") %>)
+})
+```
+
+If this end-point returns a non-2xx status code, the callback should be retried several
+times (with an exponential backoff) to ensure that events are not lost. If the callback
+is being triggered by the provider, it is expected that the integration will simply
+forward the failure code to the provider, at which point it is the provider's job to
+retry appropriately.
+
+>This endpoint will return JSON in the following format:
+
+```json
+<%= pretty_json("responses/callback", "json") %>
+```
+
+### Response fields
+
+There will never be any check-type-specific fields returned from this end-point.
+
+<table>
+  <thead>
+    <th>Field</th>
+    <th>Type</th>
+    <th>Always present?</th>
+    <th>Description</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>callback_id</code></td>
+      <td>UUID</td>
+      <td>Yes</td>
+      <td>
+        This field has no specific purpose, but if you need to contact our support
+        for an issue relating to callbacks, we may ask for this field so that we
+        can cross-reference your requests with our own logs.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+## Download image
+
+If your integration implements a document verification check, you will need
+to download images from our system to pass to the provider.
+
+This endpoint returns the raw image data for a given image ID. Your integration
+will be granted temporary access to an image whenever a check using that image
+is instructed.
+
+### HTTP Request
+
+`GET https://api.passfort.com/integrations/v1/images/{image_id}`
+
+```python
+res = requests.get(url, auth=outbound_auth())
+res.raise_for_status()
+image_bytes = res.content
+```
+
+```javascript
+const res = await outbound_auth().fetch(url);
+if (!res.ok) throw new Error(`Failed to fetch image: ${res.statusText}`);
+const imageBytes = res.body
+```
+
+>This endpoint will return the raw image data.
