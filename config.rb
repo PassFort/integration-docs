@@ -56,4 +56,5 @@ set :port, 4567
 
 helpers do
   require './lib/toc_data.rb'
+  require './lib/pretty_json.rb'
 end

@@ -10,6 +10,16 @@ toc_footers:
   - '<a href="https://developer.passfort.com">PassFort Developer Hub</a>'
   - '<a href="https://help.passfort.com/category/k84bc464f5-developer-documentation">PassFort Help Articles for Developers</a>'
 
+includes:
+  - 00-metadata
+  - 01-config
+  - 02-passfort-data-structure
+  - 03-demo-checks
+  - 04-using-integration
+  - 05-one-time-sync-ekyc.html.md.erb
+  - 06-one-time-callback-docver.html.md.erb
+  - 07-requests-to-passfort.html.md.erb
+
 search: true
 ---
 # Introduction
@@ -20,8 +30,9 @@ the specifications outlined in this document.
 
 ## Using this documentation
 
-As the Integration API is not called but served by integrations, the endpoints
-documented here are ones that your integration should implement.
+As the majority of the Integration API is not called but served by integrations,
+the endpoints documented here, unless otherwise indicated, are ones that your
+integration should implement.
 
 Code samples are given in the dark area to the right, and will generally take
 the form of abbreviated route handlers for the functionality being described.
@@ -48,8 +59,8 @@ if your integration does not use HTTPS.
 # Authentication
 
 In order to protect the integrity and confidentiality of personal information
-and to ensure your integration is only utilised by PassFort, all requests _and_
-responses are authenticated using the
+and to ensure your integration is only utilised by PassFort, all requests are
+authenticated using the
 [HTTP signatures draft standard, version 12][http-signatures-draft-12].
 Several usable implementations of the standard can be found on this
 [tracker of HTTP Signatures implementations][signatures-impl-thread] maintained
@@ -61,12 +72,20 @@ specifically noted in this document; the key ID to use should be the first 8
 characters of the Base64 encoding of this key. The only supported algorithm is
 `hmac-sha256`, and the only supported Digest is `SHA-256`.
 
-You must sign and verify at least `request-target` (the verb and full path of
-the initial request), and the `Digest`, `Date` and `Host` headers.
+You must sign and verify at least the `(request-target)` (the verb and full path of
+the initial request) and `Date` headers. Requests with a body (eg. `POST` requests)
+must also include and sign a `Digest` header. The `Date` header must be set to the
+current date. Requests with any of...
+
+- A missing or incorrect request signature.
+- A `Digest` header which is missing or does not match the request body.
+- A `Date` header which is missing or more than 30 seconds from the current time.
+
+... will be rejected.
 
 <aside class="warning">
  You <strong>must</strong> verify signatures in incoming requests - signing
- your responses alone is not adequate. The validation suite will fail
+ your outgoing requests alone is not adequate. The validation suite will fail
  integrations that do not correctly verify the signature of incoming requests.
 </aside>
 

@@ -1,0 +1,614 @@
+# One-time Callback Document Verification
+
+This section lists all endpoints that must be implemented for a one-time
+callback document verification integration.
+
+One-time callback checks are checks with the following
+behaviour:
+
+  * The initial "start check" request will return immediately, indicating
+    that the check is in progress.
+  
+  * When the check is complete, a request will be set from the integration
+    to PassFort's "callback" end-point.
+  
+  * Upon receiving the callback, PassFort will send a final request to the
+    integration to complete the check and fetch the result.
+
+  * The check operates at a point-in-time: there is no ongoing monitoring
+    of the check result (one-time).
+
+
+## Get Check Configuration (One-time Callback Document Verification)
+
+<%= partial("includes/partials/config.md.erb", :locals => { :name => "callback_document_verification" }) %>
+
+This endpoint specifies the configuration used by PassFort for performing
+one-time callback-based document verifications using your integration.
+
+### HTTP Request
+
+`GET https://my-integration.example.com/config`
+
+### Response fields
+
+Most configuration fields are already discussed in the [configuration
+section](#configuration). Check specific options will be discussed here.
+
+#### Check type
+
+The `check_type` field must be set to `"DOCUMENT_VERIFICATION"`.
+
+#### Check template
+
+The `check_template` fields for this check are:
+
+<table>
+  <thead>
+    <th>Field</th>
+    <th>Type</th>
+    <th>Required?</th>
+    <th>Description</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>type</code></td>
+      <td>The value <code>"ONE_TIME_CALLBACK"</code></td>
+      <td>Yes</td>
+      <td>
+        Which check template to use for this check. For one-time callback
+        checks, you must specify <code>"ONE_TIME_CALLBACK"</code>.
+      </td>
+    </tr>
+    <tr>
+      <td><code>timeout</code></td>
+      <td>number</td>
+      <td>No</td>
+      <td>
+        The number of seconds PassFort should wait without a response before
+        considering document verification checks run through this integration to have
+        timed out. Must be an integer. If not specified or set to
+        <code>null</code>, a timeout of 60 seconds will be used.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<aside class="warning">
+  Requests to this endpoint must be verified and the responses must be signed
+  per the <a href="#authentication">authentication section</a>.
+</aside>
+
+## Start One-Time Callback Document Verification
+
+This endpoint is used by PassFort to initiate a document verification check through
+your integration.
+
+### HTTP Request
+
+`POST https://my-integration.example.com/checks`
+
+>A JSON payload following this structure will be sent to the endpoint:
+
+```json
+<%= pretty_json("requests/start_check_callback_document_verification", "json") %>
+```
+
+The payload of the request can contain the following fields:
+
+<table>
+  <thead>
+    <th>Field</th>
+    <th>Type</th>
+    <th>Always present?</th>
+    <th>Description</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>id</code></td>
+      <td>UUID</td>
+      <td>Yes</td>
+      <td>
+        Every check instruction will contain a unique ID which can be used to
+        track and identify individual requests without needing to use other
+        information in the request.
+      </td>
+    </tr>
+    <tr>
+      <td><code>demo_result</code></td>
+      <td>
+        One of the <a href="#demo-result-types">specified demo result types</a>
+      </td>
+      <td>No</td>
+      <td>
+        If this field is present, the check must be considered a demo check
+        and you should respond with appropriate demo data. See the
+        <a href="#demo-checks">Demo Checks section</a> for more information.
+      </td>
+    </tr>
+    <tr>
+      <td><code>commercial_relationship</code></td>
+      <td>One of <code>"DIRECT"</code>, <code>"PASSFORT"</code></td>
+      <td>Yes</td>
+      <td>
+        Specified whether the check is for a customer with a direct
+        relationship with your integration's data provider, or if they are
+        using the check through PassFort's pay-as-you-go reselling scheme.
+      </td>
+    </tr>
+    <tr>
+      <td><code>check_input</code></td>
+      <td>An IndividualData object</td>
+      <td>Yes</td>
+      <td>
+        This field contains the profile information on the individual the
+        document verification should be run for. See the
+        <a href="#check-input">PassFort Data Structure check input section</a>
+        for more information on how profile data is structured within PassFort.
+      </td>
+    </tr>
+    <tr>
+      <td><code>provider_config</code></td>
+      <td>A user-defined JSON object</td>
+      <td>Yes</td>
+      <td>
+        This field contains the provider config structured in the way
+        specified by your integration's
+        <a href="#get-check-configuration-one-time-callback-document-verification">
+          configuration endpoint
+        </a>, with the <code>name</code> field corresponding to the key, and
+        the value being the value of the configuration option.
+      </td>
+    </tr>
+    <tr>
+      <td><code>provider_credentials</code></td>
+      <td>A user-defined JSON object</td>
+      <td>No</td>
+      <td>
+        This field contains the credentials structured in the way
+        specified by your integration's
+        <a href="#get-check-configuration-one-time-callback-document-verification">
+          configuration endpoint
+        </a>, with the <code>name</code> field corresponding to the key, and
+        the value being the value of the configuration option. <strong>This
+        field is only sent if <code>commercial_relationship</code> is set to
+        <code>"DIRECT"</code>.</strong>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+```python
+from flask import Flask, jsonify, request
+from integration.testing import create_demo_result
+from integration.provider import make_provider_request, reseller_creds, \
+    to_passfort_field_types
+from integration.errors import ProviderError, ConnectionError
+
+
+app = Flask(__name__)
+
+
+@app.post("/checks")
+def run_check():
+    body = request.json
+    
+    demo_result = body.get('demo_result')
+    check_input = body.get('check_input')
+    
+    # Handle demo data scenarios
+    if demo_result is not None:
+        return jsonify(create_demo_result(demo_result, check_input))
+    
+    commercial_rel = body.get('commercial_relationship')
+    credentials = reseller_creds
+    config = body.get('provider_config')
+    
+    # Use provided creds if check is through direct agreement
+    if commercial_rel == 'DIRECT':
+        credentials = body.get('provider_credentials')
+    
+    # Make call to provider
+    try:
+        result = make_provider_request(credentials, config, check_input)
+    
+        return jsonify({
+            'provider_id': CONST_PROVIDER_UUID,
+            'reference': result['reference'],
+            'custom_data': {},
+            'errors': [],
+            'warnings': [],
+        })
+    except ConnectionError as e:
+        return jsonify({
+            'errors': [{
+                'type': 'PROVIDER_CONNECTION',
+                'message': f'Failed to contact data provider: {str(e)}'
+            }],
+            'warnings': []
+        })
+    except ProviderError as e:
+        return jsonify({
+            'errors': [{
+                'type': 'PROVIDER_MESSAGE',
+                'message': f'Provider error: {str(e)}'
+            }],
+            'warnings': []
+        })
+```
+
+>This endpoint should return JSON in the following format:
+
+```json
+<%= pretty_json("responses/start_check_callback_document_verification", "json") %>
+```
+
+### Response fields
+
+<table>
+  <thead>
+    <th>Field</th>
+    <th>Type</th>
+    <th>Required?</th>
+    <th>Description</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>provider_id</code></td>
+      <td>UUID</td>
+      <td>Yes</td>
+      <td>
+        Unique identifier for the provider. The `reference` field should uniquely identify
+        a check when combined with the `provider_id`.
+      </td>
+    </tr>
+    <tr>
+      <td><code>reference</code></td>
+      <td>string</td>
+      <td>If no errors occurred</td>
+      <td>
+        An opaque string which identifies this check to the provider. No two checks from
+        the same provider should have the same reference.
+      </td>
+    </tr>
+    <tr>
+      <td><code>custom_data</code></td>
+      <td>object</td>
+      <td>No</td>
+      <td>
+        Use this to store any state required by later requests relating to this check.
+        The intent is for your integration to be completely stateless itself, to make
+        it simpler to deploy and maintain.
+        Note: if present, this *must* be an object, rather than an array or other JSON
+        value. However, the keys and values in this object can be anything you like, although
+        we don't recommend storing large amounts of data here, as it will be passed in on
+        every following request to your integration relating to this check.
+      </td>
+    </tr>
+    <tr>
+      <td><code>errors</code></td>
+      <td>
+        An array containing one or more
+        <a href="#check-errors">Errors</a>
+      </td>
+      <td>No</td>
+      <td>
+        A list of errors that occurred while running this check. If this is
+        provided and it's not empty, the result of this check will be
+        considered to be errored by PassFort, regardless of the other contents
+        of this response.
+        If an error is returned from this end-point, no callback will be expected.
+      </td>
+    </tr>
+    <tr>
+      <td><code>warnings</code></td>
+      <td>
+        An array containing one or more warnings
+      </td>
+      <td>No</td>
+      <td>
+        Essentially the same as <code>errors</code>, except the
+        <code>sub_type</code> and <code>data</code> fields are not present, and
+        providing warnings will not cause PassFort to consider the check
+        as errored.
+      </td>
+    </tr>
+    <tr>
+      <td><code>provider_data</code></td>
+      <td>
+        Any valid JSON value
+      </td>
+      <td>No</td>
+      <td>
+        This should be the structured JSON data returned by the data provider,
+        or a conversion of the data provider's response, to allow
+        PassFort to investigate issues that may arise with your integration.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<aside class="warning">
+  Requests to this endpoint must be verified and the responses must be signed
+  per the <a href="#authentication">authentication section</a>.
+</aside>
+
+
+## Callback Request
+
+Once the check is complete, the integration should send a callback request
+to PassFort, notifying us of this event. More details can be found in the
+[callbacks section](#callbacks).
+
+There are no check-type-specific callback fields for document verification
+checks.
+
+For demo checks, the callback should be sent within a few seconds of the
+check being started, and should generate a reference that won't conflict
+with live checks.
+
+
+## Finish One-Time Callback Document Verification
+
+This endpoint is called shortly after PassFort receives a callback from your
+integration indicating that a previously instructed check has completed.
+
+In response, your integration should return the result of the check.
+
+### HTTP Request
+
+`POST https://my-integration.example.com/checks/{check_id}/complete`
+
+>A JSON payload following this structure will be sent to the endpoint:
+
+```json
+<%= pretty_json("requests/finish_check_callback_document_verification", "json") %>
+```
+
+The payload of the request can contain the following fields:
+
+<table>
+  <thead>
+    <th>Field</th>
+    <th>Type</th>
+    <th>Always present?</th>
+    <th>Description</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>id</code></td>
+      <td>UUID</td>
+      <td>Yes</td>
+      <td>
+        This check ID will be the same as the one used to instruct the check.
+      </td>
+    </tr>
+    <tr>
+      <td><code>commercial_relationship</code></td>
+      <td>One of <code>"DIRECT"</code>, <code>"PASSFORT"</code></td>
+      <td>Yes</td>
+      <td>
+        Specified whether the check is for a customer with a direct
+        relationship with your integration's data provider, or if they are
+        using the check through PassFort's pay-as-you-go reselling scheme.
+      </td>
+    </tr>
+    <tr>
+      <td><code>provider_config</code></td>
+      <td>A user-defined JSON object</td>
+      <td>Yes</td>
+      <td>
+        This field contains the provider config structured in the way
+        specified by your integration's
+        <a href="#get-check-configuration-one-time-callback-document-verification">
+          configuration endpoint
+        </a>, with the <code>name</code> field corresponding to the key, and
+        the value being the value of the configuration option.
+      </td>
+    </tr>
+    <tr>
+      <td><code>provider_credentials</code></td>
+      <td>A user-defined JSON object</td>
+      <td>No</td>
+      <td>
+        This field contains the credentials structured in the way
+        specified by your integration's
+        <a href="#get-check-configuration-one-time-callback-document-verification">
+          configuration endpoint
+        </a>, with the <code>name</code> field corresponding to the key, and
+        the value being the value of the configuration option. <strong>This
+        field is only sent if <code>commercial_relationship</code> is set to
+        <code>"DIRECT"</code>.</strong>
+      </td>
+    </tr>
+    <tr>
+      <td><code>provider_id</code></td>
+      <td>UUID</td>
+      <td>Yes</td>
+      <td>
+        This matches the `provider_id` returned by your integration when the
+        check was instructed, and will also match the field with the same name
+        sent to PassFort as part of the callback indicating that this check
+        had completed.
+      </td>
+    </tr>
+    <tr>
+      <td><code>reference</code></td>
+      <td>string</td>
+      <td>Yes</td>
+      <td>
+        This matches the `reference` returned by your integration when the
+        check was instructed, and will also match the field with the same name
+        sent to PassFort as part of the callback indicating that this check
+        had completed.
+      </td>
+    </tr>
+    <tr>
+      <td><code>custom_data</code></td>
+      <td>object</td>
+      <td>No</td>
+      <td>
+        Any `custom_data` returned by your integration when the check was instructed
+        or supplied to the callback endpoint will be merged together and provided
+        here. The merging rules will always prioritise newer data when fields have
+        the same name.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+```python
+from uuid import UUID
+from flask import Flask, jsonify, request
+from integration.testing import create_demo_result
+from integration.provider import make_provider_request, reseller_creds, \
+    to_passfort_field_types
+from integration.errors import ProviderError, ConnectionError
+
+
+app = Flask(__name__)
+
+
+@app.post("/checks/<uuid:id>/complete")
+def complete_check(id: UUID):
+    body = request.json
+
+    commercial_rel = body.get('commercial_relationship')
+    credentials = reseller_creds
+    config = body.get('provider_config')
+    reference = body.get('reference')
+
+    # Use provided creds if check is through direct agreement
+    if commercial_rel == 'DIRECT':
+        credentials = body.get('provider_credentials')
+    
+    # Make call to provider
+    try:
+        result = fetch_check_result(credentials, config, reference)
+
+        return jsonify(convert_to_passfort_format(result))
+    except ConnectionError as e:
+        return jsonify({
+            'errors': [{
+                'type': 'PROVIDER_CONNECTION',
+                'message': f'Failed to contact data provider: {str(e)}'
+            }],
+            'warnings': []
+        })
+    except ProviderError as e:
+        return jsonify({
+            'errors': [{
+                'type': 'PROVIDER_MESSAGE',
+                'message': f'Provider error: {str(e)}'
+            }],
+            'warnings': []
+        })
+```
+
+>This endpoint should return JSON in the following format:
+
+```json
+<%= pretty_json("responses/finish_check_callback_document_verification", "json") %>
+```
+
+### Response fields
+
+<table>
+  <thead>
+    <th>Field</th>
+    <th>Type</th>
+    <th>Required?</th>
+    <th>Description</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>check_output</code></td>
+      <td>Object structured per <code>check_output</code> below</td>
+      <td>If check did not error</td>
+      <td>
+        Indicates the result data for this check. See the
+        <code>check_output</code> section for the full structure of
+        this check.
+      </td>
+    </tr>
+    <tr>
+      <td><code>errors</code></td>
+      <td>
+        An array containing one or more
+        <a href="#check-errors">Errors</a>
+      </td>
+      <td>No</td>
+      <td>
+        A list of errors that occurred while running this check. If this is
+        provided and it's not empty, the result of this check will be
+        considered to be errored by PassFort, regardless of the other contents
+        of this response.
+      </td>
+    </tr>
+    <tr>
+      <td><code>warnings</code></td>
+      <td>
+        An array containing one or more warnings
+      </td>
+      <td>No</td>
+      <td>
+        Essentially the same as <code>errors</code>, except the
+        <code>sub_type</code> and <code>data</code> fields are not present, and
+        providing warnings will not cause PassFort to consider the check
+        as errored.
+      </td>
+    </tr>
+    <tr>
+      <td><code>provider_data</code></td>
+      <td>
+        Any valid JSON value
+      </td>
+      <td>No</td>
+      <td>
+        This should be the structured JSON data returned by the data provider,
+        or a conversion of the data provider's response, to allow
+        PassFort to investigate issues that may arise with your integration.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+#### `check_output`
+
+<table>
+  <thead>
+    <th>Field</th>
+    <th>Type</th>
+    <th>Required?</th>
+    <th>Description</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>entity_type</code></td>
+      <td>The value <code>"INDIVIDUAL"</code></td>
+      <td>Yes</td>
+      <td>
+        The only supported entity type for Document Verification Checks
+        is individuals.
+      </td>
+    </tr>
+    <tr>
+      <td><code>documents</code></td>
+      <td>
+        An array containing the documents, structured as it is
+        in <a href="#passfort-data-structure">the PassFort API</a>.
+      </td>
+      <td>If no errors occurred</td>
+      <td>
+        This should be a copy of the documents array supplied as the
+        check input, but with the `extracted_data` and `verification_result`
+        fields populated using the response from the provider.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<aside class="warning">
+  Requests to this endpoint must be verified and the responses must be signed
+  per the <a href="#authentication">authentication section</a>.
+</aside>
