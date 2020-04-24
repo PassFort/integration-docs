@@ -41,6 +41,7 @@ under the License.
     <% else %>
       <%= javascript_include_tag  "all_nosearch" %>
     <% end %>
+    <%= stylesheet_link_tag "https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.8.2/css/lightbox.min.css" %>
   </head>
 
   <body class="<%= page_classes %>" data-languages="<%=h language_tabs.map{ |lang| lang.is_a?(Hash) ? lang.keys.first : lang }.to_json %>">
@@ -112,5 +113,12 @@ under the License.
         <% end %>
       </div>
     </div>
+    <%= javascript_include_tag  "https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.8.2/js/lightbox.min.js" %>
+    <script>
+      lightbox.option({
+        'fadeDuration': 200,
+        'resizeDuration': 300
+      })
+    </script>
   </body>
 </html>
