@@ -101,6 +101,9 @@ retry appropriately.
 ```json
 <%= pretty_json("responses/callback", "json") %>
 ```
+<%= partial("includes/partials/authenticated.md.erb", :locals => {
+  :role => :requestor,
+}) %>
 
 ### Response fields
 
@@ -153,3 +156,7 @@ const imageBytes = res.body
 ```
 
 >This endpoint will return the raw image data.
+
+<%= partial("includes/partials/authenticated.md.erb", :locals => {
+  :role => :requestor,
+}) %>

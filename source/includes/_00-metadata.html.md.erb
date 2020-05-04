@@ -87,6 +87,6 @@ up this endpoint**.
 </table>
 
 
-<aside>
-  This endpoint does not require authentication.
-</aside>
+<%= partial("includes/partials/unauthenticated.md.erb", :locals => {
+  :role => :server,
+}) %>
