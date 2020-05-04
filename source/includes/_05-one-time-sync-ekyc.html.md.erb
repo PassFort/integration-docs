@@ -68,10 +68,9 @@ The `check_template` fields for this check are:
   </tbody>
 </table>
 
-<aside class="warning">
-  Requests to this endpoint must be verified and the responses must be signed
-  per the <a href="#authentication">authentication section</a>.
-</aside>
+<%= partial("includes/partials/authenticated.md.erb", :locals => {
+  :role => :server,
+}) %>
 
 ## Run One-Time Sync Identity Check
 
@@ -412,7 +411,7 @@ app.post("/checks", (req, res) => {
       <td><code>address_history</code></td>
       <td>
         An array containing the address history, structured as it is
-        in <a href="#passfort-data-structure">the PassFort API</a>.
+        in <a href="#data-structure">the PassFort API</a>.
       </td>
       <td>No</td>
       <td>
@@ -552,7 +551,6 @@ The matched fields currently supported are:
 </tbody>
 </table>
 
-<aside class="warning">
-  Requests to this endpoint must be verified and the responses must be signed
-  per the <a href="#authentication">authentication section</a>.
-</aside>
+<%= partial("includes/partials/authenticated.md.erb", :locals => {
+  :role => :server,
+}) %>
