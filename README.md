@@ -2,6 +2,8 @@
 
 Site generator for the provider facing integration API
 
+Deployed to https://passfort.github.io/integration-docs/
+
 Built using [Slate](https://github.com/slatedocs/slate)
 
 ### Dev Usage
