@@ -1,9 +1,8 @@
-
 # Data Structure
 
-PassFort structures data on individuals and company entities in a standard
-format throughout the product. Additionally, many types of data structure
-are common across different checks
+PassFort structures data on individual and company entities in a standard
+format throughout the product. Additionally, many data structure types are
+common across different checks.
 
 ## Check input
 
@@ -87,6 +86,7 @@ is not accurate enough, or because the country on the profile is not supported
 by this data provider.
 
 Subtypes:
+
 <table>
  <thead>
   <th>Subtype</th>
@@ -117,8 +117,53 @@ The data provider returned an error message when processing this check.
 This error should be returned when your integration receives a `demo_result`
 value which it doesn't support or does not have demo data implemented.
 
-[api-docs-post-check]:
-https://developer.passfort.com/api#tag/Checks/paths/~1profiles~1{profile_id}~1checks/post
+[api-docs-post-check]: https://developer.passfort.com/api#tag/Checks/paths/~1profiles~1{profile_id}~1checks/post
+[api-docs-openapi-json]: https://identity.passfort.com/api/static/schemas/openapi.json
 
-[api-docs-openapi-json]:
-https://identity.passfort.com/api/static/schemas/openapi.json
+## Check charges
+
+Checks may return charges in their `charges` field using the structure
+specified here.
+
+### Charge fields
+
+<table>
+  <thead>
+    <th>Field</th>
+    <th>Type</th>
+    <th>Required?</th>
+    <th>Description</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>amount</code></td>
+      <td>integer</td>
+      <td>Yes</td>
+      <td>
+        The amount to charge (in pennies). In the future, it may be possible
+        to specify a different currency unit.
+      </td>
+    </tr>
+    <tr>
+      <td><code>sku</code></td>
+      <td>string</td>
+      <td>No</td>
+      <td>
+        Stock Keeping Unit (SKU). All charges with the same SKU should cost the
+        same amount. For providers with a fixed cost in each country, the SKU
+        can simply be the 3-letter code for the country in which the check was
+        run. This field can be omitted if there is no sensible value to use.
+      </td>
+    </tr>
+    <tr>
+      <td><code>reference</code></td>
+      <td>string</td>
+      <td>No</td>
+      <td>
+        The reference should be unique for each check. It should be possible
+        to use the reference to correlate the charges recorded by the provider
+        against the charges recorded in PassFort.
+      </td>
+    </tr>
+  </tbody>
+</table>

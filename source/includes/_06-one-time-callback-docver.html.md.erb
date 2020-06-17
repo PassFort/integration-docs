@@ -568,8 +568,40 @@ def complete_check(id: UUID):
         PassFort to investigate issues that may arise with your integration.
       </td>
     </tr>
+    <tr>
+      <td><code>charges</code></td>
+      <td>
+        An array containing one or more
+        <a href="#check-charges">Charges</a>
+      </td>
+      <td>No</td>
+      <td>
+        A list of charges incurred whilst running this check. Charges may only
+        be returned if both of these conditions are met:
+        <ul>
+          <li>No errors occurred (ie. a result was generated).</li>
+          <li>
+            The check is being re-sold (the commercial relationship is
+            with PassFort).
+          </li>
+        </ul>
+        
+        For demo checks, charges may be returned, but they will not be deducted
+        from the institution's credit.
+        
+        If charges are returned, the total amount charged must be no greater
+        than the maximum cost-per-check specified in the integration's
+        configuration.
+      </td>
+    </tr>
   </tbody>
 </table>
+
+<aside class="info">
+If the billing information isn't easily available from the final
+request, the integration can use the `custom_data` field to pass that
+information through to the point where it is needed.
+</aside>
 
 #### `check_output`
 
