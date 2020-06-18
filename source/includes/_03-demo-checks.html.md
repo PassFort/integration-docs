@@ -21,7 +21,7 @@ of most check types.
   as the data provider supports results meeting those criteria.
 
 - The `provider_data` field in the result should be populated with a
-  human readable notice that the check was not run in the live environment,
+  human-readable notice that the check was not run in the live environment,
   such as `"Demo result. Did not make request to provider."`.
 
 ## Demo result types
@@ -56,13 +56,13 @@ the maximum amount your integration can charge for a check is greater than
 zero.
 
 There are no requirements on what the result of the check must be, but if the
-check is being re-sold, at least one non-zero charge must be returned. The usual
+check is being resold, at least one non-zero charge must be returned. The usual
 rules also still apply: the total amount charged must be no greater than the
 maximum specified in your integration's configuration.
 
 #### `ERROR_INVALID_CREDENTIALS` <span style="float:right">Required</span>
 
-Your integration return a result as if a customer with a direct commercial
+Your integration must return a result as if a customer with a direct commercial
 relationship has provided credentials that have been rejected by the
 data provider.
 
@@ -89,7 +89,7 @@ any matching records for the submitted profile.
 #### `ONE_NAME_ADDRESS_MATCH` <span style="float:right">Required</span>
 
 Your integration must return a result where the data provider could find a
-match on the full name and date of birth for the submitted profile in a single
+match on the full name and address for the submitted profile in a single
 database.
 
 #### `ONE_NAME_DOB_MATCH` <span style="float:right">Optional</span>
