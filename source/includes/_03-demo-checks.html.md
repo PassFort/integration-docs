@@ -60,6 +60,9 @@ check is being resold, at least one non-zero charge must be returned. The usual
 rules also still apply: the total amount charged must be no greater than the
 maximum specified in your integration's configuration.
 
+Note that, as this is a demo check, no credits will actually be deducted
+from the customer.
+
 #### `ERROR_INVALID_CREDENTIALS` <span style="float:right">Required</span>
 
 Your integration must return a result as if a customer with a direct commercial
@@ -137,3 +140,58 @@ match on the full name and address for the submitted profile in a single
 database, and a match on the full name and date of birth in **another
 separate database**, and also a match in at least one mortality register, if
 the provider supports this.
+
+### Demo results for Document Checks
+
+These demo results are specific to Document Verification and Document Fetch
+checks.
+
+#### `ERROR_UNSUPPORTED_DOCUMENT_TYPE` <span style="float:right">Required</span>
+
+Your integration must return a result as if a document was submitted whose type
+is not supported by the data provider.
+
+#### `DOCUMENT_IMAGE_CHECK_FAILURE`
+
+Your integration must return a result as if a document was submitted which
+failed one or more image checks. For example, if the document image was
+too blurry.
+
+#### `DOCUMENT_FORGERY_CHECK_FAILURE`
+
+Your integration must return a result as if a document was submitted which
+failed one or more forgery checks. For example, if the fonts used on the
+document are incorrect.
+
+#### `DOCUMENT_NAME_FIELD_DIFFERENT`
+
+Your integration must return a result where the name extracted from the
+document differs from the name on the check input.
+
+#### `DOCUMENT_NAME_FIELD_UNREADBALE`
+
+Your integration must return a result where no name could be extracted
+from the document.
+
+#### `DOCUMENT_DOB_FIELD_DIFFERENT`
+
+Your integration must return a result where the date of birth extracted from the
+document differs from the date of birth on the check input.
+
+#### `DOCUMENT_DOB_FIELD_UNREADBALE`
+
+Your integration must return a result where no date of birth could be extracted
+from the document.
+
+#### `DOCUMENT_ALL_PASS` <span style="float:right">Required</span>
+
+Your integration must return a result where the extracted data matches the
+check input and all image and forgery checks have passed.
+
+#### `ERROR_INVALID_PROVIDER_REFERENCE` <span style="float:right">Conditional</span>
+
+This demo result is required for Document Fetch checks. It is not used for
+Document Verification checks.
+
+Your integration must return a result indicating that the document reference
+passed as part of the check input was invalid.

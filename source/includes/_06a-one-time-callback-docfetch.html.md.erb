@@ -137,10 +137,22 @@ The payload of the request can contain the following fields:
       <td>An IndividualData object</td>
       <td>Yes</td>
       <td>
+        <p/>
         This field contains the profile information on the individual the
         document verification should be run for. See the
         <a href="#check-input">PassFort Data Structure check input section</a>
         for more information on how profile data is structured within PassFort.
+        <p/>
+        For Document Fetch checks, the check input will contain a single "placeholder"
+        document with no images attached.
+        <p/>
+        The integration should take this placeholder document and populate it with
+        the result from the provider, including attaching any images that can be
+        downloaded.
+        <p/>
+        Notably, the `id` and `category` fields from the placeholder document should
+        be preserved unchanged, as these indicate how the document should be used
+        within PassFort (for example, as a proof of address).
       </td>
     </tr>
     <tr>

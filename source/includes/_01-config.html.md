@@ -1,6 +1,6 @@
 # Configuration
 
->A sample configuration for a synchronous identity check.
+> A sample configuration for a synchronous identity check.
 
 ```json
 {
@@ -13,9 +13,7 @@
     "supports_reselling": true,
     "maximum_cost": 200
   },
-  "supported_countries": [
-    "GBR", "USA", "CAN"
-  ],
+  "supported_countries": ["GBR", "USA", "CAN"],
   "credentials": {
     "fields": [
       {
@@ -44,18 +42,12 @@
         "name": "multiselect_config",
         "label": "Config field with dropdown options",
         "subtext": "A description of the option",
-        "options": [
-          "Option 1",
-          "Option 2",
-          "Option 3",
-          "Option 4"
-        ],
+        "options": ["Option 1", "Option 2", "Option 3", "Option 4"],
         "default": null
       }
     ]
   }
 }
-
 ```
 
 The configuration endpoint defines several important properties about your
@@ -106,7 +98,11 @@ customers have a direct commercial relationship with the data provider.
 </table>
 
 <aside>
-  TODO: More info on PassFort credits
+  PassFort credit is purchased by PassFort's customers. It's used
+  to pay for checks resold through PassFort, when reselling is
+  supported by the data provider.
+  
+  Credits are tied to GBP at the ratio of £1 = 100 credits.
 </aside>
 
 ## Supported countries
