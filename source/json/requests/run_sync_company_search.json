@@ -1,0 +1,12 @@
+{
+    "demo_result": "ANY",
+    "commercial_relationship": "DIRECT",
+    "search_input": {
+        "query": "Example Co.",
+        "country_of_incorporation": "GBR"
+    },
+    "provider_config": {},
+    "provider_credentials": {
+        "apikey": "foobar"
+    }
+}

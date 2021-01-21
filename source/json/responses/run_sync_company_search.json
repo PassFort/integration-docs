@@ -1,0 +1,37 @@
+{
+    "search_output": [
+        {
+            "name": "Example Company",
+            "number": "123456",
+            "country_of_incorporation": "GBR",
+            "status": "ACTIVE",
+            "provider_reference": {
+                "label": "MY-INTEGRATION",
+                "reference": "GB-123456"
+            }
+        },
+        {
+            "name": "Example Couches",
+            "number": "9876531",
+            "country_of_incorporation": "GBR",
+            "status": "DORMANT",
+            "provider_reference": {
+                "label": "My-INTEGRATION",
+                "reference": "GB-9876531"
+            }
+        },
+        {
+            "name": "Example Cars",
+            "number": "4851723",
+            "country_of_incorporation": "GBR",
+            "status": "DISSOLVED",
+            "provider_reference": {
+                "label": "COMPANY_DATA_REFERENCE_INTEGRATION",
+                "reference": "GB-4851723"
+            }
+        }
+    ],
+    "errors": [],
+    "warnings": [],
+    "provider_data": {}
+}

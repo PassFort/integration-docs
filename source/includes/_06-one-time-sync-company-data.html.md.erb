@@ -1,24 +1,20 @@
-# One-time Sync Identity Check
+# One-time Sync Company Data
 
-This section lists all endpoints that must be implemented for a one-time
-synchronous identity check integration.
+This section lists all endpoints that must be implemented for a one-time synchronous company data check integration.
 
-One-time synchronous identity checks are identity checks with the following
-behaviour:
+One-time synchronous company data checks are company data checks with the following behaviour:
 
-  * The check result will be returned directly upon request; the response will
-    not be sent until the check is finished (synchronous).
-
-  * The check operates at a point-in-time: there is no ongoing monitoring
-    of the check result (one-time).
+    * The check result will be returned directly upon request; the response will not be sent until the check is finished (synchronous)
+    
+    * The check operates at a point-in-time: there is no ongoing monitoring of the check result (one-time)
 
 
-## Get Check Configuration (One-time Sync Identity Check)
+## Get Check Configuration (One-time Sync Company Data)
 
-<%= partial("includes/partials/config.md.erb", :locals => { :name => "sync_identity_check" }) %>
+<%= partial("includes/partials/config.md.erb", :locals => { :name => "sync_company_data" }) %>
 
 This endpoint specifies the configuration used by PassFort for performing
-one-time synchronous identity checks using your integration.
+one-time synchronous company data checks using your integration.
 
 ### HTTP Request
 
@@ -31,7 +27,7 @@ section](#configuration). Check specific options will be discussed here.
 
 #### Check type
 
-The `check_type` field must be set to `"IDENTITY_CHECK"`.
+The `check_type` field must be set to `"COMPANY_DATA"`.
 
 #### Check template
 
@@ -41,7 +37,7 @@ The `check_template` fields for this check are:
   <thead>
     <th>Field</th>
     <th>Type</th>
-    <th>Required?</th>
+    <th>Always Present?</th>
     <th>Description</th>
   </thead>
   <tbody>
@@ -72,9 +68,9 @@ The `check_template` fields for this check are:
   :role => :server,
 }) %>
 
-## Run One-Time Sync Identity Check
+## Run One-Time Sync Company Data Check
 
-This endpoint exposes your data provider's identity check to PassFort.
+This endpoint exposes your data provider's company data check to PassFort.
 
 ### HTTP Request
 
@@ -83,7 +79,7 @@ This endpoint exposes your data provider's identity check to PassFort.
 >A JSON payload following this structure will be sent to the endpoint:
 
 ```json
-<%= pretty_json("requests/run_check_sync_identity_check", "json") %>
+<%= pretty_json("requests/run_check_sync_company_data", "json") %>
 ```
 
 The payload of the request can contain the following fields:
@@ -130,11 +126,11 @@ The payload of the request can contain the following fields:
     </tr>
     <tr>
       <td><code>check_input</code></td>
-      <td>An IndividualData object</td>
+      <td>A CompanyData object</td>
       <td>Yes</td>
       <td>
-        This field contains the profile information on the individual the
-        identity check should be run for. See the
+        This field contains the profile information on the company the
+        company data check should be run for. See the
         <a href="#check-input">PassFort Data Structure check input section</a>
         for more information on how profile data is structured within PassFort.
       </td>
@@ -146,7 +142,7 @@ The payload of the request can contain the following fields:
       <td>
         This field contains the provider config structured in the way
         specified by your integration's
-        <a href="#get-check-configuration-one-time-sync-identity-check">
+        <a href="#get-check-configuration-one-time-sync-company-data">
           configuration endpoint
         </a>, with the <code>name</code> field corresponding to the key, and
         the value being the value of the configuration option.
@@ -159,7 +155,7 @@ The payload of the request can contain the following fields:
       <td>
         This field contains the credentials structured in the way
         specified by your integration's
-        <a href="#get-check-configuration-one-time-sync-identity-check">
+        <a href="#get-check-configuration-one-time-sync-company-data">
           configuration endpoint
         </a>, with the <code>name</code> field corresponding to the key, and
         the value being the value of the configuration option. <strong>This
@@ -170,56 +166,42 @@ The payload of the request can contain the following fields:
   </tbody>
 </table>
 
-```python
+```python 
 from flask import Flask, jsonify, request
 from integration.testing import create_demo_result
 from integration.provider import make_provider_request, reseller_creds, \
-    to_passfort_field_types
+    extract_passfort_metadata
 from integration.errors import ProviderError, ConnectionError
 
-
 app = Flask(__name__)
-
 
 @app.post('/checks')
 def run_check():
     body = request.json
-    
+
     demo_result = body.get('demo_result')
     check_input = body.get('check_input')
-    
+
     # Handle demo data scenarios
     if demo_result is not None:
         return jsonify(create_demo_result(demo_result, check_input))
-    
+
     commercial_rel = body.get('commercial_relationship')
     credentials = reseller_creds
     config = body.get('provider_config')
-    
+
     # Use provided creds if check is through direct agreement
     if commercial_rel == 'DIRECT':
-        credentials = body.get('provider_credentials')
-    
+      credentials = body.get('provider_credentials')
+
     # Make call to provider
     try:
         result = make_provider_request(credentials, config, check_input)
-    
+
         return jsonify({
             'check_output': {
-                'entity_type': 'INDIVIDUAL',
-                'address_history': [],
-                'electronic_id_check': {
-                    'matches': [
-                        ({
-                            'count': len(database.matched_records),
-                            'database_name': database.name,
-                            'database_type': 
-                                'CIVIL' if database.is_voting_register else 'CREDIT',
-                            'matched_fields': 
-                                to_passfort_field_types(database.matched_fields)
-                        }) for database in result.matched_databases
-                    ]
-                }
+                'enitity_type': 'COMPANY', 
+                'metadata': extract_passfort_metadata(result),
             },
             'errors': [],
             'warnings': [],
@@ -251,7 +233,7 @@ const { createDemoResult } = require("./testing");
 const {
   makeProviderRequest,
   RESELLER_CREDS,
-  toPassfortFieldTypes,
+  extractPassFortMetadata,
 } = require("./provider");
 
 app.use(express.json());
@@ -278,16 +260,8 @@ app.post("/checks", (req, res) => {
     .then((checkResult) => {
       return res.json({
         check_output: {
-          entity_type: "INDIVIDUAL",
-          address_history: [],
-          electronic_id_check: {
-            matches: checkResult.matched_databases.map((database) => ({
-              count: database.matched_records.length,
-              database_name: database.name,
-              database_type: database.is_voting_register ? "CIVIL" : "CREDIT",
-              matched_fields: toPassfortFieldTypes(database.matched_fields),
-            })),
-          },
+          entity_type: "COMPANY",
+          metadata: extractPassFortMetadata(checkResult)
         },
         errors: [],
         warnings: [],
@@ -323,7 +297,7 @@ app.post("/checks", (req, res) => {
 >This endpoint should return JSON in the following format:
 
 ```json
-<%= pretty_json("responses/run_check_sync_identity_check", "json") %>
+<%=pretty_json("responses/run_check_sync_company_data", "json") %>
 ```
 
 ### Response fields
@@ -414,6 +388,7 @@ app.post("/checks", (req, res) => {
   </tbody>
 </table>
 
+
 #### `check_output`
 
 <table>
@@ -426,157 +401,22 @@ app.post("/checks", (req, res) => {
   <tbody>
     <tr>
       <td><code>entity_type</code></td>
-      <td>The value <code>"INDIVIDUAL"</code></td>
+      <td>The value <code>"COMPANY"</code></td>
       <td>Yes</td>
       <td>
-        The only supported entity type for Identity Checks
-        is individuals.
+        The only supported entity type for Company Data Checks
+        is company.
       </td>
     </tr>
     <tr>
-      <td><code>address_history</code></td>
+      <td><code>metadata</code></td>
       <td>
-        An array containing the address history, structured as it is
+        An object containing the registry data, structured as it is
         in <a href="#data-structure">the PassFort API</a>.
       </td>
-      <td>No</td>
-      <td>
-        If supported by the provider, should report the known addresses for
-        this individual when matched.
-      </td>
-    </tr>
-    <tr>
-      <td><code>electronic_id_check.matches</code></td>
-      <td>
-        An array containing one or more Identity Check matches
-      </td>
-      <td>Yes</td>
-      <td>
-        See the Identity Check matches section below.
-      </td>
+      <td>If a match was found by the provider</td>
+      <td>A best effort should be made to populate all fields supported by the provider</td>
     </tr>
   </tbody>
 </table>
 
-#### Identity Check matches
-
-Each object represents zero or more matches in a database returned by the
-data provider.
-
-<table>
-  <thead>
-    <th>Field</th>
-    <th>Type</th>
-    <th>Required?</th>
-    <th>Description</th>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>count</code></td>
-      <td>number</td>
-      <td>Yes</td>
-      <td>
-        A non-negative integer representing the number of matched entries
-        in this database. Databases without matches should be listed with
-        a count of 0.
-      </td>
-    </tr>
-    <tr>
-      <td><code>database_name</code></td>
-      <td>string</td>
-      <td>Yes</td>
-      <td>The human readable name for the database this match comes from.</td>
-    </tr>
-    <tr>
-      <td><code>database_type</code></td>
-      <td>A supported database type</td>
-      <td>Yes</td>
-      <td>
-        Describes the categorisation of the database, see the supported
-        types listed below.
-       </td>
-    </tr>
-    <tr>
-      <td><code>matched_fields</code></td>
-      <td>An array containing zero or more matched fields</td>
-      <td>Yes</td>
-      <td>
-        Describes which fields were matched on in this database. See
-        the list of matched field types supported below.
-       </td>
-    </tr>
-  </tbody>
-</table>
-
-The database types currently supported are:
-<table>
- <thead>
-  <th>Database type</th>
-  <th>Description</th>
-</thead>
-<tbody>
-  <tr>
-    <td><code>CREDIT</code></td>
-    <td>
-      A credit scoring database or other similar lending
-      activity database.
-    </td>
-  </tr>
-  <tr>
-    <td><code>CIVIL</code></td>
-    <td>
-      A government or organization maintained database or register of
-      individuals, such as an electoral roll or telephone directory.
-    </td>
-  </tr>
-  <tr>
-    <td><code>MORTALITY</code></td>
-    <td>A database or register of deceased individuals.</td>
-  </tr>
-</tbody>
-</table>
-
-The matched fields currently supported are:
-<table>
- <thead>
-  <th>Field</th>
-  <th>Description</th>
-</thead>
-<tbody>
-  <tr>
-    <td><code>FORENAME</code></td>
-    <td>A match was found for the individual's given name(s).</td>
-  </tr>
-  <tr>
-    <td><code>SURNAME</code></td>
-    <td>A match was found for the individual's family name.</td>
-  </tr>
-  <tr>
-    <td><code>ADDRESS</code></td>
-    <td>A match was found for the provided address.</td>
-  </tr>
-  <tr>
-    <td><code>DOB</code></td>
-    <td>A match was found for the individual's Date of Birth.</td>
-  </tr>
-  <tr>
-    <td><code>IDENTITY_NUMBER</code></td>
-    <td>
-      A match was found for the individual's government-issued identity
-      number, commonly referred to as a National Identity Number or Social
-      Security Number.
-     </td>
-  </tr>
-  <tr>
-    <td><code>IDENTITY_NUMBER_SUFFIX</code></td>
-    <td>
-      A match was found for a trailing portion of the individual's
-      government-issued identity number.
-     </td>
-  </tr>
-</tbody>
-</table>
-
-<%= partial("includes/partials/authenticated.md.erb", :locals => {
-  :role => :server,
-}) %>
