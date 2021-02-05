@@ -109,9 +109,38 @@ customers have a direct commercial relationship with the data provider.
 
 The `supported_countries` field defines which countries your integration is
 able to support. The exact interpretation of this field varies depending on
-the check, but it typically reflects country of residence for individuals.
-This field is a simple array of strings, which should be the [ISO3 country
-code][wiki-iso3] for the country. At least one country must be specified.
+the check type, but it typically reflects country of residence for individuals
+and the country of incorporation for companies. This field is an array of
+strings, which should be the [ISO3 country code][wiki-iso3] for the country. At
+least one country must be specified.
+
+## Supported features
+
+The optional `supported_features` field allows your integration to declare 
+support for additional features. The absence of this field from your 
+integration's config implies that no additional features are supported. 
+
+The list of possible features varies depending on the check type but are often 
+used to surface extra functionality implemented by the provider. 
+
+These features are currently recognised as items within the 
+`supported_features` array:
+
+<table>
+  <thead>
+    <th>Feature</th>
+    <th>Check Type</th>
+    <th>Description</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="#company-search"><code>COMPANY_SEARCH</code></a></td>
+      <td>Company Data</td>
+      <td>The integration supports predictive search through the companies known to the provider.</td>
+    </tr>
+  </tbody>
+</table> 
+
 
 ## Credentials Fields
 

@@ -1,0 +1,49 @@
+{
+    "provider_data": "Demo result. Did not make request to provider.",
+    "warnings": [],
+    "errors": [],
+    "check_output": {
+      "entity_type": "COMPANY",
+      "metadata": {
+        "trade_description": "Business and domestic software development",
+        "tax_ids": [],
+        "structured_company_type": {
+          "ownership_type": "COMPANY",
+          "is_public": false,
+          "is_limited": true
+        },
+        "previous_names": [],
+        "number": "0123456",
+        "name": "Example Co.",
+        "is_active_details": "Active",
+        "is_active": true,
+        "industry_classifications": [
+          {
+            "description": "Computer programming, data processing, and other computer related services",
+            "code": "737",
+            "classification_version": "US SIC",
+            "classification_type": "SIC"
+          },
+          {
+            "description": "Computer programming activities",
+            "code": "6201",
+            "classification_version": "NACE Rev. 2",
+            "classification_type": "NACE"
+          },
+          {
+            "description": "Computer Systems Design and Related Services",
+            "code": "5415",
+            "classification_version": "NAICS 2017",
+            "classification_type": "NAICS"
+          }
+        ],
+        "country_of_incorporation": "GBR",
+        "contact_information": {
+          "url": "www.example.co",
+          "email": "info@example.co"
+        },
+        "company_type": "Private limited companies",
+        "addresses": [ ]
+      }
+    }
+  }
