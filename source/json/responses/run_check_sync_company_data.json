@@ -12,12 +12,6 @@
           "is_public": false,
           "is_limited": true
         },
-        "sic_codes": [
-          {
-            "description": "Business and domestic software development",
-            "code": "62012"
-          }
-        ],
         "previous_names": [],
         "number": "0123456",
         "name": "Example Co.",

@@ -120,8 +120,8 @@ The optional `supported_features` field allows your integration to declare
 support for additional features. The absence of this field from your 
 integration's config implies that no additional features are supported. 
 
-The list of possible features varies depending on the check type and often 
-surface extra functionality implemented by the provider. 
+The list of possible features varies depending on the check type but are often 
+used to surface extra functionality implemented by the provider. 
 
 These features are currently recognised as items within the 
 `supported_features` array:
