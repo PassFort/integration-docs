@@ -195,3 +195,38 @@ Document Verification checks.
 
 Your integration must return a result indicating that the document reference
 passed as part of the check input was invalid.
+
+
+### Demo results for Company Data Checks
+
+These demo results are specific to Company Data checks.
+
+#### `NO_DATA` <span style="float:right">Required</span>
+
+Your integration must return a result as if the company details submitted
+do not match any on the provider's records.
+
+#### `ALL_DATA` <span style="float:right">Required</span>
+
+Your integration must return a result as if the provider had data for all of their
+supported fields.
+
+#### `COMPANY_INACTIVE` <span style="float:right">Required</span>
+
+Your integration must return a result as if the company submitted was on record as no 
+longer actively operating.
+
+#### `COMPANY_COUNTRY_OF_INCORPORATION_MISMATCH` <span style="float:right">Required</span>
+
+Your integration must return a result as if the company submitted was on record with a
+different country of incorporation from the one submitted in the check input.
+
+#### `COMPANY_NAME_MISMATCH` <span style="float:right">Required</span>
+
+Your integration must return a result as if the company submitted was on record with a
+different name from the one submitted in the check input.
+
+#### `COMPANY_NUMBER_MISMATCH` <span style="float:right">Required</span>
+
+Your integration must return a result as if the company submitted was on record with a
+different number from the one submitted in the check input.
