@@ -1,0 +1,10 @@
+{
+    "provider_id": "16fd3691-40d2-4c74-a808-f4758f435e2d",
+    "reference": "12345",
+    "custom_data": {
+        "my_field": 42
+    },
+    "provider_data": {},
+    "errors": [],
+    "warnings": []
+}

@@ -1,0 +1,50 @@
+{
+    "id": "01234567-89ab-cdef-0123-456789abcdef",
+    "demo_result": "ANY",
+    "commercial_relationship": "DIRECT",
+    "check_input": {
+        "entity_type": "INDIVIDUAL",
+        "personal_details": {
+            "name": {
+                "family_name": "Person",
+                "given_names": ["Example"]
+            },
+            "dob": "1985-10-26",
+            "nationality": "GBR"
+        },
+        "address_history": [
+            {
+                "address":  {
+                    "type": "STRUCTURED",
+                    "country": "GBR",
+                    "locality": "London",
+                    "postal_code": "E1 1AA",
+                    "route": "Crown Street",
+                    "street_number": 42,
+                    "original_freeform_address": "42 Crown Street, London, E1 1AA"
+                },
+                "start_date": "1985-10"
+            }
+        ],
+        "documents": [
+            {
+                "id": "17bb8473-1466-466e-b651-2de39df7c148",
+                "category": "PROOF_OF_IDENTITY",
+                "document_type": "PASSPORT",
+                "images": [
+                    {
+                        "id": "2a7933f3-c4a2-49f3-883b-946c33d28b26",
+                        "image_type": "FRONT"
+                    }
+                ]
+            }
+        ]
+    },
+    "provider_config": {
+        "enhanced_verification": false
+    },
+    "provider_credentials": {
+        "username": "foo",
+        "password": "bar"
+    }
+}

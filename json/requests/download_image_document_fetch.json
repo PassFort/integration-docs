@@ -1,0 +1,15 @@
+{
+  "check_id": "b383f249-7ffa-4fd4-9465-73728e090d26",
+  "image_reference": "12345",
+  "commercial_relationship": "DIRECT",
+  "provider_config": {
+    "enhanced_verification": false
+  },
+  "provider_credentials": {
+    "username": "foo",
+    "password": "bar"
+  },
+  "custom_data": {
+    "my_field": 42
+  }
+}
