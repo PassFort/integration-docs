@@ -216,7 +216,7 @@ supported fields.
 Your integration must return a result as if the company submitted was on record as no 
 longer actively operating.
 
-#### `COMPANY_COUNTRY_OF_INCORPORATION_MISMATCH` <span style="float:right">Required</span>
+#### `COMPANY_COUNTRY_OF_INCORPORATION_MISMATCH`
 
 Your integration must return a result as if the company submitted was on record with a
 different country of incorporation from the one submitted in the check input.
@@ -230,3 +230,21 @@ different name from the one submitted in the check input.
 
 Your integration must return a result as if the company submitted was on record with a
 different number from the one submitted in the check input.
+
+#### `COMPANY_RESIGNED_OFFICER`
+
+Your integration must return a result with at least one associate with all its officer 
+relationships marked with a `FORMER` tenure.
+
+#### `COMPANY_FORMER_SHAREHOLDER
+Your integration must return a result with at least one associate with a shareholder 
+relationship marked with a `FORMER` tenure.
+
+#### `COMPANY_OFFICER_WITH_MULTIPLE_ROLES`
+Your integration must return a result with at least one associate with more than one
+officer relationship.
+
+#### `COMPANY_SHAREHOLDER_WITH_100_PERCENT_OWNERSHIP`
+
+Your integration must return a result with at exactly one associate with a single shareholder
+owning 100% of the company.

@@ -118,7 +118,7 @@ This error should be returned when your integration receives a `demo_result`
 value which it doesn't support or does not have demo data implemented.
 
 [api-docs-post-check]: https://developer.passfort.com/api#tag/Checks/paths/~1profiles~1{profile_id}~1checks/post
-[api-docs-openapi-json]: https://identity.passfort.com/api/static/schemas/openapi.json
+[api-docs-openapi-json]: https://identity.passfort.com/api/static/schemas/openapi_v41.json
 
 ## Check charges
 
