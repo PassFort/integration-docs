@@ -246,5 +246,24 @@ officer relationship.
 
 #### `COMPANY_SHAREHOLDER_WITH_100_PERCENT_OWNERSHIP`
 
-Your integration must return a result with at exactly one associate with a single shareholder
-owning 100% of the company.
+Your integration must return a result with at exactly one associate with a
+single shareholder relationship owning 100% of the company.
+
+#### `COMPANY_SHAREHOLDER_WITH_SIGNIFICANT_CONTROL`
+
+Your integration must return a result with at least one associate who has both a
+shareholding relationship and one indicating significant control or influence
+over the company.
+
+#### `COMPANY_INDIVIDUAL_OF_SIGNIFICANT_CONTROL`
+
+Your integration must return a result with at least one associate which is an
+individual with a relationship indicating significant control or influence over
+the company.
+
+#### `COMPANY_COMPANY_OF_SIGNIFICANT_CONTROL`
+
+Your integration must return a result with at least one associate which is a
+company with a relationship indicating significant control or influence over the
+company.
+
