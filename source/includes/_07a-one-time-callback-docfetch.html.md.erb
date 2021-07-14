@@ -847,19 +847,19 @@ information through to the point where it is needed.
   :role => :server,
 }) %>
 
-## Download Document Image
+## Download Document File
 
-This endpoint allows PassFort to retrieve images stored with the provider
-for a given check.
+This endpoint allows PassFort to retrieve images and other files
+stored with the provider for a given check.
 
 ### HTTP Request
 
-`POST https://my-integration.example.com/download_image`
+`POST https://my-integration.example.com/download_file`
 
 >A JSON payload following this structure will be sent to the endpoint:
 
 ```json
-<%= pretty_json("requests/download_image_document_fetch", "json") %>
+<%= pretty_json("requests/download_file_document_fetch", "json") %>
 ```
 
 The payload of the request can contain the following fields:
@@ -884,14 +884,40 @@ The payload of the request can contain the following fields:
       </td>
     </tr>
     <tr>
-      <td><code>image_reference</code></td>
+      <td><code>file_reference</code></td>
       <td>
         <code>string</code>
       </td>
       <td>Yes</td>
       <td>
-        The provider reference for the image being requested, as previously specified
-        in the check result's <code>provider_reference</code> field for this image.
+        The provider reference for the file being requested, as previously specified
+        in the check result's <code>provider_reference</code> field for images
+        or the <code>reference</code> field for other files.
+      </td>
+    </tr>
+    <tr>
+      <td><code>download_info.download_type</code></td>
+      <td>One of <code>"FILE"</code>, <code>"IMAGE"</code></td>
+      <td>Yes</td>
+      <td>
+        Specifies whether this download is for a file or image, i.e. whether this
+        is from the <code>images</code> or <code>files</code>, for a given document.
+      </td>
+    </tr>
+    <tr>
+      <td><code>download_info.image_type</code></td>
+      <td>One of <code>"FRONT"</code>, <code>"BACK"</code>, <code>"FACE"</code></td>
+      <td>If <code>download_info.download_type</code> is <code>"IMAGE"</code></td>
+      <td>
+        Specifies which type of document image was indicated for this file.
+      </td>
+    </tr>
+    <tr>
+      <td><code>download_info.file_type</code></td>
+      <td>One of <code>"LIVE_VIDEO"</code>, <code>"VIDEO_FRAME"</code></td>
+      <td>If <code>download_info.download_type</code> is <code>"FILE"</code></td>
+      <td>
+        Specifies which type of file was indicated for this file.
       </td>
     </tr>
     <tr>
@@ -954,14 +980,14 @@ from integration.provider import download_provider_image, reseller_creds
 app = Flask(__name__)
 
 
-@app.post("/download_image")
+@app.post("/download_file")
 def run_check():
     body = request.json
 
-    image_ref = body.get('image_reference')
+    file_ref = body.get('file_reference')
 
     # Send demo image if requested
-    if image_ref == 'DEMO_IMAGE':
+    if file_ref == 'DEMO_IMAGE':
         return send_file('static/demo.png', mimetype='image/png')
 
     commercial_rel = body.get('commercial_relationship')
@@ -974,7 +1000,7 @@ def run_check():
 
     # Make call to provider
     try:
-        result = download_provider_image(credentials, config, image_ref)
+        result = download_provider_image(credentials, config, file_ref)
 
         return Response(result.data, mimetype=result.mimetype)
 ```
@@ -982,6 +1008,19 @@ def run_check():
 ### Response
 This endpoint should return the raw image data with the appropriate `Content-Type`.
 
+#### File names
+
+Wherever possible, your integration should return an appropriate name for the file using
+a `File-Name` header. The value of the header *is required* to be be a a valid UTF-8
+string, and should include the file extension. If this is not provided a default filename
+of `"unknown"` will be used, with no file extension. If the provider does not provide a
+file name, it is recommended your integration generate a suitable file name.
+
+<aside>
+    Currently, file names are only used for files. The file name will be ignored for document images.
+</aside>
+
+#### Supported image types
 The currently supported types for document images on PassFort are:
 
  * `image/jpeg`
@@ -989,6 +1028,13 @@ The currently supported types for document images on PassFort are:
  * `image/gif`
  * `image/tiff`
  * `application/pdf`
+
+#### Supported video types
+The currently supported types for live video files on PassFort are:
+
+ * `video/mp4`
+ * `video/webm`
+
 
 <%= partial("includes/partials/authenticated.md.erb", :locals => {
   :role => :server,

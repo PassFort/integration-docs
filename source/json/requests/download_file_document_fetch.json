@@ -1,6 +1,10 @@
 {
   "check_id": "b383f249-7ffa-4fd4-9465-73728e090d26",
-  "image_reference": "12345",
+  "file_reference": "12345",
+  "download_info": {
+    "download_type": "IMAGE",
+    "image_type": "FRONT"
+  },
   "commercial_relationship": "DIRECT",
   "provider_config": {
     "enhanced_verification": false
