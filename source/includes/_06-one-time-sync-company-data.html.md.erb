@@ -417,6 +417,17 @@ app.post("/checks", (req, res) => {
       <td>If a match was found by the provider</td>
       <td>A best effort should be made to populate all fields supported by the provider</td>
     </tr>
+    <tr>
+      <td><code>field_checks</code></td>
+      <td>An array of <code>CompanyFieldCheck</code> objects</td>
+      <td>No</td>
+      <td>
+        This field is used to surface company fields which have been marked as a match or mismatch
+        between the provider's data and the input data sent to your integration. This field is only
+        used if the <a href="#provider-field-checks">Provider Field Checks</a> feature
+        is in use.
+      </td>
+    </tr>
   </tbody>
 </table>
 

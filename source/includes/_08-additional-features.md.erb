@@ -373,4 +373,37 @@ app.post("/search", (req, res) => {
   </tbody>
 </table>
 
+## Provider Field Checks
 
+The identifier for this feature is <code>PROVIDER_FIELD_CHECKS</code>. This feature is compatible
+with the <a href="#one-time-sync-company-data">One-time Sync Company Data</a> check type.
+
+This feature allows an integration to return an array of <code>CompanyFieldCheck</code> objects.
+The `CompanyFieldCheck` object describes whether a particular field (i.e. company name or number)
+has been matched or mismatched according to the integration’s custom logic. Provider field checks
+should be surfaced using the <code>field_checks</code> attribute of the <code>check_output</code>.
+
+#### `CompanyFieldCheck`
+
+<table>
+  <thead>
+    <th>Field</th>
+    <th>Type</th>
+    <th>Required?</th>
+    <th>Description</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>field</code></td>
+      <td>string</td>
+      <td>Yes</td>
+      <td>The field that the result refers to. One of <code>["NAME", "NUMBER", "COUNTRY_OF_INCORPORATION", "IS_ACTIVE", "LEI", "ADDRESS"]</code></td>
+    <tr>
+    <tr>
+      <td><code>result</code></td>
+      <td>string</td>
+      <td>Yes</td>
+      <td>The result of the comparison. One of <code>["MATCH", "MISMATCH"]</code></td>
+    <tr>
+  </tbody>
+</table>

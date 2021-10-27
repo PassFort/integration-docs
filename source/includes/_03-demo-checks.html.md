@@ -267,3 +267,16 @@ Your integration must return a result with at least one associate which is a
 company with a relationship indicating significant control or influence over the
 company.
 
+
+#### `COMPANY_ADDRESS_MATCH` <span style="float:right">Conditional</span>
+
+Your integration must return a result as if the company submitted was on record with an
+address matching the one submitted in the check input. This demo result is required
+when the <a href="#provider-field-checks">Provider Field Checks</a> feature is in use.
+
+#### `COMPANY_ADDRESS_MISMATCH` <span style="float:right">Conditional</span>
+
+Your integration must return a result as if the company submitted was on record with a
+different address from the one submitted in the check input. This demo result is required
+when the <a href="#provider-field-checks">Provider Field Checks</a> feature is in use.
+
