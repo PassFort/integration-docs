@@ -1,3 +1,16 @@
+# Branch Note
+
+This is a branch for experimenting with generating these docs from OpenAPI specifications.
+
+
+The tool [widdershins](https://github.com/Mermade/widdershins) can be used to generate files compatible with `slate` as follows
+
+```
+widdershins --summary --environment schema/config.json schema/one-time-polled-screening.json -o source/index.html.md.erb
+```
+
+The generated documentation site can then be viewed by following the normal instructions below.
+
 # Integration Provider API Docs
 
 Site generator for the provider facing integration API

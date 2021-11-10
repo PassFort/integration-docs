@@ -27,7 +27,7 @@ headingLevel: 2
 
 - HTTP Authentication, scheme: signature 
 
-<h1 id="one-time-polled-screen-defining-your-integration">Defining your integration</h1>
+<h1 id="one-time-polled-screen-default">Default</h1>
 
 ## Get integration metadata
 
@@ -391,8 +391,6 @@ To perform this operation, you must be authenticated by means of one of the foll
 signatureAuth
 </aside>
 
-<h1 id="one-time-polled-screen-running-a-check">Running a check</h1>
-
 ## Instruct a new check with the provider
 
 <a id="opIdinstructCheck"></a>
@@ -402,7 +400,6 @@ signatureAuth
 ```shell
 # You can also use wget
 curl -X POST /checks \
-  -H 'Content-Type: application/json' \
   -H 'Accept: application/json'
 
 ```
@@ -410,59 +407,20 @@ curl -X POST /checks \
 ```http
 POST /checks HTTP/1.1
 
-Content-Type: application/json
 Accept: application/json
 
 ```
 
 ```javascript
-const inputBody = '{
-  "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "demo_result": "ANY",
-  "commercial_relationship": "DIRECT",
-  "check_input": {
-    "entity_type": "COMPANY",
-    "screening_hits": [
-      {
-        "hit_id": "12345",
-        "provider": {
-          "name": "Screening Reference Integration",
-          "hit_id": "12345",
-          "label": "screening-ref"
-        },
-        "data": {
-          "name": "The Example Company"
-        },
-        "status": "UNRESOLVED",
-        "flags": [
-          {
-            "type": "REFER"
-          },
-          {
-            "type": "PEP"
-          },
-          {
-            "type": "SANCTION"
-          },
-          {
-            "type": "ADVERSE_MEDIA"
-          }
-        ]
-      }
-    ]
-  },
-  "provider_config": {},
-  "provider_credentials": {}
-}';
+
 const headers = {
-  'Content-Type':'application/json',
   'Accept':'application/json'
 };
 
 fetch('/checks',
 {
   method: 'POST',
-  body: inputBody,
+
   headers: headers
 })
 .then(function(res) {
@@ -478,7 +436,6 @@ require 'rest-client'
 require 'json'
 
 headers = {
-  'Content-Type' => 'application/json',
   'Accept' => 'application/json'
 }
 
@@ -493,7 +450,6 @@ p JSON.parse(result)
 ```python
 import requests
 headers = {
-  'Content-Type': 'application/json',
   'Accept': 'application/json'
 }
 
@@ -509,7 +465,6 @@ print(r.json())
 require 'vendor/autoload.php';
 
 $headers = array(
-    'Content-Type' => 'application/json',
     'Accept' => 'application/json',
 );
 
@@ -563,7 +518,6 @@ import (
 func main() {
 
     headers := map[string][]string{
-        "Content-Type": []string{"application/json"},
         "Accept": []string{"application/json"},
     }
 
@@ -579,55 +533,6 @@ func main() {
 ```
 
 `POST /checks`
-
-> Body parameter
-
-```json
-{
-  "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "demo_result": "ANY",
-  "commercial_relationship": "DIRECT",
-  "check_input": {
-    "entity_type": "COMPANY",
-    "screening_hits": [
-      {
-        "hit_id": "12345",
-        "provider": {
-          "name": "Screening Reference Integration",
-          "hit_id": "12345",
-          "label": "screening-ref"
-        },
-        "data": {
-          "name": "The Example Company"
-        },
-        "status": "UNRESOLVED",
-        "flags": [
-          {
-            "type": "REFER"
-          },
-          {
-            "type": "PEP"
-          },
-          {
-            "type": "SANCTION"
-          },
-          {
-            "type": "ADVERSE_MEDIA"
-          }
-        ]
-      }
-    ]
-  },
-  "provider_config": {},
-  "provider_credentials": {}
-}
-```
-
-<h3 id="instruct-a-new-check-with-the-provider-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[StartCheckRequest](#schemastartcheckrequest)|true|none|
 
 > Example responses
 
@@ -676,7 +581,6 @@ signatureAuth
 ```shell
 # You can also use wget
 curl -X GET /checks/{checkId}/poll \
-  -H 'Content-Type: application/json' \
   -H 'Accept: application/json'
 
 ```
@@ -684,31 +588,20 @@ curl -X GET /checks/{checkId}/poll \
 ```http
 GET /checks/{checkId}/poll HTTP/1.1
 
-Content-Type: application/json
 Accept: application/json
 
 ```
 
 ```javascript
-const inputBody = '{
-  "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "demo_result": "ANY",
-  "commercial_relationship": null,
-  "provider_config": {},
-  "provider_credentials": {},
-  "provider_id": "01234567-89ab-cdef-0123-456789abcdef",
-  "reference": "string",
-  "custom_data": {}
-}';
+
 const headers = {
-  'Content-Type':'application/json',
   'Accept':'application/json'
 };
 
 fetch('/checks/{checkId}/poll',
 {
   method: 'GET',
-  body: inputBody,
+
   headers: headers
 })
 .then(function(res) {
@@ -724,7 +617,6 @@ require 'rest-client'
 require 'json'
 
 headers = {
-  'Content-Type' => 'application/json',
   'Accept' => 'application/json'
 }
 
@@ -739,7 +631,6 @@ p JSON.parse(result)
 ```python
 import requests
 headers = {
-  'Content-Type': 'application/json',
   'Accept': 'application/json'
 }
 
@@ -755,7 +646,6 @@ print(r.json())
 require 'vendor/autoload.php';
 
 $headers = array(
-    'Content-Type' => 'application/json',
     'Accept' => 'application/json',
 );
 
@@ -809,7 +699,6 @@ import (
 func main() {
 
     headers := map[string][]string{
-        "Content-Type": []string{"application/json"},
         "Accept": []string{"application/json"},
     }
 
@@ -826,27 +715,6 @@ func main() {
 
 `GET /checks/{checkId}/poll`
 
-> Body parameter
-
-```json
-{
-  "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "demo_result": "ANY",
-  "commercial_relationship": null,
-  "provider_config": {},
-  "provider_credentials": {},
-  "provider_id": "01234567-89ab-cdef-0123-456789abcdef",
-  "reference": "string",
-  "custom_data": {}
-}
-```
-
-<h3 id="attempt-to-fetch-the-completed-check-result-from-the-provider-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[PollCheckRequest](#schemapollcheckrequest)|true|none|
-
 > Example responses
 
 > 200 Response
@@ -857,37 +725,7 @@ func main() {
   "reference": "ABC-12345",
   "custom_data": {},
   "provider_data": "Demo result. Did not make request to provider.",
-  "check_output": {
-    "entity_type": "COMPANY",
-    "screening_hits": [
-      {
-        "hit_id": "12345",
-        "provider": {
-          "name": "Screening Reference Integration",
-          "hit_id": "12345",
-          "label": "screening-ref"
-        },
-        "data": {
-          "name": "The Example Company"
-        },
-        "status": "UNRESOLVED",
-        "flags": [
-          {
-            "type": "REFER"
-          },
-          {
-            "type": "PEP"
-          },
-          {
-            "type": "SANCTION"
-          },
-          {
-            "type": "ADVERSE_MEDIA"
-          }
-        ]
-      }
-    ]
-  },
+  "check_output": null,
   "charges": [],
   "warnings": [
     {
@@ -1323,462 +1161,6 @@ Use this to store any state required by later requests relating to this check. T
 
 *None*
 
-<h2 id="tocS_DemoResultType">DemoResultType</h2>
-<!-- backwards compatibility -->
-<a id="schemademoresulttype"></a>
-<a id="schema_DemoResultType"></a>
-<a id="tocSdemoresulttype"></a>
-<a id="tocsdemoresulttype"></a>
-
-```json
-"ANY"
-
-```
-
-To support a wide range of testing scenarios, PassFort uses specific values in the demo_result field to select demo results.
-
-### Properties
-
-oneOf
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[DemoResultAny](#schemademoresultany)|false|none|A demo result that will be used as the default if nothing more specific is requested. It should reflect a genuine non-error result for this integration, but it does not need to be a passing result.|
-
-xor
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[DemoResultAnyCharge](#schemademoresultanycharge)|false|none|This demo result will be used to test billing. This is required if your integration supports reselling and the maximum amount your integration can charge for a check is greater than zero.<br>There are no requirements on what the result of the check must be, but if the check is being resold, at least one non-zero charge must be returned. The usual rules also still apply: the total amount charged must be no greater than the maximum specified in your integration's configuration.<br>Note that, as this is a demo check, no credits will actually be deducted from the customer.|
-
-xor
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[DemoResultErrorInvalidCredentials](#schemademoresulterrorinvalidcredentials)|false|none|Your integration must return a result as if a customer with a direct commercial relationship has provided credentials that have been rejected by the data provider.|
-
-xor
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[DemoResultErrorAnyProviderMessage](#schemademoresulterroranyprovidermessage)|false|none|Your integration must return a result as if the data provider was successfully reached but encountered a problem fulfilling the request, such a problem with the service, or missing information in the request.|
-
-xor
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[DemoResultErrorConnectionToProvider](#schemademoresulterrorconnectiontoprovider)|false|none|Your integration must return a result as if it attempted to contact the data provider but the connection failed (due to timeouts or outages).|
-
-xor
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[DemoResultScreenNoHits](#schemademoresultscreennohits)|false|none|Your integration must return a result as if the data provider found no hits for the provided data.|
-
-xor
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[DemoResultScreenAllFlagsSameHit](#schemademoresultscreenallflagssamehit)|false|none|Your integration must return a result as if the data provider found a single hit which is flagged with all flag types supported by your integration.|
-
-xor
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[DemoResultScreenAllFlagsSeparateHits](#schemademoresultscreenallflagsseparatehits)|false|none|Your integration must return a result as if the data provider found a separate hit for each supported flag type which has a flag of that type.|
-
-xor
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[DemoResultScreenSingleRefer](#schemademoresultscreensinglerefer)|false|none|Your integration must return a result as if the data provider found a single hit with a flag of the 'REFER' type.|
-
-xor
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[DemoResultScreenSinglePep](#schemademoresultscreensinglepep)|false|none|Your integration must return a result as if the data provider found a single hit with a flag of the 'PEP' type. This demo result is only required if your integration declares support for the 'PEPS' feature.|
-
-xor
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[DemoResultScreenSingleSanction](#schemademoresultscreensinglesanction)|false|none|Your integration must return a result as if the data provider found a single hit with a flag of the 'SANCTION' type. This demo result is only required if your integration declares support for the 'SANCTIONS' feature.|
-
-xor
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[DemoResultScreenSingleAdverseMedia](#schemademoresultscreensingleadversemedia)|false|none|Your integration must return a result as if the data provider found a single hit with a flag of the 'ADVERSE_MEDIA' type. This demo result is only required if your integration declares support for the 'ADVERSE_MEDIA' feature.|
-
-<h2 id="tocS_DemoResultAny">DemoResultAny</h2>
-<!-- backwards compatibility -->
-<a id="schemademoresultany"></a>
-<a id="schema_DemoResultAny"></a>
-<a id="tocSdemoresultany"></a>
-<a id="tocsdemoresultany"></a>
-
-```json
-"ANY"
-
-```
-
-ANY
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|ANY|string|false|none|A demo result that will be used as the default if nothing more specific is requested. It should reflect a genuine non-error result for this integration, but it does not need to be a passing result.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|ANY|ANY|
-
-<h2 id="tocS_DemoResultAnyCharge">DemoResultAnyCharge</h2>
-<!-- backwards compatibility -->
-<a id="schemademoresultanycharge"></a>
-<a id="schema_DemoResultAnyCharge"></a>
-<a id="tocSdemoresultanycharge"></a>
-<a id="tocsdemoresultanycharge"></a>
-
-```json
-"ANY_CHARGE"
-
-```
-
-ANY_CHARGE
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|ANY_CHARGE|string|false|none|This demo result will be used to test billing. This is required if your integration supports reselling and the maximum amount your integration can charge for a check is greater than zero.<br>There are no requirements on what the result of the check must be, but if the check is being resold, at least one non-zero charge must be returned. The usual rules also still apply: the total amount charged must be no greater than the maximum specified in your integration's configuration.<br>Note that, as this is a demo check, no credits will actually be deducted from the customer.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|ANY_CHARGE|ANY_CHARGE|
-
-<h2 id="tocS_DemoResultErrorInvalidCredentials">DemoResultErrorInvalidCredentials</h2>
-<!-- backwards compatibility -->
-<a id="schemademoresulterrorinvalidcredentials"></a>
-<a id="schema_DemoResultErrorInvalidCredentials"></a>
-<a id="tocSdemoresulterrorinvalidcredentials"></a>
-<a id="tocsdemoresulterrorinvalidcredentials"></a>
-
-```json
-"ERROR_INVALID_CREDENTIALS"
-
-```
-
-ERROR_INVALID_CREDENTIALS
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|ERROR_INVALID_CREDENTIALS|string|false|none|Your integration must return a result as if a customer with a direct commercial relationship has provided credentials that have been rejected by the data provider.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|ERROR_INVALID_CREDENTIALS|ERROR_INVALID_CREDENTIALS|
-
-<h2 id="tocS_DemoResultErrorAnyProviderMessage">DemoResultErrorAnyProviderMessage</h2>
-<!-- backwards compatibility -->
-<a id="schemademoresulterroranyprovidermessage"></a>
-<a id="schema_DemoResultErrorAnyProviderMessage"></a>
-<a id="tocSdemoresulterroranyprovidermessage"></a>
-<a id="tocsdemoresulterroranyprovidermessage"></a>
-
-```json
-"ERROR_ANY_PROVIDER_MESSAGE"
-
-```
-
-ERROR_ANY_PROVIDER_MESSAGE
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|ERROR_ANY_PROVIDER_MESSAGE|string|false|none|Your integration must return a result as if the data provider was successfully reached but encountered a problem fulfilling the request, such a problem with the service, or missing information in the request.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|ERROR_ANY_PROVIDER_MESSAGE|ERROR_ANY_PROVIDER_MESSAGE|
-
-<h2 id="tocS_DemoResultErrorConnectionToProvider">DemoResultErrorConnectionToProvider</h2>
-<!-- backwards compatibility -->
-<a id="schemademoresulterrorconnectiontoprovider"></a>
-<a id="schema_DemoResultErrorConnectionToProvider"></a>
-<a id="tocSdemoresulterrorconnectiontoprovider"></a>
-<a id="tocsdemoresulterrorconnectiontoprovider"></a>
-
-```json
-"ERROR_CONNECTION_TO_PROVIDER"
-
-```
-
-ERROR_CONNECTION_TO_PROVIDER
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|ERROR_CONNECTION_TO_PROVIDER|string|false|none|Your integration must return a result as if it attempted to contact the data provider but the connection failed (due to timeouts or outages).|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|ERROR_CONNECTION_TO_PROVIDER|ERROR_CONNECTION_TO_PROVIDER|
-
-<h2 id="tocS_DemoResultScreenNoHits">DemoResultScreenNoHits</h2>
-<!-- backwards compatibility -->
-<a id="schemademoresultscreennohits"></a>
-<a id="schema_DemoResultScreenNoHits"></a>
-<a id="tocSdemoresultscreennohits"></a>
-<a id="tocsdemoresultscreennohits"></a>
-
-```json
-"SCREEN_NO_HITS"
-
-```
-
-SCREEN_NO_HITS
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|SCREEN_NO_HITS|string|false|none|Your integration must return a result as if the data provider found no hits for the provided data.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|SCREEN_NO_HITS|SCREEN_NO_HITS|
-
-<h2 id="tocS_DemoResultScreenAllFlagsSameHit">DemoResultScreenAllFlagsSameHit</h2>
-<!-- backwards compatibility -->
-<a id="schemademoresultscreenallflagssamehit"></a>
-<a id="schema_DemoResultScreenAllFlagsSameHit"></a>
-<a id="tocSdemoresultscreenallflagssamehit"></a>
-<a id="tocsdemoresultscreenallflagssamehit"></a>
-
-```json
-"SCREEN_ALL_FLAGS_SAME_HIT"
-
-```
-
-SCREEN_ALL_FLAGS_SAME_HIT
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|SCREEN_ALL_FLAGS_SAME_HIT|string|false|none|Your integration must return a result as if the data provider found a single hit which is flagged with all flag types supported by your integration.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|SCREEN_ALL_FLAGS_SAME_HIT|SCREEN_ALL_FLAGS_SAME_HIT|
-
-<h2 id="tocS_DemoResultScreenAllFlagsSeparateHits">DemoResultScreenAllFlagsSeparateHits</h2>
-<!-- backwards compatibility -->
-<a id="schemademoresultscreenallflagsseparatehits"></a>
-<a id="schema_DemoResultScreenAllFlagsSeparateHits"></a>
-<a id="tocSdemoresultscreenallflagsseparatehits"></a>
-<a id="tocsdemoresultscreenallflagsseparatehits"></a>
-
-```json
-"SCREEN_ALL_FLAGS_SEPARATE_HITS"
-
-```
-
-SCREEN_ALL_FLAGS_SEPARATE_HITS
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|SCREEN_ALL_FLAGS_SEPARATE_HITS|string|false|none|Your integration must return a result as if the data provider found a separate hit for each supported flag type which has a flag of that type.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|SCREEN_ALL_FLAGS_SEPARATE_HITS|SCREEN_ALL_FLAGS_SEPARATE_HITS|
-
-<h2 id="tocS_DemoResultScreenSingleRefer">DemoResultScreenSingleRefer</h2>
-<!-- backwards compatibility -->
-<a id="schemademoresultscreensinglerefer"></a>
-<a id="schema_DemoResultScreenSingleRefer"></a>
-<a id="tocSdemoresultscreensinglerefer"></a>
-<a id="tocsdemoresultscreensinglerefer"></a>
-
-```json
-"SCREEN_SINGLE_REFER"
-
-```
-
-SCREEN_SINGLE_REFER
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|SCREEN_SINGLE_REFER|string|false|none|Your integration must return a result as if the data provider found a single hit with a flag of the 'REFER' type.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|SCREEN_SINGLE_REFER|SCREEN_SINGLE_REFER|
-
-<h2 id="tocS_DemoResultScreenSinglePep">DemoResultScreenSinglePep</h2>
-<!-- backwards compatibility -->
-<a id="schemademoresultscreensinglepep"></a>
-<a id="schema_DemoResultScreenSinglePep"></a>
-<a id="tocSdemoresultscreensinglepep"></a>
-<a id="tocsdemoresultscreensinglepep"></a>
-
-```json
-"SCREEN_SINGLE_PEP"
-
-```
-
-SCREEN_SINGLE_PEP
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|SCREEN_SINGLE_PEP|string|false|none|Your integration must return a result as if the data provider found a single hit with a flag of the 'PEP' type. This demo result is only required if your integration declares support for the 'PEPS' feature.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|SCREEN_SINGLE_PEP|SCREEN_SINGLE_PEP|
-
-<h2 id="tocS_DemoResultScreenSingleSanction">DemoResultScreenSingleSanction</h2>
-<!-- backwards compatibility -->
-<a id="schemademoresultscreensinglesanction"></a>
-<a id="schema_DemoResultScreenSingleSanction"></a>
-<a id="tocSdemoresultscreensinglesanction"></a>
-<a id="tocsdemoresultscreensinglesanction"></a>
-
-```json
-"SCREEN_SINGLE_SANCTION"
-
-```
-
-SCREEN_SINGLE_SANCTION
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|SCREEN_SINGLE_SANCTION|string|false|none|Your integration must return a result as if the data provider found a single hit with a flag of the 'SANCTION' type. This demo result is only required if your integration declares support for the 'SANCTIONS' feature.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|SCREEN_SINGLE_SANCTION|SCREEN_SINGLE_SANCTION|
-
-<h2 id="tocS_DemoResultScreenSingleAdverseMedia">DemoResultScreenSingleAdverseMedia</h2>
-<!-- backwards compatibility -->
-<a id="schemademoresultscreensingleadversemedia"></a>
-<a id="schema_DemoResultScreenSingleAdverseMedia"></a>
-<a id="tocSdemoresultscreensingleadversemedia"></a>
-<a id="tocsdemoresultscreensingleadversemedia"></a>
-
-```json
-"SCREEN_SINGLE_ADVERSE_MEDIA"
-
-```
-
-SCREEN_SINGLE_ADVERSE_MEDIA
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|SCREEN_SINGLE_ADVERSE_MEDIA|string|false|none|Your integration must return a result as if the data provider found a single hit with a flag of the 'ADVERSE_MEDIA' type. This demo result is only required if your integration declares support for the 'ADVERSE_MEDIA' feature.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|SCREEN_SINGLE_ADVERSE_MEDIA|SCREEN_SINGLE_ADVERSE_MEDIA|
-
-<h2 id="tocS_EntityData">EntityData</h2>
-<!-- backwards compatibility -->
-<a id="schemaentitydata"></a>
-<a id="schema_EntityData"></a>
-<a id="tocSentitydata"></a>
-<a id="tocsentitydata"></a>
-
-```json
-{
-  "entity_type": "COMPANY",
-  "screening_hits": [
-    {
-      "hit_id": "12345",
-      "provider": {
-        "name": "Screening Reference Integration",
-        "hit_id": "12345",
-        "label": "screening-ref"
-      },
-      "data": {
-        "name": "The Example Company"
-      },
-      "status": "UNRESOLVED",
-      "flags": [
-        {
-          "type": "REFER"
-        },
-        {
-          "type": "PEP"
-        },
-        {
-          "type": "SANCTION"
-        },
-        {
-          "type": "ADVERSE_MEDIA"
-        }
-      ]
-    }
-  ]
-}
-
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|entity_type|string|true|none|none|
-|screening_hits|[[ScreeningHit](#schemascreeninghit)]|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|entity_type|INDIVIDUAL|
-|entity_type|COMPANY|
-
 <h2 id="tocS_Error">Error</h2>
 <!-- backwards compatibility -->
 <a id="schemaerror"></a>
@@ -1936,73 +1318,6 @@ The type of error that is being reported.
 |warnings|[Warnings](#schemawarnings)|false|none|Similar to 'errors' except that the sub_type and data fields are not present and providing warnings will not cause PassFort to consider the check as errored.|
 |errors|[Errors](#schemaerrors)|false|none|A list of errors that occurred while running this check. If this is provided and it's not empty, the result of this check will be considered to be errored by PassFort, regardless of the other contents of this response.|
 
-<h2 id="tocS_StartCheckRequest">StartCheckRequest</h2>
-<!-- backwards compatibility -->
-<a id="schemastartcheckrequest"></a>
-<a id="schema_StartCheckRequest"></a>
-<a id="tocSstartcheckrequest"></a>
-<a id="tocsstartcheckrequest"></a>
-
-```json
-{
-  "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "demo_result": "ANY",
-  "commercial_relationship": "DIRECT",
-  "check_input": {
-    "entity_type": "COMPANY",
-    "screening_hits": [
-      {
-        "hit_id": "12345",
-        "provider": {
-          "name": "Screening Reference Integration",
-          "hit_id": "12345",
-          "label": "screening-ref"
-        },
-        "data": {
-          "name": "The Example Company"
-        },
-        "status": "UNRESOLVED",
-        "flags": [
-          {
-            "type": "REFER"
-          },
-          {
-            "type": "PEP"
-          },
-          {
-            "type": "SANCTION"
-          },
-          {
-            "type": "ADVERSE_MEDIA"
-          }
-        ]
-      }
-    ]
-  },
-  "provider_config": {},
-  "provider_credentials": {}
-}
-
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|id|[UUID](#schemauuid)|true|none|PassFort's ID for the check being run|
-|demo_result|[DemoResultType](#schemademoresulttype)|false|none|To support a wide range of testing scenarios, PassFort uses specific values in the demo_result field to select demo results.|
-|commercial_relationship|string|true|none|none|
-|check_input|[EntityData](#schemaentitydata)|true|none|none|
-|provider_config|[ProviderConfig](#schemaproviderconfig)|true|none|none|
-|provider_credentials|[ProviderCredentials](#schemaprovidercredentials)|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|commercial_relationship|DIRECT|
-|commercial_relationship|PASSFORT|
-
 <h2 id="tocS_PollCheckResponse">PollCheckResponse</h2>
 <!-- backwards compatibility -->
 <a id="schemapollcheckresponse"></a>
@@ -2016,37 +1331,7 @@ The type of error that is being reported.
   "reference": "ABC-12345",
   "custom_data": {},
   "provider_data": "Demo result. Did not make request to provider.",
-  "check_output": {
-    "entity_type": "COMPANY",
-    "screening_hits": [
-      {
-        "hit_id": "12345",
-        "provider": {
-          "name": "Screening Reference Integration",
-          "hit_id": "12345",
-          "label": "screening-ref"
-        },
-        "data": {
-          "name": "The Example Company"
-        },
-        "status": "UNRESOLVED",
-        "flags": [
-          {
-            "type": "REFER"
-          },
-          {
-            "type": "PEP"
-          },
-          {
-            "type": "SANCTION"
-          },
-          {
-            "type": "ADVERSE_MEDIA"
-          }
-        ]
-      }
-    ]
-  },
+  "check_output": null,
   "charges": [],
   "warnings": [
     {
@@ -2078,72 +1363,6 @@ The type of error that is being reported.
 |charges|[[Charge](#schemacharge)]|false|none|A list of charges incurred while running this check. Charges may only be returned if no errors occurred (i.e. a result was generated) and the check is being resold (the commercial relationship is with PassFort). For demo checks, charges may be returned, but they will not be deducted from the institution's credit. If charges are returned, the total amount charged must be no greater than the maximum cost-per-check specified in the integration's configuration.|
 |warnings|[Warnings](#schemawarnings)|false|none|Similar to 'errors' except that the sub_type and data fields are not present and providing warnings will not cause PassFort to consider the check as errored.|
 |errors|[Errors](#schemaerrors)|false|none|A list of errors that occurred while running this check. If this is provided and it's not empty, the result of this check will be considered to be errored by PassFort, regardless of the other contents of this response.|
-
-<h2 id="tocS_PollCheckRequest">PollCheckRequest</h2>
-<!-- backwards compatibility -->
-<a id="schemapollcheckrequest"></a>
-<a id="schema_PollCheckRequest"></a>
-<a id="tocSpollcheckrequest"></a>
-<a id="tocspollcheckrequest"></a>
-
-```json
-{
-  "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "demo_result": "ANY",
-  "commercial_relationship": null,
-  "provider_config": {},
-  "provider_credentials": {},
-  "provider_id": "01234567-89ab-cdef-0123-456789abcdef",
-  "reference": "string",
-  "custom_data": {}
-}
-
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|id|[UUID](#schemauuid)|true|none|[Universally unique identifier.](https://en.wikipedia.org/wiki/Universally_unique_identifier)|
-|demo_result|[DemoResultType](#schemademoresulttype)|false|none|To support a wide range of testing scenarios, PassFort uses specific values in the demo_result field to select demo results.|
-|commercial_relationship|[CommercialRelationshipType](#schemacommercialrelationshiptype)|true|none|none|
-|provider_config|[ProviderConfig](#schemaproviderconfig)|true|none|none|
-|provider_credentials|[ProviderCredentials](#schemaprovidercredentials)|false|none|none|
-|provider_id|[UUID](#schemauuid)|true|none|[Universally unique identifier.](https://en.wikipedia.org/wiki/Universally_unique_identifier)|
-|reference|string|true|none|none|
-|custom_data|[CustomData](#schemacustomdata)|true|none|Use this to store any state required by later requests relating to this check. The intent is for your integration to be completely stateless itself, to make it simpler to deploy and maintain. Note: if present, this *must* be an object, rather than an array or other JSON value. However, the keys and values in this object can be anything you like, although we don't recommend storing large amounts of data here, as it will be passed in on every following request to your integration relating to this check.|
-
-<h2 id="tocS_ProviderConfig">ProviderConfig</h2>
-<!-- backwards compatibility -->
-<a id="schemaproviderconfig"></a>
-<a id="schema_ProviderConfig"></a>
-<a id="tocSproviderconfig"></a>
-<a id="tocsproviderconfig"></a>
-
-```json
-{}
-
-```
-
-### Properties
-
-*None*
-
-<h2 id="tocS_ProviderCredentials">ProviderCredentials</h2>
-<!-- backwards compatibility -->
-<a id="schemaprovidercredentials"></a>
-<a id="schema_ProviderCredentials"></a>
-<a id="tocSprovidercredentials"></a>
-<a id="tocsprovidercredentials"></a>
-
-```json
-{}
-
-```
-
-### Properties
-
-*None*
 
 <h2 id="tocS_ProviderData">ProviderData</h2>
 <!-- backwards compatibility -->
@@ -2491,75 +1710,7 @@ ScreeningFlagType
         "association": {
           "label": "string"
         },
-        "data": {
-          "name": "string",
-          "addresses": [
-            {
-              "type": "UNKNOWN",
-              "label": "string",
-              "address": null
-            }
-          ],
-          "aliases": [
-            "string"
-          ],
-          "associates": [
-            {}
-          ],
-          "brand_text": "string",
-          "confidence_score": 1,
-          "countries": [
-            {
-              "type": "AFFILIATION",
-              "label": "string",
-              "country": "GBR"
-            }
-          ],
-          "dates": [
-            {
-              "type": "DOB",
-              "label": "string",
-              "date": null
-            }
-          ],
-          "deceased": true,
-          "details": [
-            {
-              "title": "string",
-              "text": "string"
-            }
-          ],
-          "gender": "string",
-          "sources": [
-            {
-              "name": "string",
-              "url": "string",
-              "description": "string"
-            }
-          ],
-          "pep": {
-            "roles": [
-              {
-                "name": "string",
-                "tier": 0,
-                "tenure": null
-              }
-            ],
-            "tier": 0
-          },
-          "sanctions": [
-            {
-              "name": "string",
-              "type": "string",
-              "list": {
-                "name": "string"
-              },
-              "issued_by": "string",
-              "time_periods": []
-            }
-          ],
-          "media": []
-        },
+        "data": {},
         "flags": [
           {
             "type": "ADVERSE_MEDIA",
@@ -2746,7 +1897,7 @@ ScreeningHitAssociate
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |association|[ScreeningHitAssociation](#schemascreeninghitassociation)|true|none|none|
-|data|[ScreeningHitDataBase](#schemascreeninghitdatabase)|true|none|none|
+|data|[ScreeningHitData](#schemascreeninghitdata)|true|none|none|
 |flags|[[ScreeningFlag](#schemascreeningflag)]|true|none|none|
 
 <h2 id="tocS_ScreeningHitAssociation">ScreeningHitAssociation</h2>
@@ -2777,180 +1928,6 @@ ScreeningHitAssociation
 <a id="schema_ScreeningHitData"></a>
 <a id="tocSscreeninghitdata"></a>
 <a id="tocsscreeninghitdata"></a>
-
-```json
-{
-  "name": "string",
-  "addresses": [
-    {
-      "type": "UNKNOWN",
-      "label": "string",
-      "address": null
-    }
-  ],
-  "aliases": [
-    "string"
-  ],
-  "associates": [
-    {
-      "association": {
-        "label": "string"
-      },
-      "data": {
-        "name": "string",
-        "addresses": [
-          {
-            "type": "UNKNOWN",
-            "label": "string",
-            "address": null
-          }
-        ],
-        "aliases": [
-          "string"
-        ],
-        "associates": [
-          {}
-        ],
-        "brand_text": "string",
-        "confidence_score": 1,
-        "countries": [
-          {
-            "type": "AFFILIATION",
-            "label": "string",
-            "country": "GBR"
-          }
-        ],
-        "dates": [
-          {
-            "type": "DOB",
-            "label": "string",
-            "date": null
-          }
-        ],
-        "deceased": true,
-        "details": [
-          {
-            "title": "string",
-            "text": "string"
-          }
-        ],
-        "gender": "string",
-        "sources": [
-          {
-            "name": "string",
-            "url": "string",
-            "description": "string"
-          }
-        ],
-        "pep": {
-          "roles": [
-            {
-              "name": "string",
-              "tier": 0,
-              "tenure": null
-            }
-          ],
-          "tier": 0
-        },
-        "sanctions": [
-          {
-            "name": "string",
-            "type": "string",
-            "list": {
-              "name": "string"
-            },
-            "issued_by": "string",
-            "time_periods": []
-          }
-        ],
-        "media": []
-      },
-      "flags": [
-        {
-          "type": "ADVERSE_MEDIA",
-          "label": "string"
-        }
-      ]
-    }
-  ],
-  "brand_text": "string",
-  "confidence_score": 1,
-  "countries": [
-    {
-      "type": "AFFILIATION",
-      "label": "string",
-      "country": "GBR"
-    }
-  ],
-  "dates": [
-    {
-      "type": "DOB",
-      "label": "string",
-      "date": null
-    }
-  ],
-  "deceased": true,
-  "details": [
-    {
-      "title": "string",
-      "text": "string"
-    }
-  ],
-  "gender": "string",
-  "sources": [
-    {
-      "name": "string",
-      "url": "string",
-      "description": "string"
-    }
-  ],
-  "pep": {
-    "roles": [
-      {
-        "name": "string",
-        "tier": 0,
-        "tenure": null
-      }
-    ],
-    "tier": 0
-  },
-  "sanctions": [
-    {
-      "name": "string",
-      "type": "string",
-      "list": {
-        "name": "string"
-      },
-      "issued_by": "string",
-      "time_periods": []
-    }
-  ],
-  "media": []
-}
-
-```
-
-### Properties
-
-allOf
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[ScreeningHitDataBase](#schemascreeninghitdatabase)|false|none|none|
-
-and
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|object|false|none|none|
-|» associates|[[ScreeningHitAssociate](#schemascreeninghitassociate)]|false|none|none|
-
-<h2 id="tocS_ScreeningHitDataBase">ScreeningHitDataBase</h2>
-<!-- backwards compatibility -->
-<a id="schemascreeninghitdatabase"></a>
-<a id="schema_ScreeningHitDataBase"></a>
-<a id="tocSscreeninghitdatabase"></a>
-<a id="tocsscreeninghitdatabase"></a>
 
 ```json
 {
