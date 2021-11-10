@@ -1,0 +1,25 @@
+{
+  "provider_data": "Demo result. Did not make request to provider.",
+  "warnings": [],
+  "errors": [],
+  "check_output": {
+    "entity_type": "INDIVIDUAL",
+    "screening_hits": [
+      {
+        "provider": {
+          "id": "b0b7611e-c024-4ffb-9f9f-928992bec445",
+          "name": "Screening Reference Integration",
+          "hit_id": "12345"
+        },
+        "data": {
+          "name": "John Smith"
+        },
+        "flags": [
+          {
+            "type": "REFER"
+          }
+        ]
+      }
+    ]
+  }
+}

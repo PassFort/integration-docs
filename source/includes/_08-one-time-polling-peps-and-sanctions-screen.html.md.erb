@@ -1,0 +1,508 @@
+# One-time Polling Peps and Sanctions Screen
+
+This section lists all endpoints that must be implemented for a one-time
+polling screening integration.
+
+## Get Check Configuration (One-time Polling Screen)
+
+<%= partial("includes/partials/config.md.erb", :locals => { :name => "polling_peps_and_sanctions_screen" }) %>
+
+This endpoint specifies the configuration used by PassFort for performing
+one-time callback-based document fetches using your integration.
+
+### HTTP Request
+
+`GET https://my-integration.example.com/config`
+
+
+Most configuration fields are already discussed in the [configuration
+section](#configuration). Check specific options will be discussed here.
+
+#### Check type
+
+The `check_type` field must be set to `"PEPS_AND_SANCTIONS_SCREEN"` or `"COMPANY_PEPS_AND_SANCTIONS_SCREEN"`.
+
+#### Check template
+
+The `check_template` fields for this check are:
+
+<table>
+  <thead>
+    <th>Field</th>
+    <th>Type</th>
+    <th>Required?</th>
+    <th>Description</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>type</code></td>
+      <td>The value <code>"ONE_TIME_POLLING"</code></td>
+      <td>Yes</td>
+      <td>
+        Which check template to use for this check. For one-time polling
+        checks, you must specify <code>"ONE_TIME_POLLING"</code>.
+      </td>
+    </tr>
+    <tr>
+      <td><code>polling_strategy</code></td>
+      <td>object</td>
+      <td>No</td>
+      <td>
+        An object describing how PassFort should decide how long to wait between 
+        polling attempts. See `polling_strategy` below for structure.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<%= partial("includes/partials/authenticated.md.erb", :locals => {
+  :role => :server,
+}) %>
+
+## Start One-Time Polling Peps and Sanctions Screen
+
+This endpoint is used by PassFort to initiate a PEPs and Sanctions screen through
+your integration. 
+
+### HTTP Request
+
+`POST https://my-integration.example.com/checks`
+
+>A JSON payload following this structure will be sent to the endpoint:
+
+```json
+<%= pretty_json("requests/start_check_polling_peps_and_sanctions_screen", "json") %>
+```
+
+The payload of the request can contain the following fields:
+
+<table>
+  <thead>
+    <th>Field</th>
+    <th>Type</th>
+    <th>Always present?</th>
+    <th>Description</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>id</code></td>
+      <td>UUID</td>
+      <td>Yes</td>
+      <td>
+        Every check instruction will contain a unique ID which can be used to
+        track and identify individual requests without needing to use other
+        information in the request.
+      </td>
+    </tr>
+    <tr>
+      <td><code>demo_result</code></td>
+      <td>
+        One of the <a href="#demo-result-types">specified demo result types</a>
+      </td>
+      <td>No</td>
+      <td>
+        If this field is present, the check must be considered a demo check
+        and you should respond with appropriate demo data. See the
+        <a href="#demo-checks">Demo Checks section</a> for more information.
+      </td>
+    </tr>
+    <tr>
+      <td><code>commercial_relationship</code></td>
+      <td>One of <code>"DIRECT"</code>, <code>"PASSFORT"</code></td>
+      <td>Yes</td>
+      <td>
+        Specified whether the check is for a customer with a direct
+        relationship with your integration's data provider, or if they are
+        using the check through PassFort's pay-as-you-go reselling scheme.
+      </td>
+    </tr>
+    <tr>
+      <td><code>check_input</code></td>
+      <td>An IndividualData object</td>
+      <td>Yes</td>
+      <td>
+        This field contains the profile information on the individual or company
+        to be screened. See the
+        <a href="#check-input">PassFort Data Structure check input section</a>
+        for more information on how profile data is structured within PassFort.
+      </td>
+    </tr>
+    <tr>
+      <td><code>provider_config</code></td>
+      <td>A user-defined JSON object</td>
+      <td>Yes</td>
+      <td>
+        This field contains the provider config structured in the way
+        specified by your integration's
+        <a href="#get-check-configuration-one-time-polling-peps-and-sanctions-screen">
+          configuration endpoint
+        </a>, with the <code>name</code> field corresponding to the key, and
+        the value being the value of the configuration option.
+      </td>
+    </tr>
+    <tr>
+      <td><code>provider_credentials</code></td>
+      <td>A user-defined JSON object</td>
+      <td>No</td>
+      <td>
+        This field contains the credentials structured in the way
+        specified by your integration's
+        <a href="#get-check-configuration-one-time-polling-peps-and-sanctions-screen">
+          configuration endpoint
+        </a>, with the <code>name</code> field corresponding to the key, and
+        the value being the value of the configuration option. <strong>This
+        field is only sent if <code>commercial_relationship</code> is set to
+        <code>"DIRECT"</code>.</strong>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+```python
+from flask import Flask, jsonify, request
+from integration.testing import create_demo_result
+from integration.provider import make_provider_request, reseller_creds, \
+    to_passfort_field_types
+from integration.errors import ProviderError, ConnectionError
+
+
+app = Flask(__name__)
+
+# TODO: adapt this for polling template
+@app.post("/checks")
+def run_check():
+    body = request.json
+    
+    demo_result = body.get('demo_result')
+    check_input = body.get('check_input')
+    
+    # Handle demo data scenarios
+    if demo_result is not None:
+        return jsonify(create_demo_result(demo_result, check_input))
+    
+    commercial_rel = body.get('commercial_relationship')
+    credentials = reseller_creds
+    config = body.get('provider_config')
+    
+    # Use provided creds if check is through direct agreement
+    if commercial_rel == 'DIRECT':
+        credentials = body.get('provider_credentials')
+
+    # Make call to provider
+    try:
+        result = make_provider_request(credentials, config, check_input)
+    
+        return jsonify({
+            'provider_id': CONST_PROVIDER_UUID,
+            'reference': result['reference'],
+            'custom_data': {},
+            'errors': [],
+            'warnings': [],
+        })
+    except ConnectionError as e:
+        return jsonify({
+            'errors': [{
+                'type': 'PROVIDER_CONNECTION',
+                'message': f'Failed to contact data provider: {str(e)}'
+            }],
+            'warnings': []
+        })
+    except ProviderError as e:
+        return jsonify({
+            'errors': [{
+                'type': 'PROVIDER_MESSAGE',
+                'message': f'Provider error: {str(e)}'
+            }],
+            'warnings': []
+        })
+```
+
+>This endpoint should return JSON in the following format:
+
+```json
+<%= pretty_json("responses/start_check_polling_peps_and_sanctions_screen", "json") %>
+```
+
+### Response fields
+
+<table>
+  <thead>
+    <th>Field</th>
+    <th>Type</th>
+    <th>Required?</th>
+    <th>Description</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>provider_id</code></td>
+      <td>UUID</td>
+      <td>Yes</td>
+      <td>
+        Unique identifier for the provider. The <code>reference</code> field should uniquely identify
+        a check when combined with the <code>provider_id</code.
+      </td>
+    </tr>
+    <tr>
+      <td><code>reference</code></td>
+      <td>string</td>
+      <td>If no errors occurred</td>
+      <td>
+        An opaque string which identifies this check to the provider. No two checks from
+        the same provider should have the same reference.  Note that this doesn't need to be the
+        provider reference passed in to the check (and frequently, that may not be suitable
+        as a check reference).
+      </td>
+    </tr>
+    <tr>
+      <td><code>custom_data</code></td>
+      <td>object</td>
+      <td>No</td>
+      <td>
+        Use this to store any state required by later requests relating to this check.
+        The intent is for your integration to be completely stateless itself, to make
+        it simpler to deploy and maintain.
+        Note: if present, this *must* be an object, rather than an array or other JSON
+        value. However, the keys and values in this object can be anything you like, although
+        we don't recommend storing large amounts of data here, as it will be passed in on
+        every following request to your integration relating to this check.
+      </td>
+    </tr>
+    <tr>
+      <td><code>errors</code></td>
+      <td>
+        An array containing one or more
+        <a href="#check-errors">Errors</a>
+      </td>
+      <td>No</td>
+      <td>
+        A list of errors that occurred while running this check. If this is
+        provided and it's not empty, the result of this check will be
+        considered to be errored by PassFort, regardless of the other contents
+        of this response.
+        If an error is returned from this end-point, no callback will be expected.
+      </td>
+    </tr>
+    <tr>
+      <td><code>warnings</code></td>
+      <td>
+        An array containing one or more warnings
+      </td>
+      <td>No</td>
+      <td>
+        Essentially the same as <code>errors</code>, except the
+        <code>sub_type</code> and <code>data</code> fields are not present, and
+        providing warnings will not cause PassFort to consider the check
+        as errored.
+      </td>
+    </tr>
+    <tr>
+      <td><code>provider_data</code></td>
+      <td>
+        Any valid JSON value
+      </td>
+      <td>No</td>
+      <td>
+        This should be the structured JSON data returned by the data provider,
+        or a conversion of the data provider's response, to allow
+        PassFort to investigate issues that may arise with your integration.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<%= partial("includes/partials/authenticated.md.erb", :locals => {
+  :role => :server,
+}) %>
+
+## Poll One-Time Polling PEPs and Sanctions Screen
+
+
+This endpoint is used by PassFort to request from your integration the current check 
+state from your integration. 
+
+### HTTP Request
+
+`POST https://my-integration.example.com/checks/{check_id}/poll`
+
+>A JSON payload following this structure will be sent to the endpoint:
+
+```json
+<%= pretty_json("requests/poll_check_polling_peps_and_sanctions_screen", "json") %>
+```
+
+
+The payload of the request can contain the following fields:
+
+<table>
+  <thead>
+    <th>Field</th>
+    <th>Type</th>
+    <th>Always present?</th>
+    <th>Description</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>id</code></td>
+      <td>UUID</td>
+      <td>Yes</td>
+      <td>
+        Every check instruction will contain a unique ID which can be used to
+        track and identify individual requests without needing to use other
+        information in the request.
+      </td>
+    </tr>
+    <tr>
+      <td><code>demo_result</code></td>
+      <td>
+        One of the <a href="#demo-result-types">specified demo result types</a>
+      </td>
+      <td>No</td>
+      <td>
+        If this field is present, the check must be considered a demo check
+        and you should respond with appropriate demo data. See the
+        <a href="#demo-checks">Demo Checks section</a> for more information.
+      </td>
+    </tr>
+    <tr>
+      <td><code>commercial_relationship</code></td>
+      <td>One of <code>"DIRECT"</code>, <code>"PASSFORT"</code></td>
+      <td>Yes</td>
+      <td>
+        Specified whether the check is for a customer with a direct
+        relationship with your integration's data provider, or if they are
+        using the check through PassFort's pay-as-you-go reselling scheme.
+      </td>
+    </tr>
+    <tr>
+      <td><code>check_input</code></td>
+      <td>An IndividualData object</td>
+      <td>Yes</td>
+      <td>
+        <p/>
+        This field contains the profile information on the individual the
+        document verification should be run for. See the
+        <a href="#check-input">PassFort Data Structure check input section</a>
+        for more information on how profile data is structured within PassFort.
+        <p/>
+        For Document Fetch checks, the check input will contain a single "placeholder"
+        document with no images attached.
+        <p/>
+        The integration should take this placeholder document and populate it with
+        the result from the provider, including attaching any images that can be
+        downloaded.
+        <p/>
+        Notably, the `id` and `category` fields from the placeholder document should
+        be preserved unchanged, as these indicate how the document should be used
+        within PassFort (for example, as a proof of address).
+      </td>
+    </tr>
+    <tr>
+      <td><code>provider_config</code></td>
+      <td>A user-defined JSON object</td>
+      <td>Yes</td>
+      <td>
+        This field contains the provider config structured in the way
+        specified by your integration's
+        <a href="#get-check-configuration-one-time-callback-document-verification">
+          configuration endpoint
+        </a>, with the <code>name</code> field corresponding to the key, and
+        the value being the value of the configuration option.
+      </td>
+    </tr>
+    <tr>
+      <td><code>provider_credentials</code></td>
+      <td>A user-defined JSON object</td>
+      <td>No</td>
+      <td>
+        This field contains the credentials structured in the way
+        specified by your integration's
+        <a href="#get-check-configuration-one-time-callback-document-verification">
+          configuration endpoint
+        </a>, with the <code>name</code> field corresponding to the key, and
+        the value being the value of the configuration option. <strong>This
+        field is only sent if <code>commercial_relationship</code> is set to
+        <code>"DIRECT"</code>.</strong>
+      </td>
+    </tr>
+    <tr>
+      <td><code>custom_data</code></td>
+      <td>A user-defined JSON object</td>
+      <td>No</td>
+      <td>
+        	Any custom_data returned by your integration when the check was instructed
+          will be provided here. 
+      </td>
+    </tr>
+    <tr>
+      <td><code>provider_id</code></td>
+      <td>UUID</td>
+      <td>Yes</td>
+      <td>
+        This matches the `provider_id` returned by your integration when the check was 
+        instructed, and should also match the field with the same name sent to PassFort as
+        part of the callback indicating that this check had completed.
+      </td>
+    </tr>
+    <tr>
+      <td><code>reference</code></td>
+      <td>string</td>
+      <td>Yes</td>
+      <td>
+        This matches the `reference` returned by your integration when the check was
+        instructed, and should also match the field with the same name sent to PassFort as 
+        part of the callback indicating that this check had completed.
+    </tr>
+  </tbody>
+</table>
+
+
+```python
+from uuid import UUID
+from flask import Flask, jsonify, request, Response
+from integration.testing import create_demo_result
+from integration.provider import make_provider_request, reseller_creds, \
+    to_passfort_field_types
+from integration.errors import ProviderError, ConnectionError
+
+
+app = Flask(__name__)
+
+
+@app.post("/checks/<uuid:id>/ready")
+def acknowledge_ready(id: UUID):
+    body = request.json
+
+    provider_id = body.get('provider_id')
+    reference = body.get('reference')
+
+
+    # Demo checks should send the callback synchronously
+    if demo_result is not None:
+      send_callback(provider_id, reference, custom_data)
+      return Response(status=200)
+
+
+    credentials = body.get('credentials')
+    config = body.get('config')
+    check_input = body.get('check_input')
+
+    # Check if provider result is ready
+    check_result = make_provider_request(credentials, config, check_input)
+    if check_result['complete']:
+      send_callback(provider_id, reference, custom_data)
+
+  return Response(status=200)
+```
+
+
+
+### Response fields
+
+This response is not required to return any content.
+
+
+
+<%= partial("includes/partials/authenticated.md.erb", :locals => {
+  :role => :server,
+}) %>
+

@@ -1,0 +1,1887 @@
+---
+title: One-time Polled Screen v1.0.0
+language_tabs:
+  - python: Python
+language_clients:
+  - python: ""
+toc_footers: []
+includes: []
+search: false
+highlight_theme: darkula
+headingLevel: 2
+
+---
+
+<!-- Generator: Widdershins v4.0.1 -->
+
+<h1 id="one-time-polled-screen">One-time Polled Screen v1.0.0</h1>
+
+> Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
+
+# Authentication
+
+- HTTP Authentication, scheme: signature 
+
+<h1 id="one-time-polled-screen-default">Default</h1>
+
+## Get integration metadata
+
+<a id="opIdgetMetadata"></a>
+
+> Code samples
+
+```python
+import requests
+headers = {
+  'Accept': 'application/json'
+}
+
+r = requests.get('/', headers = headers)
+
+print(r.json())
+
+```
+
+`GET /`
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "protocol_version": 1,
+  "provider_name": "Individual Screening Reference"
+}
+```
+
+<h3 id="get-integration-metadata-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Basic properties of the integration|[Metadata](#schemametadata)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Configure how PassFort will interact with your integration
+
+<a id="opIdgetConfig"></a>
+
+> Code samples
+
+```python
+import requests
+headers = {
+  'Accept': 'application/json'
+}
+
+r = requests.get('/config', headers = headers)
+
+print(r.json())
+
+```
+
+`GET /config`
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "check_type": "PEPS_AND_SANCTIONS_SCREEN",
+  "check_template": {
+    "polling_strategy": "UNIFORM",
+    "initial_interval": 0,
+    "polling_interval": 0,
+    "max_polls": 0
+  },
+  "pricing": {
+    "supports_reselling": true,
+    "maximum_cost": 0
+  },
+  "supported_countries": [
+    "GBR"
+  ],
+  "supported_features": [
+    "PEPS"
+  ],
+  "credentials": {
+    "fields": [
+      {
+        "type": "string",
+        "name": "string",
+        "label": "string"
+      }
+    ]
+  },
+  "config": {
+    "fields": [
+      {
+        "type": "string",
+        "name": "string",
+        "label": "string"
+      }
+    ]
+  }
+}
+```
+
+<h3 id="configure-how-passfort-will-interact-with-your-integration-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Defines several important properties about your integration. The general structure is common across all check kinds but specific check types or templates will support additional fields.|[Config](#schemaconfig)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+signatureAuth
+</aside>
+
+## Instruct a new check with the provider
+
+<a id="opIdinstructCheck"></a>
+
+> Code samples
+
+```python
+import requests
+headers = {
+  'Accept': 'application/json'
+}
+
+r = requests.post('/checks', headers = headers)
+
+print(r.json())
+
+```
+
+`POST /checks`
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "provider_id": "01234567-89ab-cdef-0123-456789abcdef",
+  "reference": "ABC-12345",
+  "custom_data": {},
+  "provider_data": "Demo result. Did not make request to provider.",
+  "warnings": [
+    {
+      "type": "INVALID_CREDENTIALS",
+      "message": "string"
+    }
+  ],
+  "errors": [
+    {
+      "type": null,
+      "sub_type": "UNSUPPORTED_COUNTRY",
+      "message": "string",
+      "data": null
+    }
+  ]
+}
+```
+
+<h3 id="instruct-a-new-check-with-the-provider-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|A check was instructed with the provider|[StartCheckResponse](#schemastartcheckresponse)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+signatureAuth
+</aside>
+
+## Attempt to fetch the completed check result from the provider
+
+<a id="opIdpollCheck"></a>
+
+> Code samples
+
+```python
+import requests
+headers = {
+  'Accept': 'application/json'
+}
+
+r = requests.get('/checks/{checkId}/poll', headers = headers)
+
+print(r.json())
+
+```
+
+`GET /checks/{checkId}/poll`
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "provider_id": "01234567-89ab-cdef-0123-456789abcdef",
+  "reference": "ABC-12345",
+  "custom_data": {},
+  "provider_data": "Demo result. Did not make request to provider.",
+  "check_output": null,
+  "charges": [],
+  "warnings": [
+    {
+      "type": "INVALID_CREDENTIALS",
+      "message": "string"
+    }
+  ],
+  "errors": [
+    {
+      "type": null,
+      "sub_type": "UNSUPPORTED_COUNTRY",
+      "message": "string",
+      "data": null
+    }
+  ]
+}
+```
+
+<h3 id="attempt-to-fetch-the-completed-check-result-from-the-provider-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|The check status was fetched from the provider|[PollCheckResponse](#schemapollcheckresponse)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+signatureAuth
+</aside>
+
+# Schemas
+
+<h2 id="tocS_Config">Config</h2>
+<!-- backwards compatibility -->
+<a id="schemaconfig"></a>
+<a id="schema_Config"></a>
+<a id="tocSconfig"></a>
+<a id="tocsconfig"></a>
+
+```json
+{
+  "check_type": "PEPS_AND_SANCTIONS_SCREEN",
+  "check_template": {
+    "polling_strategy": "UNIFORM",
+    "initial_interval": 0,
+    "polling_interval": 0,
+    "max_polls": 0
+  },
+  "pricing": {
+    "supports_reselling": true,
+    "maximum_cost": 0
+  },
+  "supported_countries": [
+    "GBR"
+  ],
+  "supported_features": [
+    "PEPS"
+  ],
+  "credentials": {
+    "fields": [
+      {
+        "type": "string",
+        "name": "string",
+        "label": "string"
+      }
+    ]
+  },
+  "config": {
+    "fields": [
+      {
+        "type": "string",
+        "name": "string",
+        "label": "string"
+      }
+    ]
+  }
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|check_type|string|true|none|none|
+|check_template|object|true|none|none|
+|» polling_strategy|string|false|none|none|
+|» initial_interval|number|false|none|none|
+|» polling_interval|number|false|none|none|
+|» max_polls|number|false|none|none|
+|pricing|object|true|none|none|
+|» supports_reselling|boolean|true|none|none|
+|» maximum_cost|number|false|none|none|
+|supported_countries|[[CountryCode](#schemacountrycode)]|true|none|[[ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) (3 letter country code)]|
+|supported_features|[string]|false|none|none|
+|credentials|object|true|none|none|
+|» fields|[[ConfigField](#schemaconfigfield)]|false|none|none|
+|config|object|true|none|none|
+|» fields|[[ConfigField](#schemaconfigfield)]|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|check_type|PEPS_AND_SANCTIONS_SCREEN|
+|check_type|COMPANY_PEPS_AND_SANCTIONS_SCREEN|
+|polling_strategy|UNIFORM|
+
+<h2 id="tocS_ConfigField">ConfigField</h2>
+<!-- backwards compatibility -->
+<a id="schemaconfigfield"></a>
+<a id="schema_ConfigField"></a>
+<a id="tocSconfigfield"></a>
+<a id="tocsconfigfield"></a>
+
+```json
+{
+  "type": "string",
+  "name": "string",
+  "label": "string"
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|none|
+|name|string|true|none|none|
+|label|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|string|
+|type|boolean|
+|type|MultiSelect|
+
+<h2 id="tocS_CountryCode">CountryCode</h2>
+<!-- backwards compatibility -->
+<a id="schemacountrycode"></a>
+<a id="schema_CountryCode"></a>
+<a id="tocScountrycode"></a>
+<a id="tocscountrycode"></a>
+
+```json
+"GBR"
+
+```
+
+CountryCode
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|CountryCode|string|false|none|[ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) (3 letter country code)|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|CountryCode|AFG|
+|CountryCode|ALA|
+|CountryCode|ALB|
+|CountryCode|DZA|
+|CountryCode|ASM|
+|CountryCode|AND|
+|CountryCode|AGO|
+|CountryCode|AIA|
+|CountryCode|ATA|
+|CountryCode|ATG|
+|CountryCode|ARG|
+|CountryCode|ARM|
+|CountryCode|ABW|
+|CountryCode|AUS|
+|CountryCode|AUT|
+|CountryCode|AZE|
+|CountryCode|BHS|
+|CountryCode|BHR|
+|CountryCode|BGD|
+|CountryCode|BRB|
+|CountryCode|BLR|
+|CountryCode|BEL|
+|CountryCode|BLZ|
+|CountryCode|BEN|
+|CountryCode|BMU|
+|CountryCode|BTN|
+|CountryCode|BOL|
+|CountryCode|BES|
+|CountryCode|BIH|
+|CountryCode|BWA|
+|CountryCode|BVT|
+|CountryCode|BRA|
+|CountryCode|IOT|
+|CountryCode|BRN|
+|CountryCode|BGR|
+|CountryCode|BFA|
+|CountryCode|BDI|
+|CountryCode|KHM|
+|CountryCode|CMR|
+|CountryCode|CAN|
+|CountryCode|CPV|
+|CountryCode|CYM|
+|CountryCode|CAF|
+|CountryCode|TCD|
+|CountryCode|CHL|
+|CountryCode|CHN|
+|CountryCode|CXR|
+|CountryCode|CCK|
+|CountryCode|COL|
+|CountryCode|COM|
+|CountryCode|COG|
+|CountryCode|COD|
+|CountryCode|COK|
+|CountryCode|CRI|
+|CountryCode|CIV|
+|CountryCode|HRV|
+|CountryCode|CUB|
+|CountryCode|CUW|
+|CountryCode|CYP|
+|CountryCode|CZE|
+|CountryCode|DNK|
+|CountryCode|DJI|
+|CountryCode|DMA|
+|CountryCode|DOM|
+|CountryCode|ECU|
+|CountryCode|EGY|
+|CountryCode|SLV|
+|CountryCode|GNQ|
+|CountryCode|ERI|
+|CountryCode|EST|
+|CountryCode|ETH|
+|CountryCode|FLK|
+|CountryCode|FRO|
+|CountryCode|FJI|
+|CountryCode|FIN|
+|CountryCode|FRA|
+|CountryCode|GUF|
+|CountryCode|PYF|
+|CountryCode|ATF|
+|CountryCode|GAB|
+|CountryCode|GMB|
+|CountryCode|GEO|
+|CountryCode|DEU|
+|CountryCode|GHA|
+|CountryCode|GIB|
+|CountryCode|GRC|
+|CountryCode|GRL|
+|CountryCode|GRD|
+|CountryCode|GLP|
+|CountryCode|GUM|
+|CountryCode|GTM|
+|CountryCode|GGY|
+|CountryCode|GIN|
+|CountryCode|GNB|
+|CountryCode|GUY|
+|CountryCode|HTI|
+|CountryCode|HMD|
+|CountryCode|VAT|
+|CountryCode|HND|
+|CountryCode|HKG|
+|CountryCode|HUN|
+|CountryCode|ISL|
+|CountryCode|IND|
+|CountryCode|IDN|
+|CountryCode|IRN|
+|CountryCode|IRQ|
+|CountryCode|IRL|
+|CountryCode|IMN|
+|CountryCode|ISR|
+|CountryCode|ITA|
+|CountryCode|JAM|
+|CountryCode|JPN|
+|CountryCode|JEY|
+|CountryCode|JOR|
+|CountryCode|KAZ|
+|CountryCode|KEN|
+|CountryCode|KIR|
+|CountryCode|PRK|
+|CountryCode|KOR|
+|CountryCode|KWT|
+|CountryCode|KGZ|
+|CountryCode|LAO|
+|CountryCode|LVA|
+|CountryCode|LBN|
+|CountryCode|LSO|
+|CountryCode|LBR|
+|CountryCode|LBY|
+|CountryCode|LIE|
+|CountryCode|LTU|
+|CountryCode|LUX|
+|CountryCode|MAC|
+|CountryCode|MKD|
+|CountryCode|MDG|
+|CountryCode|MWI|
+|CountryCode|MYS|
+|CountryCode|MDV|
+|CountryCode|MLI|
+|CountryCode|MLT|
+|CountryCode|MHL|
+|CountryCode|MTQ|
+|CountryCode|MRT|
+|CountryCode|MUS|
+|CountryCode|MYT|
+|CountryCode|MEX|
+|CountryCode|FSM|
+|CountryCode|MDA|
+|CountryCode|MCO|
+|CountryCode|MNG|
+|CountryCode|MNE|
+|CountryCode|MSR|
+|CountryCode|MAR|
+|CountryCode|MOZ|
+|CountryCode|MMR|
+|CountryCode|NAM|
+|CountryCode|NRU|
+|CountryCode|NPL|
+|CountryCode|NLD|
+|CountryCode|NCL|
+|CountryCode|NZL|
+|CountryCode|NIC|
+|CountryCode|NER|
+|CountryCode|NGA|
+|CountryCode|NIU|
+|CountryCode|NFK|
+|CountryCode|MNP|
+|CountryCode|NOR|
+|CountryCode|OMN|
+|CountryCode|PAK|
+|CountryCode|PLW|
+|CountryCode|PSE|
+|CountryCode|PAN|
+|CountryCode|PNG|
+|CountryCode|PRY|
+|CountryCode|PER|
+|CountryCode|PHL|
+|CountryCode|PCN|
+|CountryCode|POL|
+|CountryCode|PRT|
+|CountryCode|PRI|
+|CountryCode|QAT|
+|CountryCode|REU|
+|CountryCode|RKS|
+|CountryCode|ROU|
+|CountryCode|RUS|
+|CountryCode|RWA|
+|CountryCode|BLM|
+|CountryCode|SHN|
+|CountryCode|KNA|
+|CountryCode|LCA|
+|CountryCode|MAF|
+|CountryCode|SPM|
+|CountryCode|VCT|
+|CountryCode|WSM|
+|CountryCode|SMR|
+|CountryCode|STP|
+|CountryCode|SAU|
+|CountryCode|SEN|
+|CountryCode|SRB|
+|CountryCode|SYC|
+|CountryCode|SLE|
+|CountryCode|SGP|
+|CountryCode|SXM|
+|CountryCode|SVK|
+|CountryCode|SVN|
+|CountryCode|SLB|
+|CountryCode|SOM|
+|CountryCode|ZAF|
+|CountryCode|SGS|
+|CountryCode|ESP|
+|CountryCode|LKA|
+|CountryCode|SDN|
+|CountryCode|SUR|
+|CountryCode|SSD|
+|CountryCode|SJM|
+|CountryCode|SWZ|
+|CountryCode|SWE|
+|CountryCode|CHE|
+|CountryCode|SYR|
+|CountryCode|TWN|
+|CountryCode|TJK|
+|CountryCode|TZA|
+|CountryCode|THA|
+|CountryCode|TLS|
+|CountryCode|TGO|
+|CountryCode|TKL|
+|CountryCode|TON|
+|CountryCode|TTO|
+|CountryCode|TUN|
+|CountryCode|TUR|
+|CountryCode|TKM|
+|CountryCode|TCA|
+|CountryCode|TUV|
+|CountryCode|UGA|
+|CountryCode|UKR|
+|CountryCode|ARE|
+|CountryCode|GBR|
+|CountryCode|USA|
+|CountryCode|UMI|
+|CountryCode|URY|
+|CountryCode|UZB|
+|CountryCode|VUT|
+|CountryCode|VEN|
+|CountryCode|VNM|
+|CountryCode|VGB|
+|CountryCode|VIR|
+|CountryCode|WLF|
+|CountryCode|ESH|
+|CountryCode|XXX|
+|CountryCode|YEM|
+|CountryCode|ZMB|
+|CountryCode|ZWE|
+|CountryCode|UNK|
+|CountryCode|ZZZ|
+
+<h2 id="tocS_CustomData">CustomData</h2>
+<!-- backwards compatibility -->
+<a id="schemacustomdata"></a>
+<a id="schema_CustomData"></a>
+<a id="tocScustomdata"></a>
+<a id="tocscustomdata"></a>
+
+```json
+{}
+
+```
+
+Use this to store any state required by later requests relating to this check. The intent is for your integration to be completely stateless itself, to make it simpler to deploy and maintain. Note: if present, this *must* be an object, rather than an array or other JSON value. However, the keys and values in this object can be anything you like, although we don't recommend storing large amounts of data here, as it will be passed in on every following request to your integration relating to this check.
+
+### Properties
+
+*None*
+
+<h2 id="tocS_Error">Error</h2>
+<!-- backwards compatibility -->
+<a id="schemaerror"></a>
+<a id="schema_Error"></a>
+<a id="tocSerror"></a>
+<a id="tocserror"></a>
+
+```json
+{
+  "type": null,
+  "sub_type": "UNSUPPORTED_COUNTRY",
+  "message": "string",
+  "data": null
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|any|true|none|none|
+|sub_type|string|false|none|Provides additional detail for certain types of error.|
+|message|string|true|none|A message displayed in the PassFort portal when showing the check error.|
+|data|any|false|none|Integration-specific structured error information that customers can use to get additional information about the error being reported.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|sub_type|UNSUPPORTED_COUNTRY|
+|sub_type|UNSUPPORTED_DOCUMENT_TYPE|
+
+<h2 id="tocS_Errors">Errors</h2>
+<!-- backwards compatibility -->
+<a id="schemaerrors"></a>
+<a id="schema_Errors"></a>
+<a id="tocSerrors"></a>
+<a id="tocserrors"></a>
+
+```json
+[
+  {
+    "type": null,
+    "sub_type": "UNSUPPORTED_COUNTRY",
+    "message": "string",
+    "data": null
+  }
+]
+
+```
+
+A list of errors that occurred while running this check. If this is provided and it's not empty, the result of this check will be considered to be errored by PassFort, regardless of the other contents of this response.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[Error](#schemaerror)]|false|none|A list of errors that occurred while running this check. If this is provided and it's not empty, the result of this check will be considered to be errored by PassFort, regardless of the other contents of this response.|
+
+<h2 id="tocS_ErrorType">ErrorType</h2>
+<!-- backwards compatibility -->
+<a id="schemaerrortype"></a>
+<a id="schema_ErrorType"></a>
+<a id="tocSerrortype"></a>
+<a id="tocserrortype"></a>
+
+```json
+"INVALID_CREDENTIALS"
+
+```
+
+The type of error that is being reported.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|string|false|none|The type of error that is being reported.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|*anonymous*|INVALID_CREDENTIALS|
+|*anonymous*|INVALID_CONFIG|
+|*anonymous*|MISSING_CHECK_INPUT|
+|*anonymous*|INVALID_CHECK_INPUT|
+|*anonymous*|PROVIDER_CONNECTION|
+|*anonymous*|PROVIDER_MESSAGE|
+|*anonymous*|UNSUPPORTED_DEMO_RESULT|
+|*anonymous*|INTEGRATION|
+
+<h2 id="tocS_Metadata">Metadata</h2>
+<!-- backwards compatibility -->
+<a id="schemametadata"></a>
+<a id="schema_Metadata"></a>
+<a id="tocSmetadata"></a>
+<a id="tocsmetadata"></a>
+
+```json
+{
+  "protocol_version": 1,
+  "provider_name": "Individual Screening Reference"
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|protocol_version|number|true|none|none|
+|provider_name|string|true|none|none|
+
+<h2 id="tocS_StartCheckResponse">StartCheckResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemastartcheckresponse"></a>
+<a id="schema_StartCheckResponse"></a>
+<a id="tocSstartcheckresponse"></a>
+<a id="tocsstartcheckresponse"></a>
+
+```json
+{
+  "provider_id": "01234567-89ab-cdef-0123-456789abcdef",
+  "reference": "ABC-12345",
+  "custom_data": {},
+  "provider_data": "Demo result. Did not make request to provider.",
+  "warnings": [
+    {
+      "type": "INVALID_CREDENTIALS",
+      "message": "string"
+    }
+  ],
+  "errors": [
+    {
+      "type": null,
+      "sub_type": "UNSUPPORTED_COUNTRY",
+      "message": "string",
+      "data": null
+    }
+  ]
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|provider_id|[UUID](#schemauuid)|false|none|[Universally unique identifier.](https://en.wikipedia.org/wiki/Universally_unique_identifier)|
+|reference|string|false|none|none|
+|custom_data|[CustomData](#schemacustomdata)|false|none|Use this to store any state required by later requests relating to this check. The intent is for your integration to be completely stateless itself, to make it simpler to deploy and maintain. Note: if present, this *must* be an object, rather than an array or other JSON value. However, the keys and values in this object can be anything you like, although we don't recommend storing large amounts of data here, as it will be passed in on every following request to your integration relating to this check.|
+|provider_data|[ProviderData](#schemaproviderdata)|false|none|The structured JSON data returned by the data provider, or a representation of the provider's response, to allow PassFort to investigate issues that may arise with your integration.|
+|warnings|[Warnings](#schemawarnings)|false|none|Similar to 'errors' except that the sub_type and data fields are not present and providing warnings will not cause PassFort to consider the check as errored.|
+|errors|[Errors](#schemaerrors)|false|none|A list of errors that occurred while running this check. If this is provided and it's not empty, the result of this check will be considered to be errored by PassFort, regardless of the other contents of this response.|
+
+<h2 id="tocS_PollCheckResponse">PollCheckResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemapollcheckresponse"></a>
+<a id="schema_PollCheckResponse"></a>
+<a id="tocSpollcheckresponse"></a>
+<a id="tocspollcheckresponse"></a>
+
+```json
+{
+  "provider_id": "01234567-89ab-cdef-0123-456789abcdef",
+  "reference": "ABC-12345",
+  "custom_data": {},
+  "provider_data": "Demo result. Did not make request to provider.",
+  "check_output": null,
+  "charges": [],
+  "warnings": [
+    {
+      "type": "INVALID_CREDENTIALS",
+      "message": "string"
+    }
+  ],
+  "errors": [
+    {
+      "type": null,
+      "sub_type": "UNSUPPORTED_COUNTRY",
+      "message": "string",
+      "data": null
+    }
+  ]
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|provider_id|[UUID](#schemauuid)|false|none|Unique identifier for the provider. The reference field should uniquely identify a check when combined with the provider_id|
+|reference|string|false|none|An opaque string identifying this check to the provider. No two checks from the same provider should have the same reference.|
+|custom_data|[CustomData](#schemacustomdata)|false|none|Use this to store any state required by later requests relating to this check. The intent is for your integration to be completely stateless itself, to make it simpler to deploy and maintain. Note: if present, this *must* be an object, rather than an array or other JSON value. However, the keys and values in this object can be anything you like, although we don't recommend storing large amounts of data here, as it will be passed in on every following request to your integration relating to this check.|
+|provider_data|[ProviderData](#schemaproviderdata)|false|none|The structured JSON data returned by the data provider, or a representation of the provider's response, to allow PassFort to investigate issues that may arise with your integration.|
+|check_output|[EntityData](#schemaentitydata)|false|none|none|
+|charges|[[Charge](#schemacharge)]|false|none|A list of charges incurred while running this check. Charges may only be returned if no errors occurred (i.e. a result was generated) and the check is being resold (the commercial relationship is with PassFort). For demo checks, charges may be returned, but they will not be deducted from the institution's credit. If charges are returned, the total amount charged must be no greater than the maximum cost-per-check specified in the integration's configuration.|
+|warnings|[Warnings](#schemawarnings)|false|none|Similar to 'errors' except that the sub_type and data fields are not present and providing warnings will not cause PassFort to consider the check as errored.|
+|errors|[Errors](#schemaerrors)|false|none|A list of errors that occurred while running this check. If this is provided and it's not empty, the result of this check will be considered to be errored by PassFort, regardless of the other contents of this response.|
+
+<h2 id="tocS_ProviderData">ProviderData</h2>
+<!-- backwards compatibility -->
+<a id="schemaproviderdata"></a>
+<a id="schema_ProviderData"></a>
+<a id="tocSproviderdata"></a>
+<a id="tocsproviderdata"></a>
+
+```json
+"Demo result. Did not make request to provider."
+
+```
+
+The structured JSON data returned by the data provider, or a representation of the provider's response, to allow PassFort to investigate issues that may arise with your integration.
+
+### Properties
+
+*None*
+
+<h2 id="tocS_ScreeningAddressMatch">ScreeningAddressMatch</h2>
+<!-- backwards compatibility -->
+<a id="schemascreeningaddressmatch"></a>
+<a id="schema_ScreeningAddressMatch"></a>
+<a id="tocSscreeningaddressmatch"></a>
+<a id="tocsscreeningaddressmatch"></a>
+
+```json
+{
+  "type": "UNKNOWN",
+  "label": "string",
+  "address": null
+}
+
+```
+
+ScreeningAddressMatch
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|[ScreeningAddressMatchType](#schemascreeningaddressmatchtype)|true|none|none|
+|label|string|false|none|none|
+|address|[Address](#schemaaddress)|true|none|none|
+
+<h2 id="tocS_ScreeningAddressMatchType">ScreeningAddressMatchType</h2>
+<!-- backwards compatibility -->
+<a id="schemascreeningaddressmatchtype"></a>
+<a id="schema_ScreeningAddressMatchType"></a>
+<a id="tocSscreeningaddressmatchtype"></a>
+<a id="tocsscreeningaddressmatchtype"></a>
+
+```json
+"UNKNOWN"
+
+```
+
+ScreeningAddressMatchType
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ScreeningAddressMatchType|string|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|ScreeningAddressMatchType|UNKNOWN|
+
+<h2 id="tocS_ScreeningCountryMatch">ScreeningCountryMatch</h2>
+<!-- backwards compatibility -->
+<a id="schemascreeningcountrymatch"></a>
+<a id="schema_ScreeningCountryMatch"></a>
+<a id="tocSscreeningcountrymatch"></a>
+<a id="tocsscreeningcountrymatch"></a>
+
+```json
+{
+  "type": "AFFILIATION",
+  "label": "string",
+  "country": "GBR"
+}
+
+```
+
+ScreeningCountryMatch
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|[ScreeningCountryMatchType](#schemascreeningcountrymatchtype)|true|none|none|
+|label|string|false|none|none|
+|country|[CountryCode](#schemacountrycode)|true|none|[ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) (3 letter country code)|
+
+<h2 id="tocS_ScreeningCountryMatchType">ScreeningCountryMatchType</h2>
+<!-- backwards compatibility -->
+<a id="schemascreeningcountrymatchtype"></a>
+<a id="schema_ScreeningCountryMatchType"></a>
+<a id="tocSscreeningcountrymatchtype"></a>
+<a id="tocsscreeningcountrymatchtype"></a>
+
+```json
+"AFFILIATION"
+
+```
+
+ScreeningCountryMatchType
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ScreeningCountryMatchType|string|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|ScreeningCountryMatchType|AFFILIATION|
+|ScreeningCountryMatchType|CITIZENSHIP|
+|ScreeningCountryMatchType|CURRENT_OWNERSHIP|
+|ScreeningCountryMatchType|OWNERSHIP|
+|ScreeningCountryMatchType|JURISDICTION|
+|ScreeningCountryMatchType|REGISTRATION|
+|ScreeningCountryMatchType|ALLEGATION|
+|ScreeningCountryMatchType|RESIDENCE|
+|ScreeningCountryMatchType|RISK|
+|ScreeningCountryMatchType|FORMERLY_SANCTIONED|
+|ScreeningCountryMatchType|SANCTIONED|
+|ScreeningCountryMatchType|NATIONALITY|
+|ScreeningCountryMatchType|UNKNOWN|
+
+<h2 id="tocS_ScreeningDateMatch">ScreeningDateMatch</h2>
+<!-- backwards compatibility -->
+<a id="schemascreeningdatematch"></a>
+<a id="schema_ScreeningDateMatch"></a>
+<a id="tocSscreeningdatematch"></a>
+<a id="tocsscreeningdatematch"></a>
+
+```json
+{
+  "type": "DOB",
+  "label": "string",
+  "date": null
+}
+
+```
+
+ScreeningDateMatch
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|[ScreeningDateMatchType](#schemascreeningdatematchtype)|true|none|none|
+|label|string|false|none|none|
+|date|[PartialDate](#schemapartialdate)|true|none|none|
+
+<h2 id="tocS_ScreeningDateMatchType">ScreeningDateMatchType</h2>
+<!-- backwards compatibility -->
+<a id="schemascreeningdatematchtype"></a>
+<a id="schema_ScreeningDateMatchType"></a>
+<a id="tocSscreeningdatematchtype"></a>
+<a id="tocsscreeningdatematchtype"></a>
+
+```json
+"DOB"
+
+```
+
+ScreeningDateMatchType
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ScreeningDateMatchType|string|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|ScreeningDateMatchType|DOB|
+|ScreeningDateMatchType|DECEASED|
+|ScreeningDateMatchType|END_OF_PEP|
+|ScreeningDateMatchType|END_OF_ASSOCIATION_TO_PEP|
+|ScreeningDateMatchType|UNKNOWN|
+
+<h2 id="tocS_ScreeningEventsMatcher">ScreeningEventsMatcher</h2>
+<!-- backwards compatibility -->
+<a id="schemascreeningeventsmatcher"></a>
+<a id="schema_ScreeningEventsMatcher"></a>
+<a id="tocSscreeningeventsmatcher"></a>
+<a id="tocsscreeningeventsmatcher"></a>
+
+```json
+{
+  "type": "SCREENING_EVENTS",
+  "comparison": "ONE_OR_MORE_CONFIRMED",
+  "event_types": [
+    "PEP_FLAG"
+  ]
+}
+
+```
+
+ScreeningEventsMatcher
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|The matcher type|
+|comparison|string|true|none|The comparison between the property against the event types list|
+|event_types|[string]|true|none|List of event types to use in the matcher|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|SCREENING_EVENTS|
+|comparison|ONE_OR_MORE_CONFIRMED|
+|comparison|ONE_OR_MORE_POTENTIAL|
+|comparison|ONE_OR_MORE_IGNORED_POTENTIAL_CONFIRMED|
+
+<h2 id="tocS_ScreeningEventsTypeProperty">ScreeningEventsTypeProperty</h2>
+<!-- backwards compatibility -->
+<a id="schemascreeningeventstypeproperty"></a>
+<a id="schema_ScreeningEventsTypeProperty"></a>
+<a id="tocSscreeningeventstypeproperty"></a>
+<a id="tocsscreeningeventstypeproperty"></a>
+
+```json
+{
+  "type": "SCREENING_EVENTS"
+}
+
+```
+
+ScreeningEventsTypeProperty
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|The property type|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|SCREENING_EVENTS|
+
+<h2 id="tocS_ScreeningFlag">ScreeningFlag</h2>
+<!-- backwards compatibility -->
+<a id="schemascreeningflag"></a>
+<a id="schema_ScreeningFlag"></a>
+<a id="tocSscreeningflag"></a>
+<a id="tocsscreeningflag"></a>
+
+```json
+{
+  "type": "ADVERSE_MEDIA",
+  "label": "string"
+}
+
+```
+
+ScreeningFlag
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|[ScreeningFlagType](#schemascreeningflagtype)|true|none|none|
+|label|string|false|none|none|
+
+<h2 id="tocS_ScreeningFlagType">ScreeningFlagType</h2>
+<!-- backwards compatibility -->
+<a id="schemascreeningflagtype"></a>
+<a id="schema_ScreeningFlagType"></a>
+<a id="tocSscreeningflagtype"></a>
+<a id="tocsscreeningflagtype"></a>
+
+```json
+"ADVERSE_MEDIA"
+
+```
+
+ScreeningFlagType
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ScreeningFlagType|string|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|ScreeningFlagType|ADVERSE_MEDIA|
+|ScreeningFlagType|PEP|
+|ScreeningFlagType|REFER|
+|ScreeningFlagType|SANCTION|
+
+<h2 id="tocS_ScreeningHit">ScreeningHit</h2>
+<!-- backwards compatibility -->
+<a id="schemascreeninghit"></a>
+<a id="schema_ScreeningHit"></a>
+<a id="tocSscreeninghit"></a>
+<a id="tocsscreeninghit"></a>
+
+```json
+{
+  "provider": {
+    "name": "string",
+    "label": "string",
+    "hit_id": "string"
+  },
+  "status": "MATCH",
+  "flags": [
+    {
+      "type": "ADVERSE_MEDIA",
+      "label": "string"
+    }
+  ],
+  "data": {
+    "name": "string",
+    "addresses": [
+      {
+        "type": "UNKNOWN",
+        "label": "string",
+        "address": null
+      }
+    ],
+    "aliases": [
+      "string"
+    ],
+    "associates": [
+      {
+        "association": {
+          "label": "string"
+        },
+        "data": {},
+        "flags": [
+          {
+            "type": "ADVERSE_MEDIA",
+            "label": "string"
+          }
+        ]
+      }
+    ],
+    "brand_text": "string",
+    "confidence_score": 1,
+    "countries": [
+      {
+        "type": "AFFILIATION",
+        "label": "string",
+        "country": "GBR"
+      }
+    ],
+    "dates": [
+      {
+        "type": "DOB",
+        "label": "string",
+        "date": null
+      }
+    ],
+    "deceased": true,
+    "details": [
+      {
+        "title": "string",
+        "text": "string"
+      }
+    ],
+    "gender": "string",
+    "sources": [
+      {
+        "name": "string",
+        "url": "string",
+        "description": "string"
+      }
+    ],
+    "pep": {
+      "roles": [
+        {
+          "name": "string",
+          "tier": 0,
+          "tenure": null
+        }
+      ],
+      "tier": 0
+    },
+    "sanctions": [
+      {
+        "name": "string",
+        "type": "string",
+        "list": {
+          "name": "string"
+        },
+        "issued_by": "string",
+        "time_periods": []
+      }
+    ],
+    "media": []
+  }
+}
+
+```
+
+ScreeningHit
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|provider|[ScreeningHitProvider](#schemascreeninghitprovider)|true|none|none|
+|status|[ScreeningHitStatus](#schemascreeninghitstatus)|false|none|none|
+|flags|[[ScreeningFlag](#schemascreeningflag)]|false|none|none|
+|data|[ScreeningHitData](#schemascreeninghitdata)|true|none|none|
+
+<h2 id="tocS_ScreeningHitAssociate">ScreeningHitAssociate</h2>
+<!-- backwards compatibility -->
+<a id="schemascreeninghitassociate"></a>
+<a id="schema_ScreeningHitAssociate"></a>
+<a id="tocSscreeninghitassociate"></a>
+<a id="tocsscreeninghitassociate"></a>
+
+```json
+{
+  "association": {
+    "label": "string"
+  },
+  "data": {
+    "name": "string",
+    "addresses": [
+      {
+        "type": "UNKNOWN",
+        "label": "string",
+        "address": null
+      }
+    ],
+    "aliases": [
+      "string"
+    ],
+    "associates": [
+      {
+        "association": {
+          "label": "string"
+        },
+        "data": {},
+        "flags": [
+          {
+            "type": "ADVERSE_MEDIA",
+            "label": "string"
+          }
+        ]
+      }
+    ],
+    "brand_text": "string",
+    "confidence_score": 1,
+    "countries": [
+      {
+        "type": "AFFILIATION",
+        "label": "string",
+        "country": "GBR"
+      }
+    ],
+    "dates": [
+      {
+        "type": "DOB",
+        "label": "string",
+        "date": null
+      }
+    ],
+    "deceased": true,
+    "details": [
+      {
+        "title": "string",
+        "text": "string"
+      }
+    ],
+    "gender": "string",
+    "sources": [
+      {
+        "name": "string",
+        "url": "string",
+        "description": "string"
+      }
+    ],
+    "pep": {
+      "roles": [
+        {
+          "name": "string",
+          "tier": 0,
+          "tenure": null
+        }
+      ],
+      "tier": 0
+    },
+    "sanctions": [
+      {
+        "name": "string",
+        "type": "string",
+        "list": {
+          "name": "string"
+        },
+        "issued_by": "string",
+        "time_periods": []
+      }
+    ],
+    "media": []
+  },
+  "flags": [
+    {
+      "type": "ADVERSE_MEDIA",
+      "label": "string"
+    }
+  ]
+}
+
+```
+
+ScreeningHitAssociate
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|association|[ScreeningHitAssociation](#schemascreeninghitassociation)|true|none|none|
+|data|[ScreeningHitData](#schemascreeninghitdata)|true|none|none|
+|flags|[[ScreeningFlag](#schemascreeningflag)]|true|none|none|
+
+<h2 id="tocS_ScreeningHitAssociation">ScreeningHitAssociation</h2>
+<!-- backwards compatibility -->
+<a id="schemascreeninghitassociation"></a>
+<a id="schema_ScreeningHitAssociation"></a>
+<a id="tocSscreeninghitassociation"></a>
+<a id="tocsscreeninghitassociation"></a>
+
+```json
+{
+  "label": "string"
+}
+
+```
+
+ScreeningHitAssociation
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|label|string|true|none|none|
+
+<h2 id="tocS_ScreeningHitData">ScreeningHitData</h2>
+<!-- backwards compatibility -->
+<a id="schemascreeninghitdata"></a>
+<a id="schema_ScreeningHitData"></a>
+<a id="tocSscreeninghitdata"></a>
+<a id="tocsscreeninghitdata"></a>
+
+```json
+{
+  "name": "string",
+  "addresses": [
+    {
+      "type": "UNKNOWN",
+      "label": "string",
+      "address": null
+    }
+  ],
+  "aliases": [
+    "string"
+  ],
+  "associates": [
+    {
+      "association": {
+        "label": "string"
+      },
+      "data": {
+        "name": "string",
+        "addresses": [
+          {
+            "type": "UNKNOWN",
+            "label": "string",
+            "address": null
+          }
+        ],
+        "aliases": [
+          "string"
+        ],
+        "associates": [],
+        "brand_text": "string",
+        "confidence_score": 1,
+        "countries": [
+          {
+            "type": "AFFILIATION",
+            "label": "string",
+            "country": "GBR"
+          }
+        ],
+        "dates": [
+          {
+            "type": "DOB",
+            "label": "string",
+            "date": null
+          }
+        ],
+        "deceased": true,
+        "details": [
+          {
+            "title": "string",
+            "text": "string"
+          }
+        ],
+        "gender": "string",
+        "sources": [
+          {
+            "name": "string",
+            "url": "string",
+            "description": "string"
+          }
+        ],
+        "pep": {
+          "roles": [
+            {
+              "name": "string",
+              "tier": 0,
+              "tenure": null
+            }
+          ],
+          "tier": 0
+        },
+        "sanctions": [
+          {
+            "name": "string",
+            "type": "string",
+            "list": {
+              "name": "string"
+            },
+            "issued_by": "string",
+            "time_periods": []
+          }
+        ],
+        "media": []
+      },
+      "flags": [
+        {
+          "type": "ADVERSE_MEDIA",
+          "label": "string"
+        }
+      ]
+    }
+  ],
+  "brand_text": "string",
+  "confidence_score": 1,
+  "countries": [
+    {
+      "type": "AFFILIATION",
+      "label": "string",
+      "country": "GBR"
+    }
+  ],
+  "dates": [
+    {
+      "type": "DOB",
+      "label": "string",
+      "date": null
+    }
+  ],
+  "deceased": true,
+  "details": [
+    {
+      "title": "string",
+      "text": "string"
+    }
+  ],
+  "gender": "string",
+  "sources": [
+    {
+      "name": "string",
+      "url": "string",
+      "description": "string"
+    }
+  ],
+  "pep": {
+    "roles": [
+      {
+        "name": "string",
+        "tier": 0,
+        "tenure": null
+      }
+    ],
+    "tier": 0
+  },
+  "sanctions": [
+    {
+      "name": "string",
+      "type": "string",
+      "list": {
+        "name": "string"
+      },
+      "issued_by": "string",
+      "time_periods": []
+    }
+  ],
+  "media": []
+}
+
+```
+
+ScreeningHitData
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|none|
+|addresses|[[ScreeningAddressMatch](#schemascreeningaddressmatch)]|false|none|none|
+|aliases|[string]|false|none|none|
+|associates|[[ScreeningHitAssociate](#schemascreeninghitassociate)]|false|none|none|
+|brand_text|string|false|none|none|
+|confidence_score|number|false|none|none|
+|countries|[[ScreeningCountryMatch](#schemascreeningcountrymatch)]|false|none|none|
+|dates|[[ScreeningDateMatch](#schemascreeningdatematch)]|false|none|none|
+|deceased|boolean|false|none|none|
+|details|[[ScreeningHitDetail](#schemascreeninghitdetail)]|false|none|none|
+|gender|string|false|none|none|
+|sources|[[ScreeningSource](#schemascreeningsource)]|false|none|none|
+|pep|[ScreeningPepData](#schemascreeningpepdata)|false|none|none|
+|sanctions|[[ScreeningSanctionData](#schemascreeningsanctiondata)]|false|none|none|
+|media|[[MediaArticle](#schemamediaarticle)]|false|none|none|
+
+<h2 id="tocS_ScreeningHitDetail">ScreeningHitDetail</h2>
+<!-- backwards compatibility -->
+<a id="schemascreeninghitdetail"></a>
+<a id="schema_ScreeningHitDetail"></a>
+<a id="tocSscreeninghitdetail"></a>
+<a id="tocsscreeninghitdetail"></a>
+
+```json
+{
+  "title": "string",
+  "text": "string"
+}
+
+```
+
+ScreeningHitDetail
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|title|string|false|none|none|
+|text|string|false|none|none|
+
+<h2 id="tocS_ScreeningHitProvider">ScreeningHitProvider</h2>
+<!-- backwards compatibility -->
+<a id="schemascreeninghitprovider"></a>
+<a id="schema_ScreeningHitProvider"></a>
+<a id="tocSscreeninghitprovider"></a>
+<a id="tocsscreeninghitprovider"></a>
+
+```json
+{
+  "name": "string",
+  "label": "string",
+  "hit_id": "string"
+}
+
+```
+
+ScreeningHitProvider
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|none|
+|label|string|true|none|none|
+|hit_id|string|true|none|none|
+
+<h2 id="tocS_ScreeningHitStatus">ScreeningHitStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemascreeninghitstatus"></a>
+<a id="schema_ScreeningHitStatus"></a>
+<a id="tocSscreeninghitstatus"></a>
+<a id="tocsscreeninghitstatus"></a>
+
+```json
+"MATCH"
+
+```
+
+ScreeningHitStatus
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ScreeningHitStatus|string|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|ScreeningHitStatus|MATCH|
+|ScreeningHitStatus|MISMATCH|
+|ScreeningHitStatus|UNRESOLVED|
+
+<h2 id="tocS_ScreeningPepData">ScreeningPepData</h2>
+<!-- backwards compatibility -->
+<a id="schemascreeningpepdata"></a>
+<a id="schema_ScreeningPepData"></a>
+<a id="tocSscreeningpepdata"></a>
+<a id="tocsscreeningpepdata"></a>
+
+```json
+{
+  "roles": [
+    {
+      "name": "string",
+      "tier": 0,
+      "tenure": null
+    }
+  ],
+  "tier": 0
+}
+
+```
+
+ScreeningPepData
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|roles|[[ScreeningPepRole](#schemascreeningpeprole)]|true|none|none|
+|tier|integer|false|none|none|
+
+<h2 id="tocS_ScreeningPepRole">ScreeningPepRole</h2>
+<!-- backwards compatibility -->
+<a id="schemascreeningpeprole"></a>
+<a id="schema_ScreeningPepRole"></a>
+<a id="tocSscreeningpeprole"></a>
+<a id="tocsscreeningpeprole"></a>
+
+```json
+{
+  "name": "string",
+  "tier": 0,
+  "tenure": null
+}
+
+```
+
+ScreeningPepRole
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|none|
+|tier|integer|false|none|none|
+|tenure|[Tenure](#schematenure)|false|none|none|
+
+<h2 id="tocS_ScreeningSanctionData">ScreeningSanctionData</h2>
+<!-- backwards compatibility -->
+<a id="schemascreeningsanctiondata"></a>
+<a id="schema_ScreeningSanctionData"></a>
+<a id="tocSscreeningsanctiondata"></a>
+<a id="tocsscreeningsanctiondata"></a>
+
+```json
+{
+  "name": "string",
+  "type": "string",
+  "list": {
+    "name": "string"
+  },
+  "issued_by": "string",
+  "time_periods": []
+}
+
+```
+
+ScreeningSanctionData
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|none|
+|type|string|false|none|none|
+|list|[ScreeningSanctionsList](#schemascreeningsanctionslist)|false|none|none|
+|issued_by|string|false|none|none|
+|time_periods|[[Tenure](#schematenure)]|false|none|none|
+
+<h2 id="tocS_ScreeningSanctionsList">ScreeningSanctionsList</h2>
+<!-- backwards compatibility -->
+<a id="schemascreeningsanctionslist"></a>
+<a id="schema_ScreeningSanctionsList"></a>
+<a id="tocSscreeningsanctionslist"></a>
+<a id="tocsscreeningsanctionslist"></a>
+
+```json
+{
+  "name": "string"
+}
+
+```
+
+ScreeningSanctionsList
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|none|
+
+<h2 id="tocS_ScreeningSource">ScreeningSource</h2>
+<!-- backwards compatibility -->
+<a id="schemascreeningsource"></a>
+<a id="schema_ScreeningSource"></a>
+<a id="tocSscreeningsource"></a>
+<a id="tocsscreeningsource"></a>
+
+```json
+{
+  "name": "string",
+  "url": "string",
+  "description": "string"
+}
+
+```
+
+ScreeningSource
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|none|
+|url|string|false|none|none|
+|description|string|false|none|none|
+
+<h2 id="tocS_Warning">Warning</h2>
+<!-- backwards compatibility -->
+<a id="schemawarning"></a>
+<a id="schema_Warning"></a>
+<a id="tocSwarning"></a>
+<a id="tocswarning"></a>
+
+```json
+{
+  "type": "INVALID_CREDENTIALS",
+  "message": "string"
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|[ErrorType](#schemaerrortype)|true|none|The type of error that is being reported.|
+|message|string|true|none|none|
+
+<h2 id="tocS_Warnings">Warnings</h2>
+<!-- backwards compatibility -->
+<a id="schemawarnings"></a>
+<a id="schema_Warnings"></a>
+<a id="tocSwarnings"></a>
+<a id="tocswarnings"></a>
+
+```json
+[
+  {
+    "type": "INVALID_CREDENTIALS",
+    "message": "string"
+  }
+]
+
+```
+
+Similar to 'errors' except that the sub_type and data fields are not present and providing warnings will not cause PassFort to consider the check as errored.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[Warning](#schemawarning)]|false|none|Similar to 'errors' except that the sub_type and data fields are not present and providing warnings will not cause PassFort to consider the check as errored.|
+
+<h2 id="tocS_UUID">UUID</h2>
+<!-- backwards compatibility -->
+<a id="schemauuid"></a>
+<a id="schema_UUID"></a>
+<a id="tocSuuid"></a>
+<a id="tocsuuid"></a>
+
+```json
+"01234567-89ab-cdef-0123-456789abcdef"
+
+```
+
+UUID
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|UUID|string|false|none|[Universally unique identifier.](https://en.wikipedia.org/wiki/Universally_unique_identifier)|
+
