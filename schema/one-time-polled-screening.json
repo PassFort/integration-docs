@@ -1,0 +1,1430 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "One-time Polled Screen",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/": {
+            "get": {
+                "tags": [
+                    "common"
+                ],
+                "summary": "Get integration metadata",
+                "operationId": "getMetadata",
+                "responses": {
+                    "200": {
+                        "description": "Basic properties of the integration",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Metadata"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/config": {
+            "get": {
+                "tags": [
+                    "common"
+                ],
+                "security": [
+                    {
+                        "signatureAuth": []
+                    }
+                ],
+                "summary": "Configure how PassFort will interact with your integration",
+                "operationId": "getConfig",
+                "responses": {
+                    "200": {
+                        "description": "Defines several important properties about your integration. The general structure is common across all check kinds but specific check types or templates will support additional fields.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Config"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/checks": {
+            "post": {
+                "tags": [
+                    "check"
+                ],
+                "security": [
+                    {
+                        "signatureAuth": []
+                    }
+                ],
+                "summary": "Instruct a new check with the provider",
+                "operationId": "instructCheck",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StartCheckRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "A check was instructed with the provider",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StartCheckResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/checks/{checkId}/poll": {
+            "post": {
+                "tags": [
+                    "check"
+                ],
+                "security": [
+                    {
+                        "signatureAuth": []
+                    }
+                ],
+                "summary": "Attempt to fetch the completed check result from the provider",
+                "operationId": "pollCheck",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PollCheckRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "The check status was fetched from the provider",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PollCheckResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "signatureAuth": {
+                "type": "http",
+                "scheme": "signature"
+            }
+        },
+        "schemas": {
+            "Config": {
+                "type": "object",
+                "required": [
+                    "check_type",
+                    "check_template",
+                    "pricing",
+                    "supported_countries",
+                    "credentials",
+                    "config"
+                ],
+                "properties": {
+                    "check_type": {
+                        "type": "string",
+                        "enum": [
+                            "PEPS_AND_SANCTIONS_SCREEN",
+                            "COMPANY_PEPS_AND_SANCTIONS_SCREEN"
+                        ]
+                    },
+                    "check_template": {
+                        "type": "object",
+                        "required": [
+                            "type"
+                        ],
+                        "properties": {
+                            "polling_strategy": {
+                                "type": "string",
+                                "enum": [
+                                    "UNIFORM"
+                                ]
+                            },
+                            "initial_interval": {
+                                "type": "number"
+                            },
+                            "polling_interval": {
+                                "type": "number"
+                            },
+                            "max_polls": {
+                                "type": "number"
+                            }
+                        }
+                    },
+                    "pricing": {
+                        "type": "object",
+                        "required": [
+                            "supports_reselling"
+                        ],
+                        "properties": {
+                            "supports_reselling": {
+                                "type": "boolean"
+                            },
+                            "maximum_cost": {
+                                "type": "number"
+                            }
+                        }
+                    },
+                    "supported_countries": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CountryCode"
+                        }
+                    },
+                    "supported_features": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "PEPS",
+                                "SANCTIONS",
+                                "ADVERSE_MEDIA"
+                            ]
+                        }
+                    },
+                    "credentials": {
+                        "type": "object",
+                        "properties": {
+                            "fields": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/ConfigField"
+                                }
+                            }
+                        }
+                    },
+                    "config": {
+                        "type": "object",
+                        "properties": {
+                            "fields": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/ConfigField"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "ConfigField": {
+                "type": "object",
+                "required": [
+                    "type",
+                    "name",
+                    "label"
+                ],
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "string",
+                            "boolean",
+                            "MultiSelect"
+                        ]
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "label": {
+                        "type": "string"
+                    }
+                }
+            },
+            "CountryCode": {
+                "description": "[ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) (3 letter country code)",
+                "type": "string",
+                "enum": [
+                    "AFG",
+                    "ALA",
+                    "ALB",
+                    "DZA",
+                    "ASM",
+                    "AND",
+                    "AGO",
+                    "AIA",
+                    "ATA",
+                    "ATG",
+                    "ARG",
+                    "ARM",
+                    "ABW",
+                    "AUS",
+                    "AUT",
+                    "AZE",
+                    "BHS",
+                    "BHR",
+                    "BGD",
+                    "BRB",
+                    "BLR",
+                    "BEL",
+                    "BLZ",
+                    "BEN",
+                    "BMU",
+                    "BTN",
+                    "BOL",
+                    "BES",
+                    "BIH",
+                    "BWA",
+                    "BVT",
+                    "BRA",
+                    "IOT",
+                    "BRN",
+                    "BGR",
+                    "BFA",
+                    "BDI",
+                    "KHM",
+                    "CMR",
+                    "CAN",
+                    "CPV",
+                    "CYM",
+                    "CAF",
+                    "TCD",
+                    "CHL",
+                    "CHN",
+                    "CXR",
+                    "CCK",
+                    "COL",
+                    "COM",
+                    "COG",
+                    "COD",
+                    "COK",
+                    "CRI",
+                    "CIV",
+                    "HRV",
+                    "CUB",
+                    "CUW",
+                    "CYP",
+                    "CZE",
+                    "DNK",
+                    "DJI",
+                    "DMA",
+                    "DOM",
+                    "ECU",
+                    "EGY",
+                    "SLV",
+                    "GNQ",
+                    "ERI",
+                    "EST",
+                    "ETH",
+                    "FLK",
+                    "FRO",
+                    "FJI",
+                    "FIN",
+                    "FRA",
+                    "GUF",
+                    "PYF",
+                    "ATF",
+                    "GAB",
+                    "GMB",
+                    "GEO",
+                    "DEU",
+                    "GHA",
+                    "GIB",
+                    "GRC",
+                    "GRL",
+                    "GRD",
+                    "GLP",
+                    "GUM",
+                    "GTM",
+                    "GGY",
+                    "GIN",
+                    "GNB",
+                    "GUY",
+                    "HTI",
+                    "HMD",
+                    "VAT",
+                    "HND",
+                    "HKG",
+                    "HUN",
+                    "ISL",
+                    "IND",
+                    "IDN",
+                    "IRN",
+                    "IRQ",
+                    "IRL",
+                    "IMN",
+                    "ISR",
+                    "ITA",
+                    "JAM",
+                    "JPN",
+                    "JEY",
+                    "JOR",
+                    "KAZ",
+                    "KEN",
+                    "KIR",
+                    "PRK",
+                    "KOR",
+                    "KWT",
+                    "KGZ",
+                    "LAO",
+                    "LVA",
+                    "LBN",
+                    "LSO",
+                    "LBR",
+                    "LBY",
+                    "LIE",
+                    "LTU",
+                    "LUX",
+                    "MAC",
+                    "MKD",
+                    "MDG",
+                    "MWI",
+                    "MYS",
+                    "MDV",
+                    "MLI",
+                    "MLT",
+                    "MHL",
+                    "MTQ",
+                    "MRT",
+                    "MUS",
+                    "MYT",
+                    "MEX",
+                    "FSM",
+                    "MDA",
+                    "MCO",
+                    "MNG",
+                    "MNE",
+                    "MSR",
+                    "MAR",
+                    "MOZ",
+                    "MMR",
+                    "NAM",
+                    "NRU",
+                    "NPL",
+                    "NLD",
+                    "NCL",
+                    "NZL",
+                    "NIC",
+                    "NER",
+                    "NGA",
+                    "NIU",
+                    "NFK",
+                    "MNP",
+                    "NOR",
+                    "OMN",
+                    "PAK",
+                    "PLW",
+                    "PSE",
+                    "PAN",
+                    "PNG",
+                    "PRY",
+                    "PER",
+                    "PHL",
+                    "PCN",
+                    "POL",
+                    "PRT",
+                    "PRI",
+                    "QAT",
+                    "REU",
+                    "RKS",
+                    "ROU",
+                    "RUS",
+                    "RWA",
+                    "BLM",
+                    "SHN",
+                    "KNA",
+                    "LCA",
+                    "MAF",
+                    "SPM",
+                    "VCT",
+                    "WSM",
+                    "SMR",
+                    "STP",
+                    "SAU",
+                    "SEN",
+                    "SRB",
+                    "SYC",
+                    "SLE",
+                    "SGP",
+                    "SXM",
+                    "SVK",
+                    "SVN",
+                    "SLB",
+                    "SOM",
+                    "ZAF",
+                    "SGS",
+                    "ESP",
+                    "LKA",
+                    "SDN",
+                    "SUR",
+                    "SSD",
+                    "SJM",
+                    "SWZ",
+                    "SWE",
+                    "CHE",
+                    "SYR",
+                    "TWN",
+                    "TJK",
+                    "TZA",
+                    "THA",
+                    "TLS",
+                    "TGO",
+                    "TKL",
+                    "TON",
+                    "TTO",
+                    "TUN",
+                    "TUR",
+                    "TKM",
+                    "TCA",
+                    "TUV",
+                    "UGA",
+                    "UKR",
+                    "ARE",
+                    "GBR",
+                    "USA",
+                    "UMI",
+                    "URY",
+                    "UZB",
+                    "VUT",
+                    "VEN",
+                    "VNM",
+                    "VGB",
+                    "VIR",
+                    "WLF",
+                    "ESH",
+                    "XXX",
+                    "YEM",
+                    "ZMB",
+                    "ZWE",
+                    "UNK",
+                    "ZZZ"
+                ],
+                "example": "GBR",
+                "title": "CountryCode"
+            },
+            "CustomData": {
+                "type": "object",
+                "example": {},
+                "description": "Use this to store any state required by later requests relating to this check. The intent is for your integration to be completely stateless itself, to make it simpler to deploy and maintain. Note: if present, this *must* be an object, rather than an array or other JSON value. However, the keys and values in this object can be anything you like, although we don't recommend storing large amounts of data here, as it will be passed in on every following request to your integration relating to this check."
+            },
+            "DemoResultType": {
+                "description": "To support a wide range of testing scenarios, PassFort uses specific values in the demo_result field to select demo results.",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/DemoResultAny"
+                    },
+                    {
+                        "$ref": "#/components/schemas/DemoResultAnyCharge"
+                    },
+                    {
+                        "$ref": "#/components/schemas/DemoResultErrorInvalidCredentials"
+                    },
+                    {
+                        "$ref": "#/components/schemas/DemoResultErrorAnyProviderMessage"
+                    },
+                    {
+                        "$ref": "#/components/schemas/DemoResultErrorConnectionToProvider"
+                    },
+                    {
+                        "$ref": "#/components/schemas/DemoResultScreenNoHits"
+                    },
+                    {
+                        "$ref": "#/components/schemas/DemoResultScreenAllFlagsSameHit"
+                    },
+                    {
+                        "$ref": "#/components/schemas/DemoResultScreenAllFlagsSeparateHits"
+                    },
+                    {
+                        "$ref": "#/components/schemas/DemoResultScreenSingleRefer"
+                    },
+                    {
+                        "$ref": "#/components/schemas/DemoResultScreenSinglePep"
+                    },
+                    {
+                        "$ref": "#/components/schemas/DemoResultScreenSingleSanction"
+                    },
+                    {
+                        "$ref": "#/components/schemas/DemoResultScreenSingleAdverseMedia"
+                    }
+                ]
+            },
+            "DemoResultAny": {
+                "title": "ANY",
+                "type": "string",
+                "enum": [
+                    "ANY"
+                ],
+                "description": "A demo result that will be used as the default if nothing more specific is requested. It should reflect a genuine non-error result for this integration, but it does not need to be a passing result."
+            },
+            "DemoResultAnyCharge": {
+                "title": "ANY_CHARGE",
+                "type": "string",
+                "enum": [
+                    "ANY_CHARGE"
+                ],
+                "description": "This demo result will be used to test billing. This is required if your integration supports reselling and the maximum amount your integration can charge for a check is greater than zero.
+
+There are no requirements on what the result of the check must be, but if the check is being resold, at least one non-zero charge must be returned. The usual rules also still apply: the total amount charged must be no greater than the maximum specified in your integration's configuration.
+
+Note that, as this is a demo check, no credits will actually be deducted from the customer."
+            },
+            "DemoResultErrorInvalidCredentials": {
+                "title": "ERROR_INVALID_CREDENTIALS",
+                "type": "string",
+                "enum": [
+                    "ERROR_INVALID_CREDENTIALS"
+                ],
+                "description": "Your integration must return a result as if a customer with a direct commercial relationship has provided credentials that have been rejected by the data provider."
+            },
+            "DemoResultErrorAnyProviderMessage": {
+                "title": "ERROR_ANY_PROVIDER_MESSAGE",
+                "type": "string",
+                "enum": [
+                    "ERROR_ANY_PROVIDER_MESSAGE"
+                ],
+                "description": "Your integration must return a result as if the data provider was successfully reached but encountered a problem fulfilling the request, such a problem with the service, or missing information in the request."
+            },
+            "DemoResultErrorConnectionToProvider": {
+                "title": "ERROR_CONNECTION_TO_PROVIDER",
+                "type": "string",
+                "enum": [
+                    "ERROR_CONNECTION_TO_PROVIDER"
+                ],
+                "description": "Your integration must return a result as if it attempted to contact the data provider but the connection failed (due to timeouts or outages)."
+            },
+            "DemoResultScreenNoHits": {
+                "title": "SCREEN_NO_HITS",
+                "type": "string",
+                "enum": [
+                    "SCREEN_NO_HITS"
+                ],
+                "description": "Your integration must return a result as if the data provider found no hits for the provided data."
+            },
+            "DemoResultScreenAllFlagsSameHit": {
+                "title": "SCREEN_ALL_FLAGS_SAME_HIT",
+                "type": "string",
+                "enum": [
+                    "SCREEN_ALL_FLAGS_SAME_HIT"
+                ],
+                "description": "Your integration must return a result as if the data provider found a single hit which is flagged with all flag types supported by your integration."
+            },
+            "DemoResultScreenAllFlagsSeparateHits": {
+                "title": "SCREEN_ALL_FLAGS_SEPARATE_HITS",
+                "type": "string",
+                "enum": [
+                    "SCREEN_ALL_FLAGS_SEPARATE_HITS"
+                ],
+                "description": "Your integration must return a result as if the data provider found a separate hit for each supported flag type which has a flag of that type."
+            },
+            "DemoResultScreenSingleRefer": {
+                "title": "SCREEN_SINGLE_REFER",
+                "type": "string",
+                "enum": [
+                    "SCREEN_SINGLE_REFER"
+                ],
+                "description": "Your integration must return a result as if the data provider found a single hit with a flag of the 'REFER' type."
+            },
+            "DemoResultScreenSinglePep": {
+                "title": "SCREEN_SINGLE_PEP",
+                "type": "string",
+                "enum": [
+                    "SCREEN_SINGLE_PEP"
+                ],
+                "description": "Your integration must return a result as if the data provider found a single hit with a flag of the 'PEP' type. This demo result is only required if your integration declares support for the 'PEPS' feature."
+            },
+            "DemoResultScreenSingleSanction": {
+                "title": "SCREEN_SINGLE_SANCTION",
+                "type": "string",
+                "enum": [
+                    "SCREEN_SINGLE_SANCTION"
+                ],
+                "description": "Your integration must return a result as if the data provider found a single hit with a flag of the 'SANCTION' type. This demo result is only required if your integration declares support for the 'SANCTIONS' feature."
+            },
+            "DemoResultScreenSingleAdverseMedia": {
+                "title": "SCREEN_SINGLE_ADVERSE_MEDIA",
+                "type": "string",
+                "enum": [
+                    "SCREEN_SINGLE_ADVERSE_MEDIA"
+                ],
+                "description": "Your integration must return a result as if the data provider found a single hit with a flag of the 'ADVERSE_MEDIA' type. This demo result is only required if your integration declares support for the 'ADVERSE_MEDIA' feature."
+            },
+            "EntityData": {
+                "type": "object",
+                "example": {
+                    "entity_type": "COMPANY",
+                    "screening_hits": [
+                        {
+                            "hit_id": "12345",
+                            "provider": {
+                                "name": "Screening Reference Integration",
+                                "hit_id": "12345",
+                                "label": "screening-ref"
+                            },
+                            "data": {
+                                "name": "The Example Company"
+                            },
+                            "status": "UNRESOLVED",
+                            "flags": [
+                                {
+                                    "type": "REFER"
+                                },
+                                {
+                                    "type": "PEP"
+                                },
+                                {
+                                    "type": "SANCTION"
+                                },
+                                {
+                                    "type": "ADVERSE_MEDIA"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "required": [
+                    "entity_type"
+                ],
+                "properties": {
+                    "entity_type": {
+                        "type": "string",
+                        "enum": [
+                            "INDIVIDUAL",
+                            "COMPANY"
+                        ]
+                    },
+                    "screening_hits": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ScreeningHit"
+                        }
+                    }
+                }
+            },
+            "Error": {
+                "type": "object",
+                "required": [
+                    "type",
+                    "message"
+                ],
+                "properties": {
+                    "type": {},
+                    "sub_type": {
+                        "type": "string",
+                        "enum": [
+                            "UNSUPPORTED_COUNTRY",
+                            "UNSUPPORTED_DOCUMENT_TYPE"
+                        ],
+                        "description": "Provides additional detail for certain types of error."
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "A message displayed in the PassFort portal when showing the check error."
+                    },
+                    "data": {
+                        "description": "Integration-specific structured error information that customers can use to get additional information about the error being reported."
+                    }
+                }
+            },
+            "Errors": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Error"
+                },
+                "description": "A list of errors that occurred while running this check. If this is provided and it's not empty, the result of this check will be considered to be errored by PassFort, regardless of the other contents of this response."
+            },
+            "ErrorType": {
+                "type": "string",
+                "enum": [
+                    "INVALID_CREDENTIALS",
+                    "INVALID_CONFIG",
+                    "MISSING_CHECK_INPUT",
+                    "INVALID_CHECK_INPUT",
+                    "PROVIDER_CONNECTION",
+                    "PROVIDER_MESSAGE",
+                    "UNSUPPORTED_DEMO_RESULT",
+                    "INTEGRATION"
+                ],
+                "description": "The type of error that is being reported."
+            },
+            "Metadata": {
+                "type": "object",
+                "required": [
+                    "protocol_version",
+                    "provider_name"
+                ],
+                "properties": {
+                    "protocol_version": {
+                        "type": "number",
+                        "example": 1
+                    },
+                    "provider_name": {
+                        "type": "string",
+                        "example": "Individual Screening Reference"
+                    }
+                }
+            },
+            "StartCheckResponse": {
+                "type": "object",
+                "required": [],
+                "properties": {
+                    "provider_id": {
+                        "$ref": "#/components/schemas/UUID"
+                    },
+                    "reference": {
+                        "type": "string",
+                        "example": "ABC-12345"
+                    },
+                    "custom_data": {
+                        "$ref": "#/components/schemas/CustomData"
+                    },
+                    "provider_data": {
+                        "$ref": "#/components/schemas/ProviderData"
+                    },
+                    "warnings": {
+                        "$ref": "#/components/schemas/Warnings"
+                    },
+                    "errors": {
+                        "$ref": "#/components/schemas/Errors"
+                    }
+                }
+            },
+            "StartCheckRequest": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "commercial_relationship",
+                    "check_input",
+                    "provider_config"
+                ],
+                "properties": {
+                    "id": {
+                        "$ref": "#/components/schemas/UUID",
+                        "description": "PassFort's ID for the check being run"
+                    },
+                    "demo_result": {
+                        "$ref": "#/components/schemas/DemoResultType"
+                    },
+                    "commercial_relationship": {
+                        "type": "string",
+                        "enum": [
+                            "DIRECT",
+                            "PASSFORT"
+                        ]
+                    },
+                    "check_input": {
+                        "$ref": "#/components/schemas/EntityData"
+                    },
+                    "provider_config": {
+                        "$ref": "#/components/schemas/ProviderConfig"
+                    },
+                    "provider_credentials": {
+                        "$ref": "#/components/schemas/ProviderCredentials"
+                    }
+                }
+            },
+            "PollCheckResponse": {
+                "type": "object",
+                "required": [],
+                "properties": {
+                    "provider_id": {
+                        "$ref": "#/components/schemas/UUID",
+                        "description": "Unique identifier for the provider. The reference field should uniquely identify a check when combined with the provider_id"
+                    },
+                    "reference": {
+                        "type": "string",
+                        "example": "ABC-12345",
+                        "description": "An opaque string identifying this check to the provider. No two checks from the same provider should have the same reference."
+                    },
+                    "custom_data": {
+                        "$ref": "#/components/schemas/CustomData"
+                    },
+                    "provider_data": {
+                        "$ref": "#/components/schemas/ProviderData"
+                    },
+                    "check_output": {
+                        "$ref": "#/components/schemas/EntityData"
+                    },
+                    "charges": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Charge"
+                        },
+                        "description": "A list of charges incurred while running this check. Charges may only be returned if no errors occurred (i.e. a result was generated) and the check is being resold (the commercial relationship is with PassFort). For demo checks, charges may be returned, but they will not be deducted from the institution's credit. If charges are returned, the total amount charged must be no greater than the maximum cost-per-check specified in the integration's configuration."
+                    },
+                    "warnings": {
+                        "$ref": "#/components/schemas/Warnings"
+                    },
+                    "errors": {
+                        "$ref": "#/components/schemas/Errors"
+                    }
+                }
+            },
+            "PollCheckRequest": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "commercial_relationship",
+                    "provider_config",
+                    "provider_id",
+                    "reference",
+                    "custom_data"
+                ],
+                "properties": {
+                    "id": {
+                        "$ref": "#/components/schemas/UUID"
+                    },
+                    "demo_result": {
+                        "$ref": "#/components/schemas/DemoResultType"
+                    },
+                    "commercial_relationship": {
+                        "$ref": "#/components/schemas/CommercialRelationshipType"
+                    },
+                    "provider_config": {
+                        "$ref": "#/components/schemas/ProviderConfig"
+                    },
+                    "provider_credentials": {
+                        "$ref": "#/components/schemas/ProviderCredentials"
+                    },
+                    "provider_id": {
+                        "$ref": "#/components/schemas/UUID"
+                    },
+                    "reference": {
+                        "type": "string"
+                    },
+                    "custom_data": {
+                        "$ref": "#/components/schemas/CustomData"
+                    }
+                }
+            },
+            "ProviderConfig": {
+                "type": "object"
+            },
+            "ProviderCredentials": {
+                "type": "object"
+            },
+            "ProviderData": {
+                "description": "The structured JSON data returned by the data provider, or a representation of the provider's response, to allow PassFort to investigate issues that may arise with your integration.",
+                "example": "Demo result. Did not make request to provider."
+            },
+            "ScreeningAddressMatch": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/ScreeningAddressMatchType"
+                    },
+                    "label": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "$ref": "#/components/schemas/Address"
+                    }
+                },
+                "required": [
+                    "type",
+                    "address"
+                ],
+                "title": "ScreeningAddressMatch"
+            },
+            "ScreeningAddressMatchType": {
+                "type": "string",
+                "enum": [
+                    "UNKNOWN"
+                ],
+                "x-derives": [
+                    "Copy"
+                ],
+                "title": "ScreeningAddressMatchType"
+            },
+            "ScreeningCountryMatch": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/ScreeningCountryMatchType"
+                    },
+                    "label": {
+                        "type": "string"
+                    },
+                    "country": {
+                        "$ref": "#/components/schemas/CountryCode"
+                    }
+                },
+                "required": [
+                    "country",
+                    "type"
+                ],
+                "title": "ScreeningCountryMatch"
+            },
+            "ScreeningCountryMatchType": {
+                "type": "string",
+                "enum": [
+                    "AFFILIATION",
+                    "CITIZENSHIP",
+                    "CURRENT_OWNERSHIP",
+                    "OWNERSHIP",
+                    "JURISDICTION",
+                    "REGISTRATION",
+                    "ALLEGATION",
+                    "RESIDENCE",
+                    "RISK",
+                    "FORMERLY_SANCTIONED",
+                    "SANCTIONED",
+                    "NATIONALITY",
+                    "UNKNOWN"
+                ],
+                "title": "ScreeningCountryMatchType"
+            },
+            "ScreeningDateMatch": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/ScreeningDateMatchType"
+                    },
+                    "label": {
+                        "type": "string"
+                    },
+                    "date": {
+                        "$ref": "#/components/schemas/PartialDate"
+                    }
+                },
+                "required": [
+                    "date",
+                    "type"
+                ],
+                "title": "ScreeningDateMatch"
+            },
+            "ScreeningDateMatchType": {
+                "type": "string",
+                "enum": [
+                    "DOB",
+                    "DECEASED",
+                    "END_OF_PEP",
+                    "END_OF_ASSOCIATION_TO_PEP",
+                    "UNKNOWN"
+                ],
+                "title": "ScreeningDateMatchType"
+            },
+            "ScreeningEventsMatcher": {
+                "type": "object",
+                "description": "A matcher used to compare whether one or more event types occur",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "SCREENING_EVENTS"
+                        ],
+                        "description": "The matcher type"
+                    },
+                    "comparison": {
+                        "type": "string",
+                        "enum": [
+                            "ONE_OR_MORE_CONFIRMED",
+                            "ONE_OR_MORE_POTENTIAL",
+                            "ONE_OR_MORE_IGNORED_POTENTIAL_CONFIRMED"
+                        ],
+                        "description": "The comparison between the property against the event types list"
+                    },
+                    "event_types": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "PEP_FLAG",
+                                "SANCTION_FLAG",
+                                "ADVERSE_MEDIA_FLAG",
+                                "REFER_FLAG"
+                            ]
+                        },
+                        "description": "List of event types to use in the matcher"
+                    }
+                },
+                "required": [
+                    "type",
+                    "comparison",
+                    "event_types"
+                ],
+                "title": "ScreeningEventsMatcher"
+            },
+            "ScreeningEventsTypeProperty": {
+                "type": "object",
+                "description": "A property capturing screening events produced from checks",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "SCREENING_EVENTS"
+                        ],
+                        "description": "The property type"
+                    }
+                },
+                "required": [
+                    "type"
+                ],
+                "title": "ScreeningEventsTypeProperty"
+            },
+            "ScreeningFlag": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/ScreeningFlagType"
+                    },
+                    "label": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "type"
+                ],
+                "title": "ScreeningFlag"
+            },
+            "ScreeningFlagType": {
+                "type": "string",
+                "enum": [
+                    "ADVERSE_MEDIA",
+                    "PEP",
+                    "REFER",
+                    "SANCTION"
+                ],
+                "title": "ScreeningFlagType"
+            },
+            "ScreeningHit": {
+                "type": "object",
+                "properties": {
+                    "provider": {
+                        "$ref": "#/components/schemas/ScreeningHitProvider"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/ScreeningHitStatus"
+                    },
+                    "flags": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ScreeningFlag"
+                        }
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/ScreeningHitData"
+                    }
+                },
+                "required": [
+                    "provider",
+                    "data"
+                ],
+                "title": "ScreeningHit"
+            },
+            "ScreeningHitAssociate": {
+                "type": "object",
+                "properties": {
+                    "association": {
+                        "$ref": "#/components/schemas/ScreeningHitAssociation"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/ScreeningHitDataBase"
+                    },
+                    "flags": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ScreeningFlag"
+                        }
+                    }
+                },
+                "required": [
+                    "association",
+                    "data",
+                    "flags"
+                ],
+                "title": "ScreeningHitAssociate"
+            },
+            "ScreeningHitAssociation": {
+                "type": "object",
+                "properties": {
+                    "label": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "label"
+                ],
+                "title": "ScreeningHitAssociation"
+            },
+            "ScreeningHitData": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/ScreeningHitDataBase"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "associates": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/ScreeningHitAssociate"
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            "ScreeningHitDataBase": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "addresses": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ScreeningAddressMatch"
+                        }
+                    },
+                    "aliases": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "associates": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ScreeningHitAssociate"
+                        }
+                    },
+                    "brand_text": {
+                        "type": "string"
+                    },
+                    "confidence_score": {
+                        "type": "number",
+                        "minimum": 0.0,
+                        "maximum": 1.0
+                    },
+                    "countries": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ScreeningCountryMatch"
+                        }
+                    },
+                    "dates": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ScreeningDateMatch"
+                        }
+                    },
+                    "deceased": {
+                        "type": "boolean"
+                    },
+                    "details": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ScreeningHitDetail"
+                        }
+                    },
+                    "gender": {
+                        "type": "string"
+                    },
+                    "sources": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ScreeningSource"
+                        }
+                    },
+                    "pep": {
+                        "$ref": "#/components/schemas/ScreeningPepData"
+                    },
+                    "sanctions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ScreeningSanctionData"
+                        }
+                    },
+                    "media": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/MediaArticle"
+                        }
+                    }
+                },
+                "required": [
+                    "name"
+                ],
+                "title": "ScreeningHitData"
+            },
+            "ScreeningHitDetail": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "text": {
+                        "type": "string"
+                    }
+                },
+                "title": "ScreeningHitDetail"
+            },
+            "ScreeningHitProvider": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "label": {
+                        "type": "string"
+                    },
+                    "hit_id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "name",
+                    "label",
+                    "hit_id"
+                ],
+                "title": "ScreeningHitProvider"
+            },
+            "ScreeningHitStatus": {
+                "type": "string",
+                "enum": [
+                    "MATCH",
+                    "MISMATCH",
+                    "UNRESOLVED"
+                ],
+                "x-derives": [
+                    "Copy"
+                ],
+                "title": "ScreeningHitStatus"
+            },
+            "ScreeningPepData": {
+                "type": "object",
+                "properties": {
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ScreeningPepRole"
+                        }
+                    },
+                    "tier": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "roles"
+                ],
+                "title": "ScreeningPepData"
+            },
+            "ScreeningPepRole": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "tier": {
+                        "type": "integer"
+                    },
+                    "tenure": {
+                        "$ref": "#/components/schemas/Tenure"
+                    }
+                },
+                "required": [
+                    "name"
+                ],
+                "title": "ScreeningPepRole"
+            },
+            "ScreeningSanctionData": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "list": {
+                        "$ref": "#/components/schemas/ScreeningSanctionsList"
+                    },
+                    "issued_by": {
+                        "type": "string"
+                    },
+                    "time_periods": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Tenure"
+                        }
+                    }
+                },
+                "required": [
+                    "name"
+                ],
+                "title": "ScreeningSanctionData"
+            },
+            "ScreeningSanctionsList": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "name"
+                ],
+                "title": "ScreeningSanctionsList"
+            },
+            "ScreeningSource": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "name"
+                ],
+                "title": "ScreeningSource"
+            },
+            "Warning": {
+                "type": "object",
+                "required": [
+                    "type",
+                    "message"
+                ],
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/ErrorType"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Warnings": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Warning"
+                },
+                "description": "Similar to 'errors' except that the sub_type and data fields are not present and providing warnings will not cause PassFort to consider the check as errored."
+            },
+            "UUID": {
+                "description": "[Universally unique identifier.](https://en.wikipedia.org/wiki/Universally_unique_identifier)",
+                "type": "string",
+                "pattern": "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$",
+                "example": "01234567-89ab-cdef-0123-456789abcdef",
+                "title": "UUID"
+            }
+        }
+    }
+}

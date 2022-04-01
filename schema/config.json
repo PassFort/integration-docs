@@ -1,0 +1,16 @@
+{
+    "tagGroups": [
+        {
+            "title": "Defining your integration",
+            "tags": [
+                "common"
+            ]
+        },
+        {
+            "title": "Running a check",
+            "tags": [
+                "check"
+            ]
+        }
+    ]
+}

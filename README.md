@@ -6,6 +6,20 @@ Deployed to https://passfort.github.io/integration-docs/
 
 Built using [Slate](https://github.com/slatedocs/slate)
 
+# Experimental branch
+
+We plan to move to generating a large portion of these docs from OpenAPI schema. 
+
+The tool [widdershins](https://github.com/Mermade/widdershins) can be used to generate files compatible with `slate` as follows
+
+```
+widdershins --summary --environment schema/config.json schema/one-time-polled-screening.json -o source/experimental.html.md.erb
+```
+
+The generated documentation site can then be viewed by following the normal instructions below.
+
+
+
 ### Dev Usage
 
 1. Clone this repository
