@@ -340,7 +340,15 @@ app.post("/search", (req, res) => {
       <td><code>number</code></td>
       <td>string</td>
       <td>Yes</td>
-      <td>The company's number.</td>
+      <td>The company's number or identifier in some registry.</td>
+    </tr>
+    <tr>
+      <td><code>number_label</code></td>
+      <td>string</td>
+      <td>No</td>
+      <td>Text to use as a label to explain the <code>number</code>, such
+      	  as "Company number", "Charity number", "VAT number" etc.
+      </td>
     </tr>
     <tr>
       <td><code>country_of_incorporation</code></td>
@@ -370,7 +378,66 @@ app.post("/search", (req, res) => {
         structured as it is in <a href="#data-structure">the PassFort API</a>
       </td>
     </tr>
-  </tbody>
+    <tr>
+      <td><code>addresses</code></td>
+      <td>
+        A list of CompanyAddress objects
+      </td>
+      <td>No</td>
+      <td>
+        Addresses of the company, with each CompanyAddress object structured
+        as it is in <a href="#data-structure">the PassFort API</a>.
+      </td>
+    </tr>
+    <tr>
+      <td><code>contact</code></td>
+      <td>
+        A CompanyContactDetails object
+      </td>
+      <td>No</td>
+      <td>
+        Contact details for the company, in an object structured as it
+        is in <a href="#data-structure">the PassFort API</a>.
+      </td>
+    </tr>
+    <tr>
+      <td><code>incorporation_date</code></td>
+      <td>
+        string
+      </td>
+      <td>No</td>
+      <td>
+        Exact date in YYYY-MM-DD format
+      </td>
+    </tr>
+    <tr>
+      <td><code>structure_type</code></td>
+      <td>
+        A StructuredCompanyType object
+      </td>
+      <td>No</td>
+      <td>
+        An object describing the company type: its members' liability, its
+        ownership structure, and whether it is traded publicly. The object is
+        structured as it is in <a href="#data-structure">the PassFort API</a>.
+      </td>
+    </tr>
+    <tr>
+      <td><code>lei</code></td>
+      <td>string</td>
+      <td>No</td>
+      <td>Global Legal Entity Identifier</td>
+    </tr>
+    <tr>
+      <td><code>tax_ids</code></td>
+      <td>List of TaxId objects</td>
+      <td>No</td>
+      <td>
+        Tax identifiers, with each TaxId object structured as in <a
+        href="#data-structure">the PassFort API</a>.
+      </td>
+    </tr>
+</tbody>
 </table>
 
 ## Provider Field Checks
