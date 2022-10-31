@@ -248,7 +248,7 @@ app.post("/search", (req, res) => {
       <td>If search did not error</td>
       <td>
         Indicates the list of candidates for this search. If supported by the provider,
-        they should be sorted by match likliness with the best match first.
+        they should be sorted by match likelihood with the best match first.
       </td>
     </tr>
     <tr>
@@ -259,10 +259,10 @@ app.post("/search", (req, res) => {
       </td>
       <td>No</td>
       <td>
-        A list of errors that occurred while running this search. If this is
-        provided and it's not empty, the result of this search will be
-        considered to be errored by PassFort, regardless of the other contents
-        of this response.
+        A list of errors that occurred while running this search. If
+        this is provided and is not empty, PassFort will consider the
+        result of this search to be errored, regardless of the other
+        contents of this response.
       </td>
     </tr>
     <tr>
@@ -335,13 +335,21 @@ app.post("/search", (req, res) => {
       <td>string</td>
       <td>Yes</td>
       <td>The registered name of the company.</td>
-    <tr>
+    </tr>
     <tr>
       <td><code>number</code></td>
       <td>string</td>
       <td>Yes</td>
-      <td>The company's number.</td>
+      <td>The company's number or identifier in some registry.</td>
+    </tr>
     <tr>
+      <td><code>number_label</code></td>
+      <td>string</td>
+      <td>No</td>
+      <td>Text to use as a label to explain the <code>number</code>, such
+      	  as "Company number", "Charity number", "VAT number" etc.
+      </td>
+    </tr>
     <tr>
       <td><code>country_of_incorporation</code></td>
       <td>string</td>
@@ -350,7 +358,7 @@ app.post("/search", (req, res) => {
         The <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3">ISO3 country code</a>
         for the country where the company is incorporated.
       </td>
-    <tr>
+    </tr>
     <tr>
       <td><code>status</code></td>
       <td>string</td>
@@ -358,7 +366,7 @@ app.post("/search", (req, res) => {
       <td>
         A string describing the current functioning of the company (e.g. "Active" or "Dissolved")
       </td>
-    <tr>
+    </tr>
     <tr>
       <td><code>provider_reference</code></td>
       <td>
@@ -369,8 +377,67 @@ app.post("/search", (req, res) => {
         An object uniquely identifying this candidate from this provider,
         structured as it is in <a href="#data-structure">the PassFort API</a>
       </td>
+    </tr>
     <tr>
-  </tbody>
+      <td><code>addresses</code></td>
+      <td>
+        A list of CompanyAddress objects
+      </td>
+      <td>No</td>
+      <td>
+        Addresses of the company, with each CompanyAddress object structured
+        as it is in <a href="#data-structure">the PassFort API</a>.
+      </td>
+    </tr>
+    <tr>
+      <td><code>contact</code></td>
+      <td>
+        A CompanyContactDetails object
+      </td>
+      <td>No</td>
+      <td>
+        Contact details for the company, in an object structured as it
+        is in <a href="#data-structure">the PassFort API</a>.
+      </td>
+    </tr>
+    <tr>
+      <td><code>incorporation_date</code></td>
+      <td>
+        string
+      </td>
+      <td>No</td>
+      <td>
+        Exact date in YYYY-MM-DD format
+      </td>
+    </tr>
+    <tr>
+      <td><code>structure_type</code></td>
+      <td>
+        A StructuredCompanyType object
+      </td>
+      <td>No</td>
+      <td>
+        An object describing the company type: its members' liability, its
+        ownership structure, and whether it is traded publicly. The object is
+        structured as it is in <a href="#data-structure">the PassFort API</a>.
+      </td>
+    </tr>
+    <tr>
+      <td><code>lei</code></td>
+      <td>string</td>
+      <td>No</td>
+      <td>Global Legal Entity Identifier</td>
+    </tr>
+    <tr>
+      <td><code>tax_ids</code></td>
+      <td>List of TaxId objects</td>
+      <td>No</td>
+      <td>
+        Tax identifiers, with each TaxId object structured as in <a
+        href="#data-structure">the PassFort API</a>.
+      </td>
+    </tr>
+</tbody>
 </table>
 
 ## Provider Field Checks
