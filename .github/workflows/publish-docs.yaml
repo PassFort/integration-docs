@@ -15,4 +15,9 @@ jobs:
         with:
           REMOTE_BRANCH: gh-pages
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          # The token is from the `passfort-deploy` account, and is provided
+          # via configuration of the GitHub repository containing this file;
+          # the SRE team members have admin-powers for access to that
+          # configuration. It is used to force-push to this repository's
+          # `gh-pages` branch.
         uses: PassFort/middleman-gh-pages-action@master
