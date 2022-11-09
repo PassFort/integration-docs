@@ -4,11 +4,11 @@
 
 The identifier for this feature is `COMPANY_SEARCH`.
 
-In order to run a successful company data check a company must be uniquely 
+In order to run a successful company data check, a company must be uniquely 
 identified. Some company data providers allow searching through the candidates 
 in their dataset in order to identify the company to be checked.
 
-This endpoint exposes your data provider's company search functionality to 
+This endpoint exposes your data provider&apos;s company search functionality to 
 PassFort.
 
 ### HTTP Request
@@ -49,8 +49,8 @@ The payload of the request can contain the following fields
       <td>Yes</td>
       <td>
         Specified whether the search is for a customer with a direct
-        relationship with your integration's data provider, or if they are
-        using the search feature through PassFort's pay-as-you-go reselling scheme.
+        relationship with your integration&apos;s data provider, or if they are
+        using the search feature through PassFort&apos;s pay-as-you-go reselling scheme.
       </td>
     </tr>
     <tr>
@@ -67,8 +67,8 @@ The payload of the request can contain the following fields
       <td>A user-defined JSON object</td>
       <td>Yes</td>
       <td>
-        This field contains the provider config structured in the way
-        specified by your integration's
+        This field contains the provider configuration structured in the way
+        specified by your integration&apos;s
         <a href="#get-check-configuration-one-time-sync-company-data">
           configuration endpoint
         </a>, with the <code>name</code> field corresponding to the key, and
@@ -81,7 +81,7 @@ The payload of the request can contain the following fields
       <td>No</td>
       <td>
         This field contains the credentials structured in the way
-        specified by your integration's
+        specified by your integration&apos;s
         <a href="#get-check-configuration-one-time-sync-company-data">
           configuration endpoint
         </a>, with the <code>name</code> field corresponding to the key, and
@@ -286,7 +286,7 @@ app.post("/search", (req, res) => {
       <td>No</td>
       <td>
         This should be the structured JSON data returned by the data provider,
-        or a conversion of the data provider's response, to allow
+        or a conversion of the data provider&apos;s response, to allow
         PassFort to investigate issues that may arise with your integration.
       </td>
     </tr>
@@ -308,11 +308,11 @@ app.post("/search", (req, res) => {
           </li>
         </ul>
         
-        For demo searches, charges may be returned, but they will not be deducted
-        from the institution's credit.
+        For demo searches, charges may be returned but they will not be deducted
+        from the institution&apos;s credit.
         
         If charges are returned, the total amount charged must be no greater
-        than the maximum cost-per-check specified in the integration's
+        than the maximum cost-per-check specified in the integration&apos;s
         configuration.
       </td>
     </tr>
@@ -340,7 +340,7 @@ app.post("/search", (req, res) => {
       <td><code>number</code></td>
       <td>string</td>
       <td>Yes</td>
-      <td>The company's number or identifier in some registry.</td>
+      <td>The company&apos;s number or identifier in some registry.</td>
     </tr>
     <tr>
       <td><code>number_label</code></td>
@@ -417,7 +417,7 @@ app.post("/search", (req, res) => {
       </td>
       <td>No</td>
       <td>
-        An object describing the company type: its members' liability, its
+        An object describing the company type: its members&apos; liability, its
         ownership structure, and whether it is traded publicly. The object is
         structured as it is in <a href="#data-structure">the PassFort API</a>.
       </td>
@@ -436,6 +436,12 @@ app.post("/search", (req, res) => {
         Tax identifiers, with each TaxId object structured as in <a
         href="#data-structure">the PassFort API</a>.
       </td>
+    </tr>
+    <tr>
+      <td><code>bvd_id</code></td>
+      <td>string</td>
+      <td>No</td>
+      <td>Moody&apos;s unique company identifier</td>
     </tr>
 </tbody>
 </table>
