@@ -4,7 +4,7 @@
 
 The identifier for this feature is `COMPANY_SEARCH`.
 
-In order to run a successful company data check a company must be uniquely 
+In order to run a successful company data check, a company must be uniquely 
 identified. Some company data providers allow searching through the candidates 
 in their dataset in order to identify the company to be checked.
 
@@ -67,7 +67,7 @@ The payload of the request can contain the following fields
       <td>A user-defined JSON object</td>
       <td>Yes</td>
       <td>
-        This field contains the provider config structured in the way
+        This field contains the provider configuration structured in the way
         specified by your integration&apos;s
         <a href="#get-check-configuration-one-time-sync-company-data">
           configuration endpoint
@@ -308,7 +308,7 @@ app.post("/search", (req, res) => {
           </li>
         </ul>
         
-        For demo searches, charges may be returned, but they will not be deducted
+        For demo searches, charges may be returned but they will not be deducted
         from the institution&apos;s credit.
         
         If charges are returned, the total amount charged must be no greater
