@@ -100,6 +100,12 @@ Subtypes:
       requested country.
     </td>
   </tr>
+  <tr>
+    <td><code>MISSING_CONTACT_DETAILS</code></td>
+    <td>
+      Contact details are missing from the check input.
+    </td>
+  </tr>
 </tbody>
 </table>
 
