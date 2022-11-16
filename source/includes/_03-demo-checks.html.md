@@ -143,8 +143,8 @@ the provider supports this.
 
 ### Demo results for Document Checks
 
-These demo results are specific to Document Verification and Document Fetch
-checks.
+These demo results are specific to Document Verification and Document Fetch 
+checks unless otherwise specified.
 
 #### `ERROR_UNSUPPORTED_DOCUMENT_TYPE` <span style="float:right">Required</span>
 
@@ -196,6 +196,13 @@ Document Verification checks.
 Your integration must return a result indicating that the document reference
 passed as part of the check input was invalid.
 
+#### `ERROR_MISSING_CONTACT_DETAILS` <span style="float:right">Conditional</span>
+
+This demo result is optional for Document Fetch checks. It is not used for
+Document Verification checks.
+
+Your integration must return an error indicating that the contact details field 
+is missing from the check input.
 
 ### Demo results for Company Data Checks
 
