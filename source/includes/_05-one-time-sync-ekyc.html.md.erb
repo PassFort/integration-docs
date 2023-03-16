@@ -328,7 +328,7 @@ app.post("/checks", (req, res) => {
 
 ### Response fields
 
-<table>
+<table id="check-response-fields">
   <thead>
     <th>Field</th>
     <th>Type</th>
@@ -338,12 +338,26 @@ app.post("/checks", (req, res) => {
   <tbody>
     <tr>
       <td><code>check_output</code></td>
-      <td>Object structured per <code>check_output</code> below</td>
+      <td>Object structured in <a href=#check_output>check_output</a> below</td>
       <td>If check did not error</td>
       <td>
         Indicates the result data for this check. See the
         <code>check_output</code> section for the full structure of
-        this check.
+        this check. In the absence of a result, PassFort tries to
+        interpret a result from the <code>check_output</code>.
+      </td>
+    </tr>
+    <tr>
+      <td><code>result</code></td>
+      <td>A supported <a href="#result">result type</a></td>
+      <td>Only when there is no <code>check_output</code></td>
+      <td>
+        Indicates the result of this check. If this is not empty,
+        this is the result of the check in PassFort. The result 
+        field should only be populated when the provider does not give enough 
+        information to generate a suitable <code>check_output</code>, or if the user has 
+        explicitly requested to use the raw provider result without 
+        PassFort's interpretation.
       </td>
     </tr>
     <tr>
@@ -414,6 +428,43 @@ app.post("/checks", (req, res) => {
   </tbody>
 </table>
 
+### `result`
+The result types currently supported are:
+<table>
+ <thead>
+  <th>Result type</th>
+  <th>Description</th>
+</thead>
+<tbody>
+  <tr>
+    <td><code>Pass</code></td>
+    <td>
+      The check was successful.
+    </td>
+  </tr>
+  <tr>
+    <td><code>Fail</code></td>
+    <td>
+      The check is not successful.
+    </td>
+  </tr>
+  <tr>
+    <td><code>Error</code></td>
+    <td>The check returns an error.</td>
+  </tr>
+  </tr>
+  <tr>
+    <td><code>1+1</code></td>
+    <td>Definition varies based on provider.</td>
+  </tr>
+    </tr>
+  <tr>
+  <td><code>2+2</code></td>
+    <td>Definition varies based on provider.</td>
+  </tr>
+</tbody>
+</table>
+
 #### `check_output`
 
 <table>
@@ -446,13 +497,43 @@ app.post("/checks", (req, res) => {
       </td>
     </tr>
     <tr>
-      <td><code>electronic_id_check.matches</code></td>
+      <td><code>electronic_id_check</code></td>
       <td>
-        An array containing one or more Identity Check matches
+        Object structured in <a href=#electronic_id_check>electronic_id_check</a>
       </td>
       <td>Yes</td>
       <td>
+        The resulting matches of an EKYC check.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+### `electronic_id_check`
+<table>
+  <thead>
+    <th>Field</th>
+    <th>Type</th>
+    <th>Required?</th>
+    <th>Description</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>matches</code></td>
+      <td>An array containing one or more Identity Check matches</td>
+      <td>Only when <code>result</code> is 
+        not present in the <a href=#check-response-fields>Response</a></td>
+      <td>
         See the Identity Check matches section below.
+      </td>
+    </tr>
+    <tr>
+      <td><code>provider_url</code></td>
+      <td>string </td>
+      <td>No</td>
+      <td>
+        A link to an external provider page containing metadata for the associated check.
       </td>
     </tr>
   </tbody>
