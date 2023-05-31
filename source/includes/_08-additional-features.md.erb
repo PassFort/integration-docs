@@ -1,4 +1,4 @@
-# Additional Features
+# Supported Features
 
 ## Company Search 
 
@@ -9,7 +9,7 @@ identified. Some company data providers allow searching through the candidates
 in their dataset in order to identify the company to be checked.
 
 This endpoint exposes your data provider&apos;s company search functionality to 
-PassFort.
+Passfort.
 
 ### HTTP Request
 
@@ -470,7 +470,8 @@ should be surfaced using the <code>field_checks</code> attribute of the <code>ch
       <td><code>field</code></td>
       <td>string</td>
       <td>Yes</td>
-      <td>The field that the result refers to. One of <code>["NAME", "NUMBER", "COUNTRY_OF_INCORPORATION", "IS_ACTIVE", "LEI", "ADDRESS"]</code></td>
+      <td>The field that the result refers to. One of 
+      <code>["NAME", "NUMBER", "COUNTRY_OF_INCORPORATION", "IS_ACTIVE", "LEI", "ADDRESS"]</code></td>
     <tr>
     <tr>
       <td><code>result</code></td>
@@ -480,3 +481,114 @@ should be surfaced using the <code>field_checks</code> attribute of the <code>ch
     <tr>
   </tbody>
 </table>
+
+## Embedding or linking an external webpage
+
+Integrations have the option to include a URL within the check result. This URL can then either be displayed as a link or used to embed the resulting webpage within Passfort.
+
+The identifier for this feature is either <code>EXTERNAL_LINK</code> or <code>EXTERNAL_EMBED</code> depending on how you intend to surface the external resource. This feature is compatible with all of our supported check types.
+
+The `external_resources` object includes: whether the external resource is displayed as a link or an embed, the url, id, and a label describing the resource. 
+
+
+>This endpoint returns JSON in the following format:
+
+```json
+<%=pretty_json("responses/run_check_sync_company_custom", "json") %>
+```
+
+<table>
+  <thead>
+    <th>Field</th>
+    <th>Type</th>
+    <th>Required?</th>
+    <th>Description</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>type</code></td>
+      <td>"EMBED"</a></td>
+      <td>No</td>
+      <td>The type of external resource that is being reported.</td>
+    </tr>
+    <tr>
+      <td><code>url</code></td>
+      <td>string</code></td>
+      <td>No</td>
+      <td>Provides additional detail for certain types of error.</td>
+    </tr>
+    <tr>
+      <td><code>id</code></td>
+      <td>string</td>
+      <td>Yes</td>
+      <td>
+        The <code>external_resource</code> identifier.
+      </td>
+    </tr>
+    <tr>
+      <td><code>label</code></td>
+      <td>string</td>
+      <td>No</td>
+      <td>
+        Integration-specific structured error information that customers can
+        use to get additional information about the error being reported.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+### Authentication
+
+Passfort makes a request to your application via a signed url, which contains arguments as query parameters:
+
+<code>https://your-url.com/<your-id>?version=<version>&valid_until=<valid_until>&auditee_id=<auditee_id>&signature=<signature></code>
+
+The list of query parameter arguments is shown below, and is delivered in this order:
+
+<table>
+  <thead>
+    <th>Field</th>
+    <th>Type</th>
+    <th>Required?</th>
+    <th>Description</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>custom_data</code></td>
+      <td>string</td>
+      <td>No</td>
+      <td>Any other parameters the integration wishes to have provided.</td>
+    </tr>
+    <tr>
+      <td><code>version</code></td>
+      <td>string</td>
+      <td>Yes</td>
+      <td>Versioning information for the signed URL.</td>
+    </tr>
+    <tr>
+      <td><code>valid_until</code></td>
+      <td>string</td>
+      <td>Yes</td>
+      <td>The epoch time the URL is considered valid until. Requests after this time will be deemed unauthentic by your integration.</td>
+    </tr>
+    <tr>
+      <td><code>auditee_id</code></td>
+      <td>string</td>
+      <td>Yes</td>
+      <td>UUID identifying the user or API key viewing the check.</td>
+    </tr>
+    <tr>
+      <td><code>signature</code></td>
+      <td>string</td>
+      <td>Yes</td>
+      <td>A base64url encoding of the SHA-256 HMAC of the entire URL, excluding the signature parameter.</td>
+    </tr>
+  </tbody>
+</table>
+
+
+The signature contains a HMAC of the entire URL excluding &signature=<signature>, and can be verified using a shared secret between Passfort and your backend systems.
+
+The entire base URL (https://you-url.com/<your-id>) is returned by your integration as part of the result. It’s worth noting this URL should be considered permanent, meaning the content it serves should not change over time.
+
+

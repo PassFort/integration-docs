@@ -1,0 +1,18 @@
+{
+    "id": "01234567-89ab-cdef-0123-456789abcdef",
+    "demo_result": "ANY",
+    "commercial_relationship": "DIRECT",
+    "check_input": {
+      "entity_type": "COMPANY",
+      "metadata": {
+        "name": "Example Co.",
+        "number": "123456",
+        "country_of_incorporation": "GBR"
+      }
+    },
+    "provider_config": {
+    },
+    "provider_credentials": {
+      "apikey": "foobar"
+    }
+  }
