@@ -24,7 +24,9 @@
                     "personal_details": {
                         "name": {
                             "family_name": "Person",
-                            "given_names": ["Example"]
+                            "given_names": [
+                                "Example"
+                            ]
                         },
                         "dob": "1985-10-26",
                         "nationality": "GBR"
@@ -32,25 +34,31 @@
                 },
                 "verification_result": {
                     "all_passed": true,
-                    "image_checks": [{
-                        "category": "Image Quality",
-                        "type": "Image resolution",
-                        "result": "PASS"
-                    }, {
-                        "category": "Image Quality",
-                        "type": "Image sharpness",
-                        "result": "PASS"
-                    }],
+                    "image_checks": [
+                        {
+                            "category": "Image Quality",
+                            "type": "Image resolution",
+                            "result": "PASS"
+                        },
+                        {
+                            "category": "Image Quality",
+                            "type": "Image sharpness",
+                            "result": "PASS"
+                        }
+                    ],
                     "image_checks_passed": true,
-                    "forgery_checks": [{
-                        "category": "Document Fonts",
-                        "type": "Title uses correct font",
-                        "result": "PASS"
-                    }, {
-                        "category": "Checksum",
-                        "type": "MRZ has a valid checksum",
-                        "result": "PASS"
-                    }],
+                    "forgery_checks": [
+                        {
+                            "category": "Document Fonts",
+                            "type": "Title uses correct font",
+                            "result": "PASS"
+                        },
+                        {
+                            "category": "Checksum",
+                            "type": "MRZ has a valid checksum",
+                            "result": "PASS"
+                        }
+                    ],
                     "forgery_checks_passed": true,
                     "document_type_passed": true
                 }
