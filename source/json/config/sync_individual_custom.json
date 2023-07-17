@@ -1,0 +1,31 @@
+{
+  "check_type": "INDIVIDUAL_CUSTOM",
+  "check_template": {
+    "type": "ONE_TIME_SYNCHRONOUS",
+    "timeout": 60
+  },
+  "pricing": {
+    "supports_reselling": false
+  },
+  "supported_countries": [
+    "GBR",
+    "USA",
+    "CAN",
+    "NLD"
+  ],
+  "supported_features": [
+    "EXTERNAL_EMBED"
+  ],
+  "credentials": {
+    "fields": [
+      {
+        "type": "string",
+        "name": "apikey",
+        "label": "API Key"
+      }
+    ]
+  },
+  "config": {
+    "fields": []
+  }
+}
