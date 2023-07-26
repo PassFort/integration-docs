@@ -1,17 +1,17 @@
-# One-time Sync Company Custom 
+# One-time Sync Individual Custom 
 
-This section lists all endpoints that must be implemented for a one-time synchronous Company Custom check integration.
+This section lists all endpoints that must be implemented for a one-time synchronous Individual Custom check integration.
 
-One-time synchronous company custom checks are custom checks with the following behavior:
+One-time synchronous individual custom checks are custom checks with the following behavior:
 
     * The check result is returned directly upon request; the response is not sent until the check is finished (synchronous).
     
     * This one-time check operates at a point in time, meaning the check result is returned once and there is no ongoing monitoring.
 
 
-## Get check configuration for one-time sync Company custom
+## Get check configuration for one-time sync Individual custom
 
-<%= partial("includes/partials/config.md.erb", :locals => { :name => "sync_company_custom" }) %>
+<%= partial("includes/partials/config.md.erb", :locals => { :name => "sync_individual_custom" }) %>
 
 This endpoint specifies the configuration used by PassFort for performing a
 one-time synchronous custom check using your integration.
@@ -23,11 +23,11 @@ one-time synchronous custom check using your integration.
 ### Response fields
 
 Most configuration fields are already discussed in the [configuration
-section](#configuration). The following options are specific to the Company custom check.
+section](#configuration). The following options are specific to the Individual custom check.
 
 #### Check type
 
-The `check_type` field must be set to `"COMPANY_CUSTOM"`.
+The `check_type` field must be set to `"INDIVIDUAL_CUSTOM"`.
 
 #### Check template
 
@@ -68,7 +68,7 @@ The `check_template` fields for this check are:
   :role => :server,
 }) %>
 
-## Run a one-time sync Company custom check
+## Run a one-time sync Individual custom check
 
 This endpoint exposes your data provider's check results to Passfort.
 
@@ -79,7 +79,7 @@ This endpoint exposes your data provider's check results to Passfort.
 >A JSON payload following this structure is sent to the endpoint:
 
 ```json
-<%= pretty_json("requests/run_check_sync_company_custom", "json") %>
+<%= pretty_json("requests/run_check_sync_individual_custom", "json") %>
 ```
 
 The payload of the request can contain the following fields:
@@ -120,17 +120,17 @@ The payload of the request can contain the following fields:
       <td>Yes</td>
       <td>
         Specifies whether the check is for a customer with a direct
-        relationship with your integration's data provider or if they\'re
-        using the check through Passfort's pay-as-you-go reselling scheme. 
-        Reselling is not available for Company Custom Check.
+        relationship with your integration''s data provider or if they''re
+        using the check through Passfort''s pay-as-you-go reselling scheme. 
+        Reselling is not available for Individual Custom Check.
       </td>
     </tr>
     <tr>
       <td><code>check_input</code></td>
-      <td>A <code>CompanyData</code> object</td>
+      <td>A <code>IndividualData</code> object</td>
       <td>Yes</td>
       <td>  
-      This field contains the profile information on the company the
+      This field contains the profile information on the individual the
         custom check should be run for. See the
         <a href="#check-input">Passfort Data Structure check input</a> section
         for more information on how profile data is structured within Passfort.
@@ -143,7 +143,7 @@ The payload of the request can contain the following fields:
       <td>
         This field contains the provider config structured in the way
         specified by your integration''s
-        <a href="#get-check-configuration-one-time-sync-company-custom">
+        <a href="#get-check-configuration-one-time-sync-individual-custom">
           configuration endpoint
         </a>, with the <code>name</code> field corresponding to the key, and
         the value being the <code>value</code> of the configuration option.
@@ -156,7 +156,7 @@ The payload of the request can contain the following fields:
       <td>
         This field contains the credentials structured in the way
         specified by your integration''s
-        <a href="#get-check-configuration-one-time-sync-company-custom">
+        <a href="#get-check-configuration-one-time-sync-individual-custom">
           configuration endpoint
         </a>, with the <code>name</code> field corresponding to the key, and
         the value being the <code>value</code> of the configuration option. <strong>This
@@ -314,23 +314,38 @@ app.post("/checks", (req, res) => {
   <tbody>
     <tr>
       <td><code>entity_type</code></td>
-      <td>The value <code>"COMPANY"</code></td>
+      <td>The value <code>"INDIVIDUAL"</code></td>
       <td>Yes</td>
       <td>
-        The only supported entity type for Company Custom Checks
-        is company.
+        The only supported entity type for Individual Custom Checks
+        is individual.
       </td>
     </tr>
     <tr>
     <tr>
-      <td><code>external_refs</code></td>
+      <td><code>personal_details</code></td>
       <td>Object</td>
-      <td>Yes</td>
+      <td>No</td>
       <td>
-        A provider defined identifier assigned to the profiles or check being run. 
+        A data object containing Personal information about an individual. Refer to <a href="https://developer.passfort.com/api#tag/Profiles/paths/~1profiles~1%7Bprofile_id%7D~1collected_data/post">Passfort API Documentation</a> for additional details.
       </td>
     </tr>
     <tr>
+    <tr>
+      <td><code>contact_details</code></td>
+      <td>Object</td>
+      <td>No</td>
+      <td>
+        The phone number and email for the individual the check is run against. 
+      </td>
+    </tr>
+    <tr>
+      <td><code>documents_metadata</code></td>
+      <td>Object</td>
+      <td>No</td>
+      <td>Any additional identity numbers that individual has. Note that the individual''s national identity number(s) is stored in <code>personal_details.national_identity_number</code>
+      </td>
+    </tr>
     <tr>
       <td><code>customer_refs</code></td>
       <td>String</td>
@@ -340,69 +355,16 @@ app.post("/checks", (req, res) => {
       </td>
     </tr>
     <tr>
-      <td><code>metadata</code></td>
+      <td><code>address_history</code></td>
+      <td>Object</td>
+      <td>No</td>
       <td>
-        An object containing the registry data, structured as it is
-        in <a href="#data-structure">the PassFort API</a>.
+        A list of addresses in which the individual has lived. Each of these can have an approximate start and end date. Refer to <a href="https://developer.passfort.com/api#tag/Profiles/paths/~1profiles~1%7Bprofile_id%7D~1collected_data/post">Passfort API Documentation</a> for additional details.
       </td>
-      <td>If a match was found by the provider</td>
-      <td>A best effort should be made to populate all fields supported by the provider</td>
     </tr>
   </tbody>
 </table>
 
-#### `check_input.metadata`
-
-<table>
-  <thead>
-    <th>Field</th>
-    <th>Type</th>
-    <th>Always Present?</th>
-    <th>Description</th>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>addresses</code></td>
-      <td><code>List</code></td>
-      <td>No</td>
-      <td>
-        List of addresses associated with the company
-      </td>
-    </tr>
-    <tr>
-      <td><code>number</code></td>
-      <td><code>String</code></td>
-      <td>No</td>
-      <td>
-        Optional field for company number.
-      </td>
-    </tr>
-    <tr>
-      <td><code>bvd_id</code></td>
-      <td><code>UUID</code></td>
-      <td>No</td>
-      <td>
-        The bvd_id associated with the company.
-      </td>
-    </tr>
-    <tr>
-      <td><code>country_of_incorporation</code></td>
-      <td><code>String</code></td>
-      <td>No</td>
-      <td>
-        The country of incorporation.
-      </td>
-    </tr>
-    <tr>
-      <td><code>state_of_incorporation</code></td>
-      <td><code>String</code></td>
-      <td>No</td>
-      <td>
-        The state of incorporation.
-      </td>
-    </tr>
-  </tbody>
-</table>
 
 
 ### Response fields
@@ -424,7 +386,7 @@ app.post("/checks", (req, res) => {
       <td>No</td>
       <td>
         A list of errors that occurred while running this check. If this is
-        provided and it's not empty, the result of this check will be
+        provided and it''s not empty, the result of this check will be
         considered to be errored by PassFort, regardless of the other contents
         of this response.
       </td>
@@ -450,7 +412,7 @@ app.post("/checks", (req, res) => {
       <td>No</td>
       <td>
         This should be the structured JSON data returned by the data provider,
-        or a conversion of the data provider's response, to allow
+        or a conversion of the data provider''s response, to allow
         PassFort to investigate issues that may arise with your integration.
       </td>
     </tr>
@@ -460,7 +422,7 @@ app.post("/checks", (req, res) => {
 >This endpoint should return JSON in the following format:
 
 ```json
-<%= pretty_json("responses/run_check_sync_company_custom", "json") %>
+<%= pretty_json("responses/run_check_sync_individual_custom", "json") %>
 ```
 #### `check_output`
 
