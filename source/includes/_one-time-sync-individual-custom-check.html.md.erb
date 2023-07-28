@@ -120,8 +120,8 @@ The payload of the request can contain the following fields:
       <td>Yes</td>
       <td>
         Specifies whether the check is for a customer with a direct
-        relationship with your integration''s data provider or if they''re
-        using the check through Passfort''s pay-as-you-go reselling scheme. 
+        relationship with your integration's data provider or if they're
+        using the check through Passfort's pay-as-you-go reselling scheme. 
         Reselling is not available for Individual Custom Check.
       </td>
     </tr>
@@ -142,7 +142,7 @@ The payload of the request can contain the following fields:
       <td>Yes</td>
       <td>
         This field contains the provider config structured in the way
-        specified by your integration''s
+        specified by your integration's
         <a href="#get-check-configuration-one-time-sync-individual-custom">
           configuration endpoint
         </a>, with the <code>name</code> field corresponding to the key, and
@@ -155,7 +155,7 @@ The payload of the request can contain the following fields:
       <td>No</td>
       <td>
         This field contains the credentials structured in the way
-        specified by your integration''s
+        specified by your integration's
         <a href="#get-check-configuration-one-time-sync-individual-custom">
           configuration endpoint
         </a>, with the <code>name</code> field corresponding to the key, and
@@ -343,7 +343,7 @@ app.post("/checks", (req, res) => {
       <td><code>documents_metadata</code></td>
       <td>Object</td>
       <td>No</td>
-      <td>Any additional identity numbers that individual has. Note that the individual''s national identity number(s) is stored in <code>personal_details.national_identity_number</code>
+      <td>Any additional identity numbers that individual has. Note that the individual's national identity number(s) is stored in <code>personal_details.national_identity_number</code>
       </td>
     </tr>
     <tr>
@@ -386,7 +386,7 @@ app.post("/checks", (req, res) => {
       <td>No</td>
       <td>
         A list of errors that occurred while running this check. If this is
-        provided and it''s not empty, the result of this check will be
+        provided and it's not empty, the result of this check will be
         considered to be errored by PassFort, regardless of the other contents
         of this response.
       </td>
@@ -412,7 +412,7 @@ app.post("/checks", (req, res) => {
       <td>No</td>
       <td>
         This should be the structured JSON data returned by the data provider,
-        or a conversion of the data provider''s response, to allow
+        or a conversion of the data provider's response, to allow
         PassFort to investigate issues that may arise with your integration.
       </td>
     </tr>
