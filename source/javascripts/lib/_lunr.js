@@ -604,7 +604,7 @@
    *
    * Delegates to Array.prototype.map and has the same signature.
    *
-   * @param {Function} fn The function that is called on each element of the
+   * @param {Function} fn The function that's called on each element of the
    * set.
    * @param {Object} ctx An optional object that can be used as the context
    * for the function fn.
@@ -620,7 +620,7 @@
    *
    * Delegates to Array.prototype.forEach and has the same signature.
    *
-   * @param {Function} fn The function that is called on each element of the
+   * @param {Function} fn The function that's called on each element of the
    * set.
    * @param {Object} ctx An optional object that can be used as the context
    * @memberOf SortedSet
@@ -1171,7 +1171,7 @@
   /**
    * Applies a plugin to the current index.
    *
-   * A plugin is a function that is called with the index as its context.
+   * A plugin is a function that's called with the index as its context.
    * Plugins can be used to customise or extend the behaviour the index
    * in some way. A plugin is just a function, that encapsulated the custom
    * behaviour that should be applied to the index.

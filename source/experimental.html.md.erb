@@ -193,7 +193,7 @@ func main() {
 This operation does not require authentication
 </aside>
 
-## Configure how PassFort will interact with your integration
+## Configure how Passfort interacts with your integration
 
 <a id="opIdgetConfig"></a>
 
@@ -1335,7 +1335,7 @@ Use this to store any state required by later requests relating to this check. T
 
 ```
 
-To support a wide range of testing scenarios, PassFort uses specific values in the demo_result field to select demo results.
+To support a wide range of testing scenarios, Passfort uses specific values in the <code>demo_result</code> field to select demo results.
 
 ### Properties
 
@@ -1802,8 +1802,8 @@ SCREEN_SINGLE_ADVERSE_MEDIA
 |---|---|---|---|---|
 |type|any|true|none|none|
 |sub_type|string|false|none|Provides additional detail for certain types of error.|
-|message|string|true|none|A message displayed in the PassFort portal when showing the check error.|
-|data|any|false|none|Integration-specific structured error information that customers can use to get additional information about the error being reported.|
+|message|string|true|none|A message displayed in the Passfort portal to show the check error.|
+|data|any|false|none|Integration-specific structured error information that customers can use to get additional information about the error.|
 
 #### Enumerated Values
 
@@ -1831,13 +1831,13 @@ SCREEN_SINGLE_ADVERSE_MEDIA
 
 ```
 
-A list of errors that occurred while running this check. If this is provided and it's not empty, the result of this check will be considered to be errored by PassFort, regardless of the other contents of this response.
+A list of errors that occurred while running this check. If this is provided and it's not empty, the result of this check is considered to be errored by Passfort, regardless of the other contents of this response.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|*anonymous*|[[Error](#schemaerror)]|false|none|A list of errors that occurred while running this check. If this is provided and it's not empty, the result of this check will be considered to be errored by PassFort, regardless of the other contents of this response.|
+|*anonymous*|[[Error](#schemaerror)]|false|none|A list of errors that occurred while running this check. If this is provided and it's not empty, the result of this check is considered to be errored by Passfort, regardless of the other contents of this response.|
 
 <h2 id="tocS_ErrorType">ErrorType</h2>
 <!-- backwards compatibility -->
@@ -1851,13 +1851,13 @@ A list of errors that occurred while running this check. If this is provided and
 
 ```
 
-The type of error that is being reported.
+The type of error that's being reported.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|*anonymous*|string|false|none|The type of error that is being reported.|
+|*anonymous*|string|false|none|The type of error that's being reported.|
 
 #### Enumerated Values
 
@@ -1932,9 +1932,9 @@ The type of error that is being reported.
 |provider_id|[UUID](#schemauuid)|false|none|[Universally unique identifier.](https://en.wikipedia.org/wiki/Universally_unique_identifier)|
 |reference|string|false|none|none|
 |custom_data|[CustomData](#schemacustomdata)|false|none|Use this to store any state required by later requests relating to this check. The intent is for your integration to be completely stateless itself, to make it simpler to deploy and maintain. Note: if present, this *must* be an object, rather than an array or other JSON value. However, the keys and values in this object can be anything you like, although we don't recommend storing large amounts of data here, as it will be passed in on every following request to your integration relating to this check.|
-|provider_data|[ProviderData](#schemaproviderdata)|false|none|The structured JSON data returned by the data provider, or a representation of the provider's response, to allow PassFort to investigate issues that may arise with your integration.|
-|warnings|[Warnings](#schemawarnings)|false|none|Similar to 'errors' except that the sub_type and data fields are not present and providing warnings will not cause PassFort to consider the check as errored.|
-|errors|[Errors](#schemaerrors)|false|none|A list of errors that occurred while running this check. If this is provided and it's not empty, the result of this check will be considered to be errored by PassFort, regardless of the other contents of this response.|
+|provider_data|[ProviderData](#schemaproviderdata)|false|none|The structured JSON data returned by the data provider or a representation of the provider's response to allow Passfort to investigate any issues that arise with your integration.|
+|warnings|[Warnings](#schemawarnings)|false|none|Similar to 'errors' except that the <code>sub_type</code> and data fields are not present and providing warnings won't cause Passfort to consider the check as errored.|
+|errors|[Errors](#schemaerrors)|false|none|A list of errors that occurred while running this check. If this is provided and it's not empty, the result of this check is considered to be errored by Passfort, regardless of the other contents of this response.|
 
 <h2 id="tocS_StartCheckRequest">StartCheckRequest</h2>
 <!-- backwards compatibility -->
@@ -1989,8 +1989,8 @@ The type of error that is being reported.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|[UUID](#schemauuid)|true|none|PassFort's ID for the check being run|
-|demo_result|[DemoResultType](#schemademoresulttype)|false|none|To support a wide range of testing scenarios, PassFort uses specific values in the demo_result field to select demo results.|
+|id|[UUID](#schemauuid)|true|none|Passfort's ID for the check|
+|demo_result|[DemoResultType](#schemademoresulttype)|false|none|To support a wide range of testing scenarios, Passfort uses specific values in the <code>demo_result</code> field to select demo results.|
 |commercial_relationship|string|true|none|none|
 |check_input|[EntityData](#schemaentitydata)|true|none|none|
 |provider_config|[ProviderConfig](#schemaproviderconfig)|true|none|none|
@@ -2073,11 +2073,11 @@ The type of error that is being reported.
 |provider_id|[UUID](#schemauuid)|false|none|Unique identifier for the provider. The reference field should uniquely identify a check when combined with the provider_id|
 |reference|string|false|none|An opaque string identifying this check to the provider. No two checks from the same provider should have the same reference.|
 |custom_data|[CustomData](#schemacustomdata)|false|none|Use this to store any state required by later requests relating to this check. The intent is for your integration to be completely stateless itself, to make it simpler to deploy and maintain. Note: if present, this *must* be an object, rather than an array or other JSON value. However, the keys and values in this object can be anything you like, although we don't recommend storing large amounts of data here, as it will be passed in on every following request to your integration relating to this check.|
-|provider_data|[ProviderData](#schemaproviderdata)|false|none|The structured JSON data returned by the data provider, or a representation of the provider's response, to allow PassFort to investigate issues that may arise with your integration.|
+|provider_data|[ProviderData](#schemaproviderdata)|false|none|The structured JSON data returned by the data provider or a representation of the provider's response to allow Passfort to investigate any issues that arise with your integration.|
 |check_output|[EntityData](#schemaentitydata)|false|none|none|
-|charges|[[Charge](#schemacharge)]|false|none|A list of charges incurred while running this check. Charges may only be returned if no errors occurred (i.e. a result was generated) and the check is being resold (the commercial relationship is with PassFort). For demo checks, charges may be returned, but they will not be deducted from the institution's credit. If charges are returned, the total amount charged must be no greater than the maximum cost-per-check specified in the integration's configuration.|
-|warnings|[Warnings](#schemawarnings)|false|none|Similar to 'errors' except that the sub_type and data fields are not present and providing warnings will not cause PassFort to consider the check as errored.|
-|errors|[Errors](#schemaerrors)|false|none|A list of errors that occurred while running this check. If this is provided and it's not empty, the result of this check will be considered to be errored by PassFort, regardless of the other contents of this response.|
+|charges|[[Charge](#schemacharge)]|false|none|A list of charges incurred while running this check. Charges may only be returned if there are no errors when the check is run and the check is resold by Passfort. For demo checks, charges may be returned, but they won't be deducted from the institution's credit. If charges are returned, the total amount charged must be no greater than the maximum cost-per-check specified in the integration's configuration.|
+|warnings|[Warnings](#schemawarnings)|false|none|Similar to 'errors' except that the <code>sub_type</code> and data fields are not present and providing warnings Passfort to consider the check as errored.|
+|errors|[Errors](#schemaerrors)|false|none|A list of errors that occurred while running this check. If this is provided and it's not empty, the result of this check is considered to be errored by Passfort, regardless of the other contents of this response.|
 
 <h2 id="tocS_PollCheckRequest">PollCheckRequest</h2>
 <!-- backwards compatibility -->
@@ -2105,7 +2105,7 @@ The type of error that is being reported.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|[UUID](#schemauuid)|true|none|[Universally unique identifier.](https://en.wikipedia.org/wiki/Universally_unique_identifier)|
-|demo_result|[DemoResultType](#schemademoresulttype)|false|none|To support a wide range of testing scenarios, PassFort uses specific values in the demo_result field to select demo results.|
+|demo_result|[DemoResultType](#schemademoresulttype)|false|none|To support a wide range of testing scenarios, Passfort uses specific values in the <code>demo_result</code> field to select demo results.|
 |commercial_relationship|[CommercialRelationshipType](#schemacommercialrelationshiptype)|true|none|none|
 |provider_config|[ProviderConfig](#schemaproviderconfig)|true|none|none|
 |provider_credentials|[ProviderCredentials](#schemaprovidercredentials)|false|none|none|
@@ -2157,7 +2157,7 @@ The type of error that is being reported.
 
 ```
 
-The structured JSON data returned by the data provider, or a representation of the provider's response, to allow PassFort to investigate issues that may arise with your integration.
+The structured JSON data returned by the data provider or a representation of the provider's response to allow Passfort to investigate any issues that arise with your integration.
 
 ### Properties
 
@@ -3357,7 +3357,7 @@ ScreeningSource
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|type|[ErrorType](#schemaerrortype)|true|none|The type of error that is being reported.|
+|type|[ErrorType](#schemaerrortype)|true|none|The type of error that's being reported.|
 |message|string|true|none|none|
 
 <h2 id="tocS_Warnings">Warnings</h2>
@@ -3377,13 +3377,13 @@ ScreeningSource
 
 ```
 
-Similar to 'errors' except that the sub_type and data fields are not present and providing warnings will not cause PassFort to consider the check as errored.
+Similar to 'errors' except that the <code>sub_type</code> and data fields are not present and providing warnings Passfort to consider the check as errored.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|*anonymous*|[[Warning](#schemawarning)]|false|none|Similar to 'errors' except that the sub_type and data fields are not present and providing warnings will not cause PassFort to consider the check as errored.|
+|*anonymous*|[[Warning](#schemawarning)]|false|none|Similar to 'errors' except that the <code>sub_type</code> and data fields are not present and providing warnings Passfort to consider the check as errored.|
 
 <h2 id="tocS_UUID">UUID</h2>
 <!-- backwards compatibility -->

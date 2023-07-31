@@ -1,19 +1,19 @@
 # Demo Checks
 
 Integrations should support the ability to provide demo results to customers
-using PassFort's demo environments for integration work and evaluation. To this
-end, the Integration API allows for checks to be run with a specifically
+using Passfort's demo environments for integration work and evaluation. To this
+end, the Passfort Partner API allows for checks to be run with a specifically
 requested demo result using the `demo_result` field in the request payload
 of most check types.
 
 ## Guidelines for demo results
 
 - Your demo result outputs should match the structure of your live check
-  results as closely as possible, to ensure that they are representative of
-  the check results customers will receive on live checks.
+  results as closely as possible, to ensure that they're representative of
+  the check results customers receive on live checks.
 
 - Your demo result outputs must incorporate the input data provided to the
-  check, so that PassFort's check results are interpreted correctly and
+  check, so that Passfort's check results are interpreted correctly and
   the check results imitate a result a customer might get for a profile in
   a live check.
 
@@ -26,7 +26,7 @@ of most check types.
 
 ## Demo result types
 
-To support a wide range of testing scenarios, PassFort uses specific values
+To support a wide range of testing scenarios, Passfort uses specific values
 in the `demo_result` field to select demo results. The different types of demo
 result are outlined below.
 
@@ -44,7 +44,7 @@ These demo result values may be requested for any check type.
 
 #### `ANY` <span style="float:right">Required</span>
 
-A demo result that will be used as the default if nothing more specific is
+A demo result that's used as the default if nothing more specific is
 requested. It should reflect a genuine non-error result for this integration,
 but it does not need to be a passing result.
 
@@ -143,7 +143,7 @@ the provider supports this.
 
 ### Demo results for Document Checks
 
-These demo results are specific to Document Verification and Document Fetch 
+These demo results are specific to Document verification and Document fetch
 checks unless otherwise specified.
 
 #### `ERROR_UNSUPPORTED_DOCUMENT_TYPE` <span style="float:right">Required</span>
@@ -190,18 +190,18 @@ check input and all image and forgery checks have passed.
 
 #### `ERROR_INVALID_PROVIDER_REFERENCE` <span style="float:right">Conditional</span>
 
-This demo result is required for Document Fetch checks. It is not used for
-Document Verification checks.
+This demo result is required for Document fetch checks. It is not used for
+Document verification checks.
 
 Your integration must return a result indicating that the document reference
 passed as part of the check input was invalid.
 
 #### `ERROR_MISSING_CONTACT_DETAILS` <span style="float:right">Conditional</span>
 
-This demo result is optional for Document Fetch checks. It is not used for
-Document Verification checks.
+This demo result is optional for Document fetch checks. It is not used for
+Document verification checks.
 
-Your integration must return an error indicating that the contact details field 
+Your integration must return an error indicating that the contact details field
 is missing from the check input.
 
 ### Demo results for Company Data Checks
@@ -220,7 +220,7 @@ supported fields.
 
 #### `COMPANY_INACTIVE` <span style="float:right">Required</span>
 
-Your integration must return a result as if the company submitted was on record as no 
+Your integration must return a result as if the company submitted was on record as no
 longer actively operating.
 
 #### `COMPANY_COUNTRY_OF_INCORPORATION_MISMATCH`
@@ -240,14 +240,16 @@ different number from the one submitted in the check input.
 
 #### `COMPANY_RESIGNED_OFFICER`
 
-Your integration must return a result with at least one associate with all its officer 
+Your integration must return a result with at least one associate with all its officer
 relationships marked with a `FORMER` tenure.
 
 #### `COMPANY_FORMER_SHAREHOLDER
-Your integration must return a result with at least one associate with a shareholder 
+
+Your integration must return a result with at least one associate with a shareholder
 relationship marked with a `FORMER` tenure.
 
 #### `COMPANY_OFFICER_WITH_MULTIPLE_ROLES`
+
 Your integration must return a result with at least one associate with more than one
 officer relationship.
 
@@ -274,7 +276,6 @@ Your integration must return a result with at least one associate which is a
 company with a relationship indicating significant control or influence over the
 company.
 
-
 #### `COMPANY_ADDRESS_MATCH` <span style="float:right">Conditional</span>
 
 Your integration must return a result as if the company submitted was on record with an
@@ -286,4 +287,3 @@ when the <a href="#provider-field-checks">Provider Field Checks</a> feature is i
 Your integration must return a result as if the company submitted was on record with a
 different address from the one submitted in the check input. This demo result is required
 when the <a href="#provider-field-checks">Provider Field Checks</a> feature is in use.
-

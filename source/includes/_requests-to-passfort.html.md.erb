@@ -1,12 +1,12 @@
 # Requests to PassFort
 
 Although the majority of the integrations API consists of endpoints
-to be served by an integration and called by PassFort. There *are*
-several endpoints provided by PassFort to allow an integration to
+to be served by an integration and called by Passfort. There *are*
+several endpoints provided by Passfort to allow an integration to
 do its job. These endpoints are documented in this section.
 
 <aside class="info">
-Requests to PassFort are authenticated in exactly the same way
+Requests to Passfort are authenticated in exactly the same way
 as requests in the other direction, using the same shared key.
 See the <a href="#authentication">authentication section</a> for
 more details.
@@ -16,8 +16,8 @@ more details.
 
 If your integration follows one of the callback-based check templates,
 such as `ONE_TIME_SYNC_CALLBACK` you will need to make requests to
-PassFort's "callback" endpoint to notify us of certain events (such
-as when a check completed).
+Passfort's "callback" endpoint to notify us of certain events, such
+as when a check is complete.
 
 ### HTTP Request
 
@@ -90,8 +90,8 @@ await outbound_auth().fetch(url, {
 })
 ```
 
-If this end-point returns a non-2xx status code, the callback should be retried several
-times (with an exponential backoff) to ensure that events are not lost. If the callback
+If this endpoint returns a non-2xx status code, the callback should be retried several
+times (with an exponential backoff) to ensure that events aren't lost. If the callback
 is being triggered by the provider, it is expected that the integration will simply
 forward the failure code to the provider, at which point it is the provider's job to
 retry appropriately.
@@ -107,7 +107,7 @@ retry appropriately.
 
 ### Response fields
 
-There will never be any check-type-specific fields returned from this end-point.
+There will never be any check-type-specific fields returned from this endpoint.
 
 <table>
   <thead>
@@ -132,7 +132,7 @@ There will never be any check-type-specific fields returned from this end-point.
 
 ## Download image
 
-If your integration implements a document verification check, you will need
+If your integration implements a Document verification check, you will need
 to download images from our system to pass to the provider.
 
 This endpoint returns the raw image data for a given image ID. Your integration

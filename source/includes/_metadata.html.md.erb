@@ -37,16 +37,16 @@ app.get('/', (req, res) => {
 ```
 
 This endpoint defines the basic properties of all integrations - which version
-of the Integration API Protocol is being used, and the name of the provider
+of the Passfort Partner API Protocol is being used, and the name of the provider
 this integration connects to (for display and branding purposes
-within PassFort). Currently, the only API Protocol version is `1`. This
+within Passfort). Currently, the only API Protocol version is `1`. This
 endpoint is unauthenticated to allow future API versions to use different
 authentication methods. **All integrations regardless of type must serve
 up this endpoint**.
 
 <aside>
-  If you update the name of the provider returned by the endpoint, it will only
-  be updated in PassFort when the integration is re-validated.
+  If you update the name of the provider returned by the endpoint, it is only
+  updated in Passfort when the integration is re-validated.
 </aside>
 
 ### HTTP Request
