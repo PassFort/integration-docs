@@ -1,0 +1,16 @@
+{
+    "id": "01234567-89ab-cdef-0123-456789abcdef",
+    "commercial_relationship": "DIRECT",
+    "provider_config": {
+        "enhanced_verification": false
+    },
+    "provider_credentials": {
+        "username": "foo",
+        "password": "bar"
+    },
+    "provider_id": "b0b7611e-c024-4ffb-9f9f-928992bec445",
+    "reference": "12345",
+    "custom_data": {
+        "my_field": 42
+    }
+}
