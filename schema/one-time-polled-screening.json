@@ -36,7 +36,7 @@
                         "signatureAuth": []
                     }
                 ],
-                "summary": "Configure how PassFort will interact with your integration",
+                "summary": "Configure how Passfort interacts with your integration",
                 "operationId": "getConfig",
                 "responses": {
                     "200": {
@@ -520,7 +520,7 @@
                 "description": "Use this to store any state required by later requests relating to this check. The intent is for your integration to be completely stateless itself, to make it simpler to deploy and maintain. Note: if present, this *must* be an object, rather than an array or other JSON value. However, the keys and values in this object can be anything you like, although we don't recommend storing large amounts of data here, as it will be passed in on every following request to your integration relating to this check."
             },
             "DemoResultType": {
-                "description": "To support a wide range of testing scenarios, PassFort uses specific values in the demo_result field to select demo results.",
+                "description": "To support a wide range of testing scenarios, Passfort uses specific values in the <code>demo_result</code> field to select demo results.",
                 "oneOf": [
                     {
                         "$ref": "#/components/schemas/DemoResultAny"
@@ -726,14 +726,14 @@ Note that, as this is a demo check, no credits will actually be deducted from th
                             "UNSUPPORTED_COUNTRY",
                             "UNSUPPORTED_DOCUMENT_TYPE"
                         ],
-                        "description": "Provides additional detail for certain types of error."
+                        "description": "Provides additional detail for the subtypes of certain errors."
                     },
                     "message": {
                         "type": "string",
-                        "description": "A message displayed in the PassFort portal when showing the check error."
+                        "description": "A message displayed in the Passfort portal which gives further detail about the error type."
                     },
                     "data": {
-                        "description": "Integration-specific structured error information that customers can use to get additional information about the error being reported."
+                        "description": "Integration-specific structured error information that customers can use to get additional information about the error."
                     }
                 }
             },
@@ -742,7 +742,7 @@ Note that, as this is a demo check, no credits will actually be deducted from th
                 "items": {
                     "$ref": "#/components/schemas/Error"
                 },
-                "description": "A list of errors that occurred while running this check. If this is provided and it's not empty, the result of this check will be considered to be errored by PassFort, regardless of the other contents of this response."
+                "description": "A list of errors that occurred while running this check. If this is provided and it's not empty, the result of this check is considered to be errored by Passfort, regardless of the other contents of this response."
             },
             "ErrorType": {
                 "type": "string",
@@ -756,7 +756,7 @@ Note that, as this is a demo check, no credits will actually be deducted from th
                     "UNSUPPORTED_DEMO_RESULT",
                     "INTEGRATION"
                 ],
-                "description": "The type of error that is being reported."
+                "description": "The type of error that's being reported."
             },
             "Metadata": {
                 "type": "object",
@@ -811,7 +811,7 @@ Note that, as this is a demo check, no credits will actually be deducted from th
                 "properties": {
                     "id": {
                         "$ref": "#/components/schemas/UUID",
-                        "description": "PassFort's ID for the check being run"
+                        "description": "Passfort's ID for the check"
                     },
                     "demo_result": {
                         "$ref": "#/components/schemas/DemoResultType"
@@ -861,7 +861,7 @@ Note that, as this is a demo check, no credits will actually be deducted from th
                         "items": {
                             "$ref": "#/components/schemas/Charge"
                         },
-                        "description": "A list of charges incurred while running this check. Charges may only be returned if no errors occurred (i.e. a result was generated) and the check is being resold (the commercial relationship is with PassFort). For demo checks, charges may be returned, but they will not be deducted from the institution's credit. If charges are returned, the total amount charged must be no greater than the maximum cost-per-check specified in the integration's configuration."
+                        "description": "A list of charges incurred while running this check. Charges may only be returned if there are no errors when the check is run and the check is resold by Passfort. For demo checks, charges may be returned, but they will not be deducted from the institution's credit. If charges are returned, the total amount charged must be no greater than the maximum cost-per-check specified in the integration's configuration."
                     },
                     "warnings": {
                         "$ref": "#/components/schemas/Warnings"
@@ -915,7 +915,7 @@ Note that, as this is a demo check, no credits will actually be deducted from th
                 "type": "object"
             },
             "ProviderData": {
-                "description": "The structured JSON data returned by the data provider, or a representation of the provider's response, to allow PassFort to investigate issues that may arise with your integration.",
+                "description": "The structured JSON data returned by the data provider or a representation of the provider's response to allow Passfort to investigate any issues that arise with your integration.",
                 "example": "Demo result. Did not make request to provider."
             },
             "ScreeningAddressMatch": {
@@ -1416,7 +1416,7 @@ Note that, as this is a demo check, no credits will actually be deducted from th
                 "items": {
                     "$ref": "#/components/schemas/Warning"
                 },
-                "description": "Similar to 'errors' except that the sub_type and data fields are not present and providing warnings will not cause PassFort to consider the check as errored."
+                "description": "Similar to 'errors' except that the <code>sub_type</code> and data fields are not present and providing warnings won't cause Passfort to consider the check as errored."
             },
             "UUID": {
                 "description": "[Universally unique identifier.](https://en.wikipedia.org/wiki/Universally_unique_identifier)",

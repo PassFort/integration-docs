@@ -56,14 +56,14 @@ but the `check_type` and `check_template` are specific to each type of
 integration and will be discussed in their respective sections.
 
 <aside>
-  If you update the configuration returned by your integration, it will only
-  be updated in PassFort when the integration is re-validated.
+  If you update the configuration returned by your integration, it's only
+  updated in Passfort when the integration is re-validated.
 </aside>
 
 ## Pricing
 
 The `pricing` field defines whether you intend to make your integration
-available to PassFort for reselling, instead of requiring that PassFort
+available to Passfort for reselling, instead of requiring that PassFort
 customers have a direct commercial relationship with the data provider.
 
 ### Fields
@@ -89,7 +89,7 @@ customers have a direct commercial relationship with the data provider.
       <td>number</td>
       <td>No</td>
       <td>
-        The maximum amount of PassFort credits that can be charged for a
+        The maximum amount of Passfort credits that can be charged for a
         single check. <strong>Required if <code>supports_reselling</code> is
         <code>true</code></strong>.
       </td>
@@ -98,8 +98,8 @@ customers have a direct commercial relationship with the data provider.
 </table>
 
 <aside>
-  PassFort credit is purchased by PassFort's customers. It's used
-  to pay for checks resold through PassFort, when reselling is
+  Passfort credit is purchased by Passfort's customers. It's used
+  to pay for checks resold through Passfort, when reselling is
   supported by the data provider.
   
   Credits are tied to GBP at the ratio of £1 = 100 credits.
@@ -116,14 +116,14 @@ least one country must be specified.
 
 ## Supported features
 
-The optional `supported_features` field allows your integration to declare 
-support for additional features. The absence of this field from your 
-integration's config implies that no additional features are supported. 
+The optional `supported_features` field allows your integration to declare
+support for additional features. The absence of this field from your
+integration's config implies that no additional features are supported.
 
-The list of possible features varies depending on the check type but are often 
-used to surface extra functionality implemented by the provider. 
+The list of possible features varies depending on the check type but are often
+used to surface extra functionality implemented by the provider.
 
-These features are currently recognised as items within the 
+These features are currently recognised as items within the
 `supported_features` array:
 
 <table>
@@ -139,8 +139,7 @@ These features are currently recognised as items within the
       <td>The integration supports predictive search through the companies known to the provider.</td>
     </tr>
   </tbody>
-</table> 
-
+</table>
 
 ## Credentials Fields
 
@@ -148,14 +147,14 @@ The `credentials` field contains exactly one field, `fields`, which specify
 an array of single values needed for your integration to contact the data
 provider and authorize itself successfully. Customers will provide these as
 part of configuring your integration. For checks with reselling enabled,
-these credentials will not be sent.
+these credentials won't be sent.
 
-Per PassFort's general API compatibility policies, we may add new types for
-configuration fields at any time, although existing types will not be removed.
+Per Passfort's general API compatibility policies, we may add new types for
+configuration fields at any time, although existing types won't be removed.
 
 <aside class="warning">
   You should not alter existing credential fields once your integration is
-  being used by PassFort customers. This can cause checks through your
+  being used by Passfort customers. This can cause checks through your
   integration to stop working.
 </aside>
 
@@ -177,7 +176,7 @@ These fields are permitted on objects inside the `fields` array:
       <td>Yes</td>
       <td>
         The type of the credential field. <code>password</code> is functionally identical
-        to <code>string</code>, but will be rendered as a password input in the UI.
+        to <code>string</code>, but is rendered as a password input in the UI.
       </td>
     </tr>
     <tr>
@@ -185,7 +184,7 @@ These fields are permitted on objects inside the `fields` array:
       <td>string</td>
       <td>Yes</td>
       <td>
-        The name of the field which will be used when sent to your
+        The name of the field which is used when sent to your
         integration.
       </td>
     </tr>
@@ -194,7 +193,7 @@ These fields are permitted on objects inside the `fields` array:
       <td>string</td>
       <td>Yes</td>
       <td>
-        The name that will be displayed for this field in PassFort.
+        The name that's displayed for this field in Passfort.
       </td>
     </tr>
   </tbody>
@@ -204,15 +203,15 @@ These fields are permitted on objects inside the `fields` array:
 
 Like credentials, the `config` field contains exactly one field, `fields`,
 which specify an array of configurable options for your integration that can
-be set up on individual provider configurations, and will be provided to your
+be set up on individual provider configurations, and is provided to your
 integration on every check.
 
-Per PassFort's general API compatibility policies, we may add new types for
-configuration fields at any time, although existing types will not be removed.
+Per Passfort's general API compatibility policies, we may add new types for
+configuration fields at any time, although existing types won't be removed.
 
 <aside class="warning">
   You should not alter existing configuration fields once your integration is
-  being used by PassFort customers. This can cause checks through your
+  being used by Passfort customers. This can cause checks through your
   integration to stop working.
 </aside>
 
@@ -241,7 +240,7 @@ These fields are permitted on objects inside the `fields` array:
       <td>string</td>
       <td>Yes</td>
       <td>
-        The name of the field which will be used when sent to your
+        The name of the field which is used when sent to your
         integration.
       </td>
     </tr>
@@ -250,7 +249,7 @@ These fields are permitted on objects inside the `fields` array:
       <td>string</td>
       <td>Yes</td>
       <td>
-        The name that will be displayed for this field in PassFort.
+        The name that's displayed for this field in Passfort.
       </td>
     </tr>
     <tr>
@@ -258,8 +257,8 @@ These fields are permitted on objects inside the `fields` array:
       <td>string</td>
       <td>No</td>
       <td>
-        A short description that will be displayed under the configuration
-        option in PassFort.
+        A short description that's displayed under the configuration
+        option in Passfort.
       </td>
     </tr>
     <tr>

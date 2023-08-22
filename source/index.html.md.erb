@@ -1,5 +1,5 @@
 ---
-title: PassFort Integration API Reference
+title: Passfort Partner API Reference
 
 language_tabs:
   - python: Python
@@ -29,13 +29,13 @@ search: true
 ---
 # Introduction
 
-The PassFort Integration API allows you to easily connect new data sources
-(integrations) to PassFort by creating a JSON web service which conforms to
+The Passfort Partner API allows you to easily connect new data sources
+(integrations) to Passfort by creating a JSON web service which conforms to
 the specifications outlined in this document.
 
 ## Using this documentation
 
-As the majority of the Integration API is not called but served by integrations,
+As the majority of the Passfort Partner API is not called but served by integrations,
 the endpoints documented here, unless otherwise indicated, are ones that your
 integration should implement.
 
@@ -45,15 +45,15 @@ For the Python examples, [Flask 1.0][flask-docs]
 will be used as the implementation example, and [Express 4][express-docs] will
 be used for the NodeJS examples.
 
-As described in the [Metadata section](#metadata), the Integration API is
+As described in the [Metadata section](#metadata), the Passfort Partner API is
 versioned to allow the implementation of integrations to be altered in the
 future; all information in this document corresponds to Version 1 of the
-Integration API Protocol. Versions of the Integration API will not be
+Passfort Partner API Protocol. Versions of the Passfort Partner API won't be
 discontinued for as long as existing integrations use them.
 
 # Technical Requirements
 
-Your integration _must_ be served over HTTPS; integrations are not permitted to
+Your integration _must_ be served over HTTPS; integrations aren't permitted to
 be served over unencrypted HTTP connections. Additionally, the connection must
 be using TLS 1.2 or above. This requirement is enforced to ensure that
 sensitive information is not transmitted unprotected over the public internet.
@@ -64,7 +64,7 @@ if your integration does not use HTTPS.
 # Authentication
 
 In order to protect the integrity and confidentiality of personal information
-and to ensure your integration is only utilised by PassFort, all requests are
+and to ensure your integration is only utilised by Passfort, all requests are
 authenticated using the
 [HTTP signatures draft standard, version 12][http-signatures-draft-12].
 Several usable implementations of the standard can be found on this

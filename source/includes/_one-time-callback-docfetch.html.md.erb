@@ -1,14 +1,14 @@
 # One-time Callback Document Fetch
 
 This section lists all endpoints that must be implemented for a one-time
-callback Document Fetch integration.
+callback Document fetch integration.
 
-Document Fetch integrations are a special variant of Document Verification
+Document fetch integrations are a special variant of Document verification
 checks where the customer seeks closer integration with additional
 functionality the provider offers, such as an improved document
 collection flow for mobile. In this integration, instead of downloading images
-from PassFort and submitting them to the provider, the customer uploads the
-images with the provider, and they are downloaded into PassFort through
+from Passfort and submitting them to the provider, the customer uploads the
+images with the provider, and they're downloaded into Passfort through
 your integration.
 
 
@@ -16,8 +16,8 @@ your integration.
 
 <%= partial("includes/partials/config.md.erb", :locals => { :name => "callback_document_fetch" }) %>
 
-This endpoint specifies the configuration used by PassFort for performing
-one-time callback-based document fetches using your integration.
+This endpoint specifies which configuration is used by Passfort to perform
+one-time callback-based Document fetch checks using your integration.
 
 ### HTTP Request
 
@@ -58,10 +58,10 @@ The `check_template` fields for this check are:
       <td>number</td>
       <td>No</td>
       <td>
-        The number of seconds PassFort should wait without a response before
-        considering document fetch checks run through this integration to have
+        The number of seconds Passfort should wait without a response before
+        considering Document fetch checks run through this integration to have
         timed out. Must be an integer. If not specified or set to
-        <code>null</code>, a timeout of 60 seconds will be used. This timeout
+        <code>null</code>, a timeout of 60 seconds is used. This timeout
         will also be applied to image downloads.
       </td>
     </tr>
@@ -74,8 +74,8 @@ The `check_template` fields for this check are:
 
 ## Start One-Time Callback Document Fetch
 
-This endpoint is used by PassFort to initiate a document fetch check through
-your integration. The important difference with Document Verification is the
+This endpoint is used by Passfort to initiate a document fetch check through
+your integration. The important difference with Document verification is the
 `external_refs` field on the input data, which contains a `generic` field
 specifying the provider-specific token or reference identifying the request
 made with the provider.
@@ -128,8 +128,8 @@ The payload of the request can contain the following fields:
       <td>Yes</td>
       <td>
         Specified whether the check is for a customer with a direct
-        relationship with your integration's data provider, or if they are
-        using the check through PassFort's pay-as-you-go reselling scheme.
+        relationship with your integration's data provider, or if they're
+        using the check through Passfort's pay-as-you-go reselling scheme.
       </td>
     </tr>
     <tr>
@@ -138,12 +138,12 @@ The payload of the request can contain the following fields:
       <td>Yes</td>
       <td>
         <p/>
-        This field contains the profile information on the individual the
-        document verification should be run for. See the
+        This field contains the profile information for the individual on which the
+        Document verification check is run. See the
         <a href="#check-input">PassFort Data Structure check input section</a>
-        for more information on how profile data is structured within PassFort.
+        for more information on how profile data is structured within Passfort.
         <p/>
-        For Document Fetch checks, the check input will contain a single "placeholder"
+        For Document fetch checks, the check input contains a single "placeholder"
         document with no images attached.
         <p/>
         The integration should take this placeholder document and populate it with
@@ -152,7 +152,7 @@ The payload of the request can contain the following fields:
         <p/>
         Notably, the `id` and `category` fields from the placeholder document should
         be preserved unchanged, as these indicate how the document should be used
-        within PassFort (for example, as a proof of address).
+        within Passfort, for example, as a proof of address.
       </td>
     </tr>
     <tr>
@@ -304,10 +304,10 @@ def run_check():
       <td>No</td>
       <td>
         A list of errors that occurred while running this check. If this is
-        provided and it's not empty, the result of this check will be
-        considered to be errored by PassFort, regardless of the other contents
+        provided and it's not empty, the result of this check is
+        considered to be errored by Passfort, regardless of the other contents
         of this response.
-        If an error is returned from this end-point, no callback will be expected.
+        If an error is returned from this endpoint, no callback is expected.
       </td>
     </tr>
     <tr>
@@ -317,9 +317,9 @@ def run_check():
       </td>
       <td>No</td>
       <td>
-        Essentially the same as <code>errors</code>, except the
-        <code>sub_type</code> and <code>data</code> fields are not present, and
-        providing warnings will not cause PassFort to consider the check
+        Essentially the same as <a href="#check-errors">errors</a>, except the
+        <code>sub_type</code> and <code>data</code> fields aren't present, and
+        providing warnings won't cause Passfort to consider the check
         as errored.
       </td>
     </tr>
@@ -330,9 +330,9 @@ def run_check():
       </td>
       <td>No</td>
       <td>
-        This should be the structured JSON data returned by the data provider,
-        or a conversion of the data provider's response, to allow
-        PassFort to investigate issues that may arise with your integration.
+        This should be the structured JSON data returned by the data provider
+        or a conversion of the data provider's response to allow
+        Passfort to investigate any issues that arise with your integration.
       </td>
     </tr>
   </tbody>
@@ -345,7 +345,7 @@ def run_check():
 ## Ready for Callback
 
 
-This endpoint is used by PassFort to indicate that it is ready to receive callbacks
+This endpoint is used by Passfort to indicate that it is ready to receive callbacks
 from your integration.
 
 For demo checks, the callback should be sent synchronously when this request is
@@ -402,8 +402,8 @@ The payload of the request can contain the following fields:
       <td>Yes</td>
       <td>
         Specified whether the check is for a customer with a direct
-        relationship with your integration's data provider, or if they are
-        using the check through PassFort's pay-as-you-go reselling scheme.
+        relationship with your integration's data provider, or if they're
+        using the check through Passfort's pay-as-you-go reselling scheme.
       </td>
     </tr>
     <tr>
@@ -412,12 +412,12 @@ The payload of the request can contain the following fields:
       <td>Yes</td>
       <td>
         <p/>
-        This field contains the profile information on the individual the
-        document verification should be run for. See the
+        This field contains the profile information for the individual on which the
+        Document verification check is run. See the
         <a href="#check-input">PassFort Data Structure check input section</a>
-        for more information on how profile data is structured within PassFort.
+        for more information on how profile data is structured within Passfort.
         <p/>
-        For Document Fetch checks, the check input will contain a single "placeholder"
+        For Document fetch checks, the check input contains a single "placeholder"
         document with no images attached.
         <p/>
         The integration should take this placeholder document and populate it with
@@ -426,7 +426,7 @@ The payload of the request can contain the following fields:
         <p/>
         Notably, the `id` and `category` fields from the placeholder document should
         be preserved unchanged, as these indicate how the document should be used
-        within PassFort (for example, as a proof of address).
+        within Passfort, for example, as a proof of address.
       </td>
     </tr>
     <tr>
@@ -472,7 +472,7 @@ The payload of the request can contain the following fields:
       <td>Yes</td>
       <td>
         This matches the `provider_id` returned by your integration when the check was 
-        instructed, and should also match the field with the same name sent to PassFort as
+        instructed, and should also match the field with the same name sent to Passfort as
         part of the callback indicating that this check had completed.
       </td>
     </tr>
@@ -482,7 +482,7 @@ The payload of the request can contain the following fields:
       <td>Yes</td>
       <td>
         This matches the `reference` returned by your integration when the check was
-        instructed, and should also match the field with the same name sent to PassFort as 
+        instructed, and should also match the field with the same name sent to Passfort as 
         part of the callback indicating that this check had completed.
     </tr>
   </tbody>
@@ -543,14 +543,14 @@ This response is not required to return any content.
 ## Callback Request
 
 Once the check is complete, the integration should send a callback request
-to PassFort, notifying us of this event. More details can be found in the
+to Passfort, notifying us of this event. More details can be found in the
 [callbacks section](#callbacks).
 
-There are no check-type-specific callback fields for document fetch checks.
+There are no check-type-specific callback fields for Document fetch checks.
 
 ## Finish One-Time Callback Document Fetch
 
-This endpoint is called shortly after PassFort receives a callback from your
+This endpoint is called shortly after Passfort receives a callback from your
 integration indicating that a previously instructed check has completed.
 
 In response, your integration should return the result of the check.
@@ -589,8 +589,8 @@ The payload of the request can contain the following fields:
       <td>Yes</td>
       <td>
         Specified whether the check is for a customer with a direct
-        relationship with your integration's data provider, or if they are
-        using the check through PassFort's pay-as-you-go reselling scheme.
+        relationship with your integration's data provider, or if they're
+        using the check through Passfort's pay-as-you-go reselling scheme.
       </td>
     </tr>
     <tr>
@@ -627,8 +627,8 @@ The payload of the request can contain the following fields:
       <td>Yes</td>
       <td>
         This matches the <code>provider_id</code> returned by your integration when the
-        check was instructed, and will also match the field with the same name
-        sent to PassFort as part of the callback indicating that this check
+        check was instructed, and also matches the field with the same name
+        sent to Passfort as part of the callback indicating that this check
         had completed.
       </td>
     </tr>
@@ -638,8 +638,8 @@ The payload of the request can contain the following fields:
       <td>Yes</td>
       <td>
         This matches the <code>reference</code> returned by your integration when the
-        check was instructed, and will also match the field with the same name
-        sent to PassFort as part of the callback indicating that this check
+        check was instructed, and also matches the field with the same name
+        sent to Passfort as part of the callback indicating that this check
         had completed.
       </td>
     </tr>
@@ -740,8 +740,8 @@ def complete_check(id: UUID):
       <td>No</td>
       <td>
         A list of errors that occurred while running this check. If this is
-        provided and it's not empty, the result of this check will be
-        considered to be errored by PassFort, regardless of the other contents
+        provided and it's not empty, the result of this check is
+        considered to be errored by Passfort, regardless of the other contents
         of this response.
       </td>
     </tr>
@@ -752,9 +752,9 @@ def complete_check(id: UUID):
       </td>
       <td>No</td>
       <td>
-        Essentially the same as <code>errors</code>, except the
-        <code>sub_type</code> and <code>data</code> fields are not present, and
-        providing warnings will not cause PassFort to consider the check
+        Essentially the same as <a href="#check-errors">errors</a>, except the
+        <code>sub_type</code> and <code>data</code> fields aren't present, and
+        providing warnings won't cause Passfort to consider the check
         as errored.
       </td>
     </tr>
@@ -765,9 +765,9 @@ def complete_check(id: UUID):
       </td>
       <td>No</td>
       <td>
-        This should be the structured JSON data returned by the data provider,
-        or a conversion of the data provider's response, to allow
-        PassFort to investigate issues that may arise with your integration.
+        This should be the structured JSON data returned by the data provider
+        or a conversion of the data provider's response to allow
+        Passfort to investigate any issues that arise with your integration.
       </td>
     </tr>
     <tr>
@@ -781,14 +781,13 @@ def complete_check(id: UUID):
         A list of charges incurred while running this check. Charges may only
         be returned if both of these conditions are met:
         <ul>
-          <li>No errors occurred (ie. a result was generated).</li>
+          <li>No errors occur when the check is run.</li>
           <li>
-            The check is being resold (the commercial relationship is
-            with PassFort).
+            The check is resold by Passfort.
           </li>
         </ul>
         
-        For demo checks, charges may be returned, but they will not be deducted
+        For demo checks, charges may be returned, but they won't be deducted
         from the institution's credit.
         
         If charges are returned, the total amount charged must be no greater
@@ -820,7 +819,7 @@ information through to the point where it is needed.
       <td>The value <code>"INDIVIDUAL"</code></td>
       <td>Yes</td>
       <td>
-        The only supported entity type for Document Verification Checks
+        The only supported entity type for Document verification checks
         is individuals.
       </td>
     </tr>
@@ -828,7 +827,7 @@ information through to the point where it is needed.
       <td><code>documents</code></td>
       <td>
         An array containing the documents, structured as it is
-        in <a href="#data-structure">the PassFort API</a>.
+        in <a href="#data-structure">the Passfort Partner API</a>.
       </td>
       <td>If no errors occurred</td>
       <td>
@@ -849,7 +848,7 @@ information through to the point where it is needed.
 
 ## Download Document File
 
-This endpoint allows PassFort to retrieve images and other files
+This endpoint allows Passfort to retrieve images and other files
 stored with the provider for a given check.
 
 ### HTTP Request
@@ -926,8 +925,8 @@ The payload of the request can contain the following fields:
       <td>Yes</td>
       <td>
         Specified whether the check is for a customer with a direct
-        relationship with your integration's data provider, or if they are
-        using the check through PassFort's pay-as-you-go reselling scheme.
+        relationship with your integration's data provider, or if they're
+        using the check through Passfort's pay-as-you-go reselling scheme.
       </td>
     </tr>
     <tr>
@@ -1021,7 +1020,7 @@ file name, it is recommended your integration generate a suitable file name.
 </aside>
 
 #### Supported image types
-The currently supported types for document images on PassFort are:
+The currently supported types for document images on Passfort are:
 
  * `image/jpeg`
  * `image/png`
@@ -1030,7 +1029,7 @@ The currently supported types for document images on PassFort are:
  * `application/pdf`
 
 #### Supported video types
-The currently supported types for live video files on PassFort are:
+The currently supported types for live video files on Passfort are:
 
  * `video/mp4`
  * `video/webm`

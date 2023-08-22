@@ -17,7 +17,7 @@ behaviour:
 
 <%= partial("includes/partials/config.md.erb", :locals => { :name => "sync_identity_check" }) %>
 
-This endpoint specifies the configuration used by PassFort for performing
+This endpoint specifies which configuration is used by Passfort to perform
 one-time synchronous identity checks using your integration.
 
 ### HTTP Request
@@ -59,10 +59,10 @@ The `check_template` fields for this check are:
       <td>number</td>
       <td>No</td>
       <td>
-        The number of seconds PassFort should wait without a response before
+        The number of seconds Passfort should wait without a response before
         considering identity checks run through this integration to have
         timed out. Must be an integer. If not specified or set to
-        <code>null</code>, a timeout of 60 seconds will be used.
+        <code>null</code>, a timeout of 60 seconds is used.
       </td>
     </tr>
   </tbody>
@@ -74,7 +74,7 @@ The `check_template` fields for this check are:
 
 ## Run One-Time Sync Identity Check
 
-This endpoint exposes your data provider's identity check to PassFort.
+This endpoint exposes your data provider's identity check to Passfort.
 
 ### HTTP Request
 
@@ -124,8 +124,8 @@ The payload of the request can contain the following fields:
       <td>Yes</td>
       <td>
         Specified whether the check is for a customer with a direct
-        relationship with your integration's data provider, or if they are
-        using the check through PassFort's pay-as-you-go reselling scheme.
+        relationship with your integration's data provider, or if they're
+        using the check through Passfort's pay-as-you-go reselling scheme.
       </td>
     </tr>
     <tr>
@@ -133,10 +133,10 @@ The payload of the request can contain the following fields:
       <td>An IndividualData object</td>
       <td>Yes</td>
       <td>
-        This field contains the profile information on the individual the
-        identity check should be run for. See the
+        This field contains the profile information for the individual on which the
+        Identity check is run. See the
         <a href="#check-input">PassFort Data Structure check input section</a>
-        for more information on how profile data is structured within PassFort.
+        for more information on how profile data is structured within Passfort.
       </td>
     </tr>
     <tr>
@@ -343,7 +343,7 @@ app.post("/checks", (req, res) => {
       <td>
         Indicates the result data for this check. See the
         <code>check_output</code> section for the full structure of
-        this check. In the absence of a result, PassFort tries to
+        this check. In the absence of a result, Passfort tries to
         interpret a result from the <code>check_output</code>.
       </td>
     </tr>
@@ -353,11 +353,11 @@ app.post("/checks", (req, res) => {
       <td>Only when there is no <code>check_output</code></td>
       <td>
         Indicates the result of this check. If this is not empty,
-        this is the result of the check in PassFort. The result 
+        this is the result of the check in Passfort. The result 
         field should only be populated when the provider does not give enough 
         information to generate a suitable <code>check_output</code>, or if the user has 
         explicitly requested to use the raw provider result without 
-        PassFort's interpretation.
+        Passfort's interpretation.
       </td>
     </tr>
     <tr>
@@ -369,8 +369,8 @@ app.post("/checks", (req, res) => {
       <td>No</td>
       <td>
         A list of errors that occurred while running this check. If this is
-        provided and it's not empty, the result of this check will be
-        considered to be errored by PassFort, regardless of the other contents
+        provided and it's not empty, the result of this check is
+        considered to be errored by Passfort, regardless of the other contents
         of this response.
       </td>
     </tr>
@@ -381,9 +381,9 @@ app.post("/checks", (req, res) => {
       </td>
       <td>No</td>
       <td>
-        Essentially the same as <code>errors</code>, except the
-        <code>sub_type</code> and <code>data</code> fields are not present, and
-        providing warnings will not cause PassFort to consider the check
+        Essentially the same as <a href="#check-errors">errors</a>, except the
+        <code>sub_type</code> and <code>data</code> fields aren't present, and
+        providing warnings won't cause Passfort to consider the check
         as errored.
       </td>
     </tr>
@@ -394,9 +394,9 @@ app.post("/checks", (req, res) => {
       </td>
       <td>No</td>
       <td>
-        This should be the structured JSON data returned by the data provider,
-        or a conversion of the data provider's response, to allow
-        PassFort to investigate issues that may arise with your integration.
+        This should be the structured JSON data returned by the data provider
+        or a conversion of the data provider's response to allow
+        Passfort to investigate any issues that arise with your integration.
       </td>
     </tr>
     <tr>
@@ -410,14 +410,13 @@ app.post("/checks", (req, res) => {
         A list of charges incurred while running this check. Charges may only
         be returned if both of these conditions are met:
         <ul>
-          <li>No errors occurred (i.e. a result was generated).</li>
+          <li>No errors occur when the check is run.</li>
           <li>
-            The check is being resold (the commercial relationship is
-            with PassFort).
+            The check is resold by Passfort.
           </li>
         </ul>
         
-        For demo checks, charges may be returned, but they will not be deducted
+        For demo checks, charges may be returned, but they won't be deducted
         from the institution's credit.
         
         If charges are returned, the total amount charged must be no greater
@@ -488,7 +487,7 @@ The result types currently supported are:
       <td><code>address_history</code></td>
       <td>
         An array containing the address history, structured as it is
-        in <a href="#data-structure">the PassFort API</a>.
+        in <a href="#data-structure">the Passfort Partner API</a>.
       </td>
       <td>No</td>
       <td>

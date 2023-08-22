@@ -1,10 +1,10 @@
 # One-time Sync Company Custom 
 
-This section lists all endpoints that must be implemented for a one-time synchronous Company Custom check integration.
+This section lists all endpoints that must be implemented for a one-time synchronous Company custom check integration.
 
-One-time synchronous company custom checks are custom checks with the following behavior:
+One-time synchronous Company custom checks are custom checks with the following behavior:
 
-    * The check result is returned directly upon request; the response is not sent until the check is finished (synchronous).
+    * The check result is returned directly upon request; the response is only sent when the check is finished (synchronous).
     
     * This one-time check operates at a point in time, meaning the check result is returned once and there is no ongoing monitoring.
 
@@ -13,7 +13,7 @@ One-time synchronous company custom checks are custom checks with the following 
 
 <%= partial("includes/partials/config.md.erb", :locals => { :name => "sync_company_custom" }) %>
 
-This endpoint specifies the configuration used by PassFort for performing a
+This endpoint specifies which configuration is used by Passfort to perform a
 one-time synchronous custom check using your integration.
 
 ### HTTP request
@@ -130,8 +130,8 @@ The payload of the request can contain the following fields:
       <td>A <code>CompanyData</code> object</td>
       <td>Yes</td>
       <td>  
-      This field contains the profile information on the company the
-        custom check should be run for. See the
+      This field contains the profile information for the company on which the
+        Company custom check check is run. See the
         <a href="#check-input">Passfort Data Structure check input</a> section
         for more information on how profile data is structured within Passfort.
       </td>
@@ -343,10 +343,10 @@ app.post("/checks", (req, res) => {
       <td><code>metadata</code></td>
       <td>
         An object containing the registry data, structured as it is
-        in <a href="#data-structure">the PassFort API</a>.
+        in <a href="#data-structure">the Passfort Partner API</a>.
       </td>
-      <td>If a match was found by the provider</td>
-      <td>A best effort should be made to populate all fields supported by the provider</td>
+      <td>If a match is found by the provider</td>
+      <td>As best as possible, all fields you support should be made to populate all fields supported by the provider</td>
     </tr>
   </tbody>
 </table>
@@ -366,7 +366,7 @@ app.post("/checks", (req, res) => {
       <td><code>List</code></td>
       <td>No</td>
       <td>
-        List of addresses associated with the company
+        List of addresses associated with the company.
       </td>
     </tr>
     <tr>
@@ -424,8 +424,8 @@ app.post("/checks", (req, res) => {
       <td>No</td>
       <td>
         A list of errors that occurred while running this check. If this is
-        provided and it's not empty, the result of this check will be
-        considered to be errored by PassFort, regardless of the other contents
+        provided and it's not empty, the result of this check is
+        considered to be errored by Passfort, regardless of the other contents
         of this response.
       </td>
     </tr>
@@ -436,9 +436,9 @@ app.post("/checks", (req, res) => {
       </td>
       <td>No</td>
       <td>
-        Essentially the same as <code>errors</code>, except the
-        <code>sub_type</code> and <code>data</code> fields are not present, and
-        providing warnings will not cause PassFort to consider the check
+        Essentially the same as <a href="#check-errors">errors</a>, except the
+        <code>sub_type</code> and <code>data</code> fields aren't present, and
+        providing warnings won't cause Passfort to consider the check
         as errored.
       </td>
     </tr>
@@ -449,9 +449,9 @@ app.post("/checks", (req, res) => {
       </td>
       <td>No</td>
       <td>
-        This should be the structured JSON data returned by the data provider,
-        or a conversion of the data provider's response, to allow
-        PassFort to investigate issues that may arise with your integration.
+        This should be the structured JSON data returned by the data provider
+        or a conversion of the data provider's response to allow
+        Passfort to investigate any issues that arise with your integration.
       </td>
     </tr>
   </tbody>
@@ -483,30 +483,30 @@ app.post("/checks", (req, res) => {
     <tr>
       <td><code>summary</code></td>
       <td>
-      Some sort of summary of the result
-        in <a href="#data-structure">the PassFort API</a>.
+      A summary of the result
+        in <a href="#data-structure">the Passfort Partner API</a>.
       </td>
       <td>If a match was found by the provider</td>
-      <td>A best effort should be made to populate all fields supported by the provider</td>
+      <td>As best as possible, all fields you support should be made to populate all fields supported by the provider</td>
     </tr>
     <tr>
         <tr>
       <td><code>external_resources</code></td>
       <td>
         An object 
-        in <a href="#data-structure">the PassFort API</a>.
+        in <a href="#data-structure">the Passfort Partner API</a>.
       </td>
       <td>No</td>
-      <td>A best effort should be made to populate all fields supported by the provider</td>
+      <td>As best as possible, all fields you support should be made to populate all fields supported by the provider</td>
     </tr>
     <tr>
       <td><code>warnings</code></td>
       <td>
         An object containing the registry data, structured as it is
-        in <a href="#data-structure">the PassFort API</a>.
+        in <a href="#data-structure">the Passfort Partner API</a>.
       </td>
       <td>If a match was found by the provider</td>
-      <td>A best effort should be made to populate all fields supported by the provider</td>
+      <td>As best as possible, all fields you support should be made to populate all fields supported by the provider</td>
     </tr>
     <tr>
       <td><code>errors</code></td>
@@ -517,8 +517,8 @@ app.post("/checks", (req, res) => {
       <td>No</td>
       <td>
       A list of errors that occurred while running this check. If this is
-      provided and it is not empty, the result of this check will be
-      considered to be errored by PassFort, regardless of the other contents
+      provided and it is not empty, the result of this check is
+      considered to be errored by Passfort, regardless of the other contents
       of this response.
       </td>
     </tr>

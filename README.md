@@ -1,6 +1,6 @@
 # Integration Provider API Docs
 
-Site generator for the provider facing integration API
+Site generator for the provider facing Passfort Partner API
 
 Deployed to https://passfort.github.io/integration-docs/ by a GitHub Action
 using the a token from the `github-deploy` account: see under the `.github`

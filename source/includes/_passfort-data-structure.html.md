@@ -33,7 +33,7 @@ specified here.
       <td><code>type</code></td>
       <td>One of the <a href="#error-types">supported error types</a></td>
       <td>Yes</td>
-      <td>The type of error that is being reported.</td>
+      <td>The type of error that's being reported.</td>
     </tr>
     <tr>
       <td><code>sub_type</code></td>
@@ -46,7 +46,7 @@ specified here.
       <td>string</td>
       <td>Yes</td>
       <td>
-        A message displayed in the PassFort portal when showing the
+        A message displayed in the Passfort portal to show the
         check error.
       </td>
     </tr>
@@ -56,7 +56,7 @@ specified here.
       <td>No</td>
       <td>
         Integration-specific structured error information that customers can
-        use to get additional information about the error being reported.
+        use to get additional information about the error.
       </td>
     </tr>
   </tbody>
@@ -66,7 +66,7 @@ specified here.
 
 #### `INVALID_CREDENTIALS`
 
-The data provider reported that the credentials used are not valid.
+The data provider reported that the credentials used aren't valid.
 
 #### `INVALID_CONFIG`
 
@@ -168,7 +168,7 @@ specified here.
       <td>
         The reference should be unique for each check. It should be possible
         to use the reference to correlate the charges recorded by the provider
-        against the charges recorded in PassFort.
+        against the charges recorded in Passfort.
       </td>
     </tr>
   </tbody>

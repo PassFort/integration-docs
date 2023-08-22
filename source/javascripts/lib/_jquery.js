@@ -1436,7 +1436,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 		if ( compare & 1 ||
 			(!support.sortDetached && b.compareDocumentPosition( a ) === compare) ) {
 
-			// Choose the first element that is related to our preferred document
+			// Choose the first element that's related to our preferred document
 			if ( a === document || a.ownerDocument === preferredDoc && contains(preferredDoc, a) ) {
 				return -1;
 			}
@@ -9499,7 +9499,7 @@ jQuery.ajaxTransport( function( options ) {
 
 								// Support: IE <=9 only
 								// On a manual native abort, IE9 throws
-								// errors on any property access that is not readyState
+								// errors on any property access that's not readyState
 								if ( typeof xhr.status !== "number" ) {
 									complete( 0, "error" );
 								} else {

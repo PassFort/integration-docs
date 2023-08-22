@@ -10,9 +10,9 @@ behaviour:
     that the check is in progress.
   
   * When the check is complete, a request will be set from the integration
-    to PassFort's "callback" end-point.
+    to Passfort's "callback" endpoint.
   
-  * Upon receiving the callback, PassFort will send a final request to the
+  * Upon receiving the callback, Passfort sends a final request to the
     integration to complete the check and fetch the result.
 
   * The check operates at a point-in-time: there is no ongoing monitoring
@@ -23,7 +23,7 @@ behaviour:
 
 <%= partial("includes/partials/config.md.erb", :locals => { :name => "callback_document_verification" }) %>
 
-This endpoint specifies the configuration used by PassFort for performing
+This endpoint specifies which configuration is used by Passfort to perform
 one-time callback-based document verifications using your integration.
 
 ### HTTP Request
@@ -65,10 +65,10 @@ The `check_template` fields for this check are:
       <td>number</td>
       <td>No</td>
       <td>
-        The number of seconds PassFort should wait without a response before
-        considering document verification checks run through this integration to have
+        The number of seconds Passfort should wait without a response before
+        considering Document verification checks run through this integration to have
         timed out. Must be an integer. If not specified or set to
-        <code>null</code>, a timeout of 60 seconds will be used.
+        <code>null</code>, a timeout of 60 seconds is used.
       </td>
     </tr>
   </tbody>
@@ -80,7 +80,7 @@ The `check_template` fields for this check are:
 
 ## Start One-Time Callback Document Verification
 
-This endpoint is used by PassFort to initiate a document verification check through
+This endpoint is used by Passfort to initiate a Document verification check through
 your integration.
 
 ### HTTP Request
@@ -131,8 +131,8 @@ The payload of the request can contain the following fields:
       <td>Yes</td>
       <td>
         Specified whether the check is for a customer with a direct
-        relationship with your integration's data provider, or if they are
-        using the check through PassFort's pay-as-you-go reselling scheme.
+        relationship with your integration's data provider, or if they're
+        using the check through Passfort's pay-as-you-go reselling scheme.
       </td>
     </tr>
     <tr>
@@ -140,10 +140,10 @@ The payload of the request can contain the following fields:
       <td>An IndividualData object</td>
       <td>Yes</td>
       <td>
-        This field contains the profile information on the individual the
-        document verification should be run for. See the
+        This field contains the profile information for the individual on which the
+        Document verification check is run. See the
         <a href="#check-input">PassFort Data Structure check input section</a>
-        for more information on how profile data is structured within PassFort.
+        for more information on how profile data is structured within Passfort.
       </td>
     </tr>
     <tr>
@@ -293,10 +293,10 @@ def run_check():
       <td>No</td>
       <td>
         A list of errors that occurred while running this check. If this is
-        provided and it's not empty, the result of this check will be
-        considered to be errored by PassFort, regardless of the other contents
+        provided and it's not empty, the result of this check is
+        considered to be errored by Passfort, regardless of the other contents
         of this response.
-        If an error is returned from this end-point, no callback will be expected.
+        If an error is returned from this endpoint, no callback will be expected.
       </td>
     </tr>
     <tr>
@@ -306,9 +306,9 @@ def run_check():
       </td>
       <td>No</td>
       <td>
-        Essentially the same as <code>errors</code>, except the
-        <code>sub_type</code> and <code>data</code> fields are not present, and
-        providing warnings will not cause PassFort to consider the check
+        Essentially the same as <a href="#check-errors">errors</a>, except the
+        <code>sub_type</code> and <code>data</code> fields aren't present, and
+        providing warnings won't cause Passfort to consider the check
         as errored.
       </td>
     </tr>
@@ -319,9 +319,9 @@ def run_check():
       </td>
       <td>No</td>
       <td>
-        This should be the structured JSON data returned by the data provider,
-        or a conversion of the data provider's response, to allow
-        PassFort to investigate issues that may arise with your integration.
+        This should be the structured JSON data returned by the data provider
+        or a conversion of the data provider's response to allow
+        Passfort to investigate any issues that arise with your integration.
       </td>
     </tr>
   </tbody>
@@ -335,7 +335,7 @@ def run_check():
 ## Callback Request
 
 Once the check is complete, the integration should send a callback request
-to PassFort, notifying us of this event. More details can be found in the
+to Passfort, notifying us of this event. More details can be found in the
 [callbacks section](#callbacks).
 
 There are no check-type-specific callback fields for document verification
@@ -348,7 +348,7 @@ with live checks.
 
 ## Finish One-Time Callback Document Verification
 
-This endpoint is called shortly after PassFort receives a callback from your
+This endpoint is called shortly after Passfort receives a callback from your
 integration indicating that a previously instructed check has completed.
 
 In response, your integration should return the result of the check.
@@ -387,8 +387,8 @@ The payload of the request can contain the following fields:
       <td>Yes</td>
       <td>
         Specified whether the check is for a customer with a direct
-        relationship with your integration's data provider, or if they are
-        using the check through PassFort's pay-as-you-go reselling scheme.
+        relationship with your integration's data provider, or if they're
+        using the check through Passfort's pay-as-you-go reselling scheme.
       </td>
     </tr>
     <tr>
@@ -425,8 +425,8 @@ The payload of the request can contain the following fields:
       <td>Yes</td>
       <td>
         This matches the <code>provider_id</code> returned by your integration when the
-        check was instructed, and will also match the field with the same name
-        sent to PassFort as part of the callback indicating that this check
+        check was instructed, and also matches the field with the same name
+        sent to Passfort as part of the callback indicating that this check
         had completed.
       </td>
     </tr>
@@ -436,8 +436,8 @@ The payload of the request can contain the following fields:
       <td>Yes</td>
       <td>
         This matches the <code>reference</code> returned by your integration when the
-        check was instructed, and will also match the field with the same name
-        sent to PassFort as part of the callback indicating that this check
+        check was instructed, and also matches the field with the same name
+        sent to Passfort as part of the callback indicating that this check
         had completed.
       </td>
     </tr>
@@ -538,8 +538,8 @@ def complete_check(id: UUID):
       <td>No</td>
       <td>
         A list of errors that occurred while running this check. If this is
-        provided and it's not empty, the result of this check will be
-        considered to be errored by PassFort, regardless of the other contents
+        provided and it's not empty, the result of this check is
+        considered to be errored by Passfort, regardless of the other contents
         of this response.
       </td>
     </tr>
@@ -550,9 +550,9 @@ def complete_check(id: UUID):
       </td>
       <td>No</td>
       <td>
-        Essentially the same as <code>errors</code>, except the
-        <code>sub_type</code> and <code>data</code> fields are not present, and
-        providing warnings will not cause PassFort to consider the check
+        Essentially the same as <a href="#check-errors">errors</a>, except the
+        <code>sub_type</code> and <code>data</code> fields aren't present, and
+        providing warnings won't cause Passfort to consider the check
         as errored.
       </td>
     </tr>
@@ -563,9 +563,9 @@ def complete_check(id: UUID):
       </td>
       <td>No</td>
       <td>
-        This should be the structured JSON data returned by the data provider,
-        or a conversion of the data provider's response, to allow
-        PassFort to investigate issues that may arise with your integration.
+        This should be the structured JSON data returned by the data provider
+        or a conversion of the data provider's response to allow
+        Passfort to investigate any issues that arise with your integration.
       </td>
     </tr>
     <tr>
@@ -579,14 +579,13 @@ def complete_check(id: UUID):
         A list of charges incurred while running this check. Charges may only
         be returned if both of these conditions are met:
         <ul>
-          <li>No errors occurred (ie. a result was generated).</li>
+          <li>No errors occur when the check is run.</li>
           <li>
-            The check is being resold (the commercial relationship is
-            with PassFort).
+            The check is resold by Passfort.
           </li>
         </ul>
         
-        For demo checks, charges may be returned, but they will not be deducted
+        For demo checks, charges may be returned, but they won't be deducted
         from the institution's credit.
         
         If charges are returned, the total amount charged must be no greater
@@ -618,7 +617,7 @@ information through to the point where it is needed.
       <td>The value <code>"INDIVIDUAL"</code></td>
       <td>Yes</td>
       <td>
-        The only supported entity type for Document Verification Checks
+        The only supported entity type for Document verification checks
         is individuals.
       </td>
     </tr>
@@ -626,7 +625,7 @@ information through to the point where it is needed.
       <td><code>documents</code></td>
       <td>
         An array containing the documents, structured as it is
-        in <a href="#data-structure">the PassFort API</a>.
+        in <a href="#data-structure">the Passfort Partner API</a>.
       </td>
       <td>If no errors occurred</td>
       <td>

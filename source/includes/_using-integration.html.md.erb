@@ -1,19 +1,19 @@
 # Using your integration
 
-In order to use your data provider inside PassFort for testing or production
+In order to use your data provider inside Passfort for testing or production
 use, you must register the integration as a custom provider. A custom provider
-allows your integration to be used by a single PassFort institution.
+allows your integration to be used by a single Passfort institution.
 
 <aside>
-  If you are developing a check to be used by all users of PassFort, your
+  If you are developing a check to be used by all users of Passfort, your
   integration will be published once it has gone through appropriate testing
   and review. You should use a custom provider during the development process.
 </aside>
 
 ## Setting up a custom provider
 
-To start setting up your integration, navigate to the _Data providers_ section
-of the _Policy Builder_ tab in the PassFort Portal. Then, click the
+To start setting up your integration, navigate to the <a href="https://identity.passfort.com/institution/policy-builder">Data providers</a> section
+of the <a href="https://identity.passfort.com/institution/policy-builder/providers">Policy Builder</a> tab in the portal. Then, click the
 _New data provider_ button in the top-right corner of the page. Choose
 _Individual data provider_ or _Company data provider_ as appropriate for your
 integration.
@@ -24,8 +24,8 @@ integration.
 }) %>
 
 <aside>
-    If you cannot find the <em>Policy Builder</em> tab, or the
-    <em>New data provider</em> button, contact your PassFort admin to ensure
+    If you can't find the <a href="https://identity.passfort.com/institution/policy-builder/providers">Policy Builder</a> tab, or the
+    <em>New data provider</em> button, contact your Passfort admin to ensure
     your account has the correct permissions to manage data providers.
 </aside>
 
@@ -85,8 +85,8 @@ during validation.
   :title => "Error returned by the validation suite"
 }) %>
 
-If validation fails or encounters errors, you will not be able to save your
-custom provider until they are addressed. View the test results for information
+If validation fails or encounters errors, you won't be able to save your
+custom provider until they're addressed. View the test results for information
 on why your custom provider has failed validation. In this case, validation
 failed because a URL was provided for a non-existent domain.
 
@@ -109,6 +109,6 @@ be brought back to the validation screen.
 <aside class="warning">
     If you press <em>Save</em> on the validation screen to update your custom
     provider's validation, the configuration parameters will be reset to the
-    default values to ensure that they are consistent in the event your
+    default values to ensure that they're consistent in the event your
     credentials or config values are changed.
 </aside>
