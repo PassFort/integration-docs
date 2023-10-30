@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - origin/gh-pages
+      - master
 
 name: Create Slate Documentation on Push
 
