@@ -331,6 +331,207 @@ def run_check():
   :role => :server,
 }) %>
 
+## Ready for Callback
+
+
+This endpoint is used by Passfort to indicate that it is ready to receive callbacks
+from your integration.
+
+For demo checks, the callback should be sent synchronously when this request is
+received, and should generate a reference that won't conflict with live checks.
+
+### HTTP Request
+
+`POST https://my-integration.example.com/checks/{check_id}/ready`
+
+>A JSON payload following this structure will be sent to the endpoint:
+
+```json
+<%= pretty_json("requests/ready_callback_document_fetch", "json") %>
+```
+
+
+
+
+The payload of the request can contain the following fields:
+
+<table>
+  <thead>
+    <th>Field</th>
+    <th>Type</th>
+    <th>Always present?</th>
+    <th>Description</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>id</code></td>
+      <td>UUID</td>
+      <td>Yes</td>
+      <td>
+        Every check instruction will contain a unique ID which can be used to
+        track and identify individual requests without needing to use other
+        information in the request.
+      </td>
+    </tr>
+    <tr>
+      <td><code>demo_result</code></td>
+      <td>
+        One of the <a href="#demo-result-types">specified demo result types</a>
+      </td>
+      <td>No</td>
+      <td>
+        If this field is present, the check must be considered a demo check
+        and you should respond with appropriate demo data. See the
+        <a href="#demo-checks">Demo Checks section</a> for more information.
+      </td>
+    </tr>
+    <tr>
+      <td><code>commercial_relationship</code></td>
+      <td>One of <code>"DIRECT"</code>, <code>"PASSFORT"</code></td>
+      <td>Yes</td>
+      <td>
+        Specified whether the check is for a customer with a direct
+        relationship with your integration's data provider, or if they're
+        using the check through Passfort's pay-as-you-go reselling scheme.
+      </td>
+    </tr>
+    <tr>
+      <td><code>check_input</code></td>
+      <td>An IndividualData object</td>
+      <td>Yes</td>
+      <td>
+        <p/>
+        This field contains the profile information for the individual on which the
+        Document verification check is run. See the
+        <a href="#check-input">PassFort Data Structure check input section</a>
+        for more information on how profile data is structured within Passfort.
+        <p/>
+        For Document fetch checks, the check input contains a single "placeholder"
+        document with no images attached.
+        <p/>
+        The integration should take this placeholder document and populate it with
+        the result from the provider, including attaching any images that can be
+        downloaded.
+        <p/>
+        Notably, the `id` and `category` fields from the placeholder document should
+        be preserved unchanged, as these indicate how the document should be used
+        within Passfort, for example, as a proof of address.
+      </td>
+    </tr>
+    <tr>
+      <td><code>provider_config</code></td>
+      <td>A user-defined JSON object</td>
+      <td>Yes</td>
+      <td>
+        This field contains the provider config structured in the way
+        specified by your integration's
+        <a href="#get-check-configuration-one-time-callback-document-verification">
+          configuration endpoint
+        </a>, with the <code>name</code> field corresponding to the key, and
+        the value being the value of the configuration option.
+      </td>
+    </tr>
+    <tr>
+      <td><code>provider_credentials</code></td>
+      <td>A user-defined JSON object</td>
+      <td>No</td>
+      <td>
+        This field contains the credentials structured in the way
+        specified by your integration's
+        <a href="#get-check-configuration-one-time-callback-document-verification">
+          configuration endpoint
+        </a>, with the <code>name</code> field corresponding to the key, and
+        the value being the value of the configuration option. <strong>This
+        field is only sent if <code>commercial_relationship</code> is set to
+        <code>"DIRECT"</code>.</strong>
+      </td>
+    </tr>
+    <tr>
+      <td><code>custom_data</code></td>
+      <td>A user-defined JSON object</td>
+      <td>No</td>
+      <td>
+        	Any custom_data returned by your integration when the check was instructed
+          will be provided here. 
+      </td>
+    </tr>
+    <tr>
+      <td><code>provider_id</code></td>
+      <td>UUID</td>
+      <td>Yes</td>
+      <td>
+        This matches the `provider_id` returned by your integration when the check was 
+        instructed, and should also match the field with the same name sent to Passfort as
+        part of the callback indicating that this check had completed.
+      </td>
+    </tr>
+    <tr>
+      <td><code>reference</code></td>
+      <td>string</td>
+      <td>Yes</td>
+      <td>
+        This matches the `reference` returned by your integration when the check was
+        instructed, and should also match the field with the same name sent to Passfort as 
+        part of the callback indicating that this check had completed.
+    </tr>
+  </tbody>
+</table>
+
+
+```python
+from uuid import UUID
+from flask import Flask, jsonify, request, Response
+from integration.testing import create_demo_result
+from integration.provider import make_provider_request, reseller_creds, \
+    to_passfort_field_types
+from integration.errors import ProviderError, ConnectionError
+
+
+app = Flask(__name__)
+
+
+@app.post("/checks/<uuid:id>/ready")
+def acknowledge_ready(id: UUID):
+    body = request.json
+
+    provider_id = body.get('provider_id')
+    reference = body.get('reference')
+
+
+    # Demo checks should send the callback synchronously
+    if demo_result is not None:
+      send_callback(provider_id, reference, custom_data)
+      return Response(status=200)
+
+
+    credentials = body.get('credentials')
+    config = body.get('config')
+    check_input = body.get('check_input')
+
+    # Check if provider result is ready
+    check_result = make_provider_request(credentials, config, check_input)
+    if check_result['complete']:
+      send_callback(provider_id, reference, custom_data)
+
+  return Response(status=200)
+```
+
+
+### Response fields
+
+This response is not required to return any content.
+
+<%= partial("includes/partials/authenticated.md.erb", :locals => {
+  :role => :server,
+}) %>
+
+## Download images
+
+The document images for verification can be downloaded using the image IDs
+included in the `images` array in the request payload.
+
+More details can be found in the [download image section](#download-image). 
+
 
 ## Callback Request
 
