@@ -54,13 +54,26 @@ The `check_template` fields for this check are:
       </td>
     </tr>
     <tr>
-      <td><code>timeout</code></td>
+      <td><code>request_timeout</code></td>
       <td>number</td>
       <td>No</td>
       <td>
         The number of seconds Passfort should wait without a response before
         considering Document fetch checks run through this integration to have
         timed out. Must be an integer. If not specified or set to
+        <code>null</code>, a timeout of 60 seconds is used. This timeout
+        will also be applied to image downloads.
+      </td>
+    </tr>
+    </tr>
+    <tr>
+      <td><code>callback_timeout</code></td>
+      <td>number</td>
+      <td>No</td>
+      <td>
+        The number of seconds Passfort should wait following a callback without 
+        a response before considering Document fetch checks run through this integration 
+        to have timed out. Must be an integer. If not specified or set to
         <code>null</code>, a timeout of 60 seconds is used. This timeout
         will also be applied to image downloads.
       </td>
