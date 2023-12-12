@@ -2,7 +2,8 @@
     "check_type": "DOCUMENT_VERIFICATION",
     "check_template": {
         "type": "ONE_TIME_CALLBACK",
-        "timeout": 5
+        "request_timeout": 15,
+        "callback_timeout": 15
     },
     "pricing": {
         "supports_reselling": true,
