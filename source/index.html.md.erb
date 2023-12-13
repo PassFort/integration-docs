@@ -8,7 +8,7 @@ language_tabs:
 toc_footers:
   - '&copy; 2020 PassFort'
   - '<a href="https://developer.passfort.com">PassFort Developer Hub</a>'
-  - '<a href="https://help.passfort.com/category/k84bc464f5-developer-documentation">PassFort Help Articles for Developers</a>'
+  - '<a href="https://help.passfort.com/category/k84bc464f5-developer-documentation">Passfort developer documentation</a>'
 
 includes:
   - metadata
@@ -27,13 +27,248 @@ includes:
 
 search: true
 ---
-# Introduction
+# Passfort Partner API integration overview
 
-The Passfort Partner API allows you to easily connect new data sources
-(integrations) to Passfort by creating a JSON web service which conforms to
-the specifications outlined in this document.
+Passfort helps companies onboard new applicants and monitor potential risk that
+existing customers bring to their organization. 
 
-## Using this documentation
+For example, take a bank that requires all potential new customers to make an
+application. As part of the application process, known as onboarding, the bank can
+use Passfort to run [checks][passfort-docs-checks] on the applicant. If the applicant
+passes the required checks and is approved to become a customer, the bank can monitor
+potential risk to their organization by reviewing any new or updated check results
+that are returned in Passfort.
+
+When you build and host an integration with Passfort, our users have the option to
+run checks using your product and, if you choose to provide ongoing monitoring,
+review any new and updated results your product flags.
+
+##How a partner integration works
+
+The Passfort Partner API integration has several components that link together to
+allow a user to run a check with your product. The following diagram shows the flow
+between components. Components 3, 4, and 5 are built and hosted by you.
+
+<%= partial("includes/partials/lightbox.md.erb", :locals => {
+  :image => "diagram-passfort-partner-api-components.png",
+  :title => "Passfort Partner API components"
+}) %>
+
+###Components
+
+The components of a partner integration are: 
+
+1. **Passfort Lifecycle API**: The API through which Passfort users request to run
+a check and see its result. To learn more, see
+the [Passfort Lifecycle API][passfortAPI-docs] reference.
+2. **Passfort product**: Our product for onboarding and monitoring. One of our core
+product features is to allow users to run an onboarding check using the data provider
+of their choice. 
+3. **Passfort Partner API**: The API through which Passfort requests you run a check
+and through which you return the result. You’ll build and host this interface. Our
+documentation is here to help you understand which endpoints to support. 
+4. **Integration service**: Optionally, you can build an intermediary service to
+handle communication between your product and the Passfort Partner API. 
+5. **Partner product**: Your product runs the check and returns the result. 
+
+###Request process
+
+The process for a user to request a check and get the result is as follows:
+
+1. A Passfort user requests a check. This request is passed through the Passfort
+Lifecycle API to the Passfort product.
+2. The Passfort product passes the request to your Partner product through the
+Passfort Partner API. The request includes any relevant information you might need
+to run the check, for example key details about the onboarding applicant. Optionally,
+you can build a service to handle communication between the Passfort Partner API and
+your Partner product. 
+3. Your Partner product runs the check and uses the Passfort Partner API to return
+the result to our Passfort product. 
+4. Depending on the check type, the Passfort product may perform additional
+validation on top of the result you return. For example, with a
+[Document verification](#one-time-callback-document-verification) check, Passfort
+confirms the data you’ve extract from the document matches the *profile data*.
+Profile data is the term Passfort uses to refer to an applicant’s data, for example,
+the applicant’s name and date of birth.
+5. The Passfort product returns the results to the user through the Passfort
+Lifecycle API. 
+
+##How a Passfort customer uses a partner integration
+
+After you’ve published your integration, Passfort customers can ask us to add your
+check to their account. 
+
+To do this, we add the relevant [check][passfort-docs-checks] type and
+[task][passfort-docs-tasks] type to the customer’s *product* in Passfort. A product
+in Passfort represents a real-life product that an applicant can apply for. Every
+product in Passfort is associated with a specific onboarding flow.
+
+The diagram that follows shows the elements of a product.
+
+<%= partial("includes/partials/lightbox.md.erb", :locals => {
+  :image => "diagram-elements-of-a-product.png",
+  :title => "Elements of a product"
+}) %>
+
+###Product elements
+
+The elements of a product are as follows: 
+
+1. **Smart policy**: The [smart policy][passfort-docs-smartpolicies] is a flow that
+determines which due diligence task types an individual or company needs to complete
+to be onboarded to the product. If individuals and companies can both apply for the
+product, the product has one smart policy for individuals and another for companies. 
+2. **Risk model**: The [risk model][passfort-docs-riskmodels] is an optional feature
+for evaluating an applicant’s potential risk to the user’s business. As with smart
+policies, if individuals and companies can both apply for the product, the product
+has one risk model for individuals and another for companies. Although risk models
+don’t directly relate to your check, they can affect how a smart policy behaves.
+
+Note that your check will be for either individuals or companies, so will only be
+included in one smart policy. If you would like to provide one check for individuals
+and another for companies, you should create two different integrations, for example
+`partnerurl.com/individual` and `partnerurl.com/company`.
+
+When an individual or company makes a product application, the application follows
+the smart policy flow. At certain points in the flow, onboarding tasks are added to
+the application, including the one associated with your check type.
+
+Once the associated task is added to the application, Passfort users have the option
+to run your check. Alternatively, the check can be set up to run automatically as
+soon as the task is created so user intervention isn’t required.
+
+Note that one task type can have multiple check types. For example, the Verify
+identity task can be associated with the Electronic identity check and an ID
+verification check because both checks provide a way for the user to verify the
+applicant’s identity.
+
+Passfort users may also have multiple data providers to run the same check type.
+This is useful, for example, if one check fails, or if the user wants to choose a
+data provider that specializes in checks for the applicant’s country.
+
+The diagram that follows shows that every task type must have at least one check type
+and every check type must have at least one data provider. There is no limit to the
+number of checks that can be associated with a task, and there is no limit to the
+number of data providers that can be used for one check.
+
+<%= partial("includes/partials/lightbox.md.erb", :locals => {
+  :image => "diagram-task-types-check-types-data-providers.png",
+  :title => "The relationship between task types, check types, and data providers"
+}) %>
+
+When a user requests a check with your product, we pass the request to you. When you
+return the results to us, Passfort users access them through the Passfort Lifecycle
+API. Our product presents the check result in a clear, consistent way so our
+customers can easily compare results from different checks.
+
+# Get started
+
+To integrate with Passfort, you’ll build the Passfort Partner API. This should be a
+JSON web service that conforms to the specifications outlined in this document.
+
+Note that an integration should only support one check type. If you would like to
+provide Passfort users with multiple check types, you should create one integration
+per check type.
+
+## Design your integration
+
+Your design should consider the following:
+
+1. Which check type you’ll support. The check type determines the kind of information
+you’ll provide to Passfort users. For example, The
+[Identity check](#one-time-sync-identity-check) type is used to confirm an individual
+is who they say they are, and the [Company data](#one-time-sync-company-data) check
+type is used to get basic information about a company. 
+2. Which check template you’ll use, for example one-time sync or one-time callback.
+The check template determines how the check behaves, including how long it takes to
+return the check result and whether you’ll provide ongoing monitoring. Note that each
+check type supports specific templates, as described in the documentation.
+3. How you’ll map your data to the check result. We ask that you use the structures 
+described in this documentation. Note that when the Passfort product displays the
+check data to the user, there may be slight differences or certain fields may be
+hidden. 
+4. Which configuration options you’d like to provide Passfort customers. You could,
+for example, allow customers to specify which countries users can run the check for
+or require customers to provide authorization credentials. Any configuration
+options you send to the [Configuration](#configuration) endpoint are displayed in
+Passfort’s portal for customers to see and engage with.
+
+## Build your integration
+
+The Passfort Partner API JSON web service you build should meet the
+[technical requirements](#technical-requirements).
+
+All requests must follow the [rules for authentication](#authentication).
+
+Your service should support endpoints for:
+
+- [Integration Metadata](#metadata) hosted at `/`
+- [Configuration](#configuration) hosted at `/config`
+- The check, for example the
+[One-time Sync Identity Check](#one-time-sync-identity-check), hosted at `/checks`
+
+There may be additional endpoints for your check type and template. To learn more,
+see the documentation for your check type and template.
+
+You can learn more about check input, errors, and charges in the Data Structure section.
+
+Your integration should also support [demo checks](#demo-checks).
+
+## Test your integration
+
+After you’ve implemented a check, sign in to the Passfort portal and
+[register your product](#using-your-integration) as a custom provider. If you’re
+supporting multiple checks, do this once per check.
+
+Next, [run the validation suite](#validation) to test whether the Passfort product
+can send requests to your product and receive responses correctly. Note that the
+validation suite only provides sample data and does not include real check data. 
+
+Finally, you should create a sandbox environment so you can test the check with
+your real check data. 
+
+If you make any changes to your check or configuration, you should
+[re-run the validation suite](#revalidating-your-custom-provider), then repeat your
+real data tests in your sandbox environment.
+
+## Document your integration
+
+Partners are responsible for writing, maintaining, and hosting their own
+documentation. To ensure the best self-serve experience for customers, we suggest
+including the following:
+
+- A description of the check’s purpose. Ideally, this would include a link back to
+our description of the associated [check type][passfort-docs-allchecks] and a link
+to our corporate website so your users have an up-to-date description of Passfort.
+For example, if you’re providing a Company data check, we suggest using this
+introductory sentence: “In [Passfort by Moody’s][passfort-marketing], you can use
+[your product name] to run a [Company data check][passfort-docs-companydata] to see
+who owns and controls a company.”
+- A description of any results that a user will see when they run your check. This
+will help users understand what your results represent and how they might use them.
+- A description of any other key concepts that are specific to your product.
+- A description of each of your configuration options and any other information a
+user is required to provide when they set up your check.
+- If you’ve produced an API for your users, a reference that describes the endpoints
+as well as which fields are sent in requests and returned in responses.
+- Links to any other relevant documentation you have.
+
+## Let us know you're ready to launch
+
+Partners are responsible for informing us 14 days before launching so we have time
+to test and set up any additional components on our end. Please be aware we may need
+a longer processing time during the Christmas holidays. To inform us or ask any
+questions, send an email to <a href="mailto:passfort_partners@moodys.com">passfort_partners@moodys.com</a> and include the following
+information:
+
+- Your secret key
+- Your API URI
+
+# Support
+
+If you have any questions, you can always send us an email at <a href="mailto:passfort_partners@moodys.com">passfort_partners@moodys.com</a>.
+
+# About this documentation
 
 As the majority of the Passfort Partner API is not called but served by integrations,
 the endpoints documented here, unless otherwise indicated, are ones that your
@@ -41,19 +276,18 @@ integration should implement.
 
 Code samples are given in the dark area to the right, and will generally take
 the form of abbreviated route handlers for the functionality being described.
-For the Python examples, [Flask 1.0][flask-docs]
-will be used as the implementation example, and [Express 4][express-docs] will
-be used for the NodeJS examples.
+For the Python examples, [Flask 1.0][flask-docs] are used as the implementation
+example, and [Express 4][express-docs] are used for the NodeJS examples.
 
 As described in the [Metadata section](#metadata), the Passfort Partner API is
 versioned to allow the implementation of integrations to be altered in the
 future; all information in this document corresponds to Version 1 of the
-Passfort Partner API Protocol. Versions of the Passfort Partner API won't be
+Passfort Partner API Protocol. Versions of the Passfort Partner API won’t be
 discontinued for as long as existing integrations use them.
 
 # Technical Requirements
 
-Your integration _must_ be served over HTTPS; integrations aren't permitted to
+Your integration _must_ be served over HTTPS; integrations aren’t permitted to
 be served over unencrypted HTTP connections. Additionally, the connection must
 be using TLS 1.2 or above. This requirement is enforced to ensure that
 sensitive information is not transmitted unprotected over the public internet.
@@ -94,6 +328,14 @@ current date. Requests with any of...
  integrations that do not correctly verify the signature of incoming requests.
 </aside>
 
+[passfort-docs-checks]: https://help.passfort.com/en/about-checks.html#UUID-74daccb9-742c-69bf-a854-faff56aea7b2
+[passfortAPI-docs]: https://developer.passfort.com/api
+[passfort-docs-tasks]: https://help.passfort.com/en/introduction-to-passfort-s-terms.html#UUID-c66c0e29-d6ff-a907-7f04-5dc25343e4e2_UUID-75815ac5-928d-8775-2e61-9ca9333c9ca2
+[passfort-docs-smartpolicies]: https://help.passfort.com/en/introduction-to-passfort-s-terms.html#UUID-c66c0e29-d6ff-a907-7f04-5dc25343e4e2_UUID-e564acae-05b6-6bba-3ef8-dd63424003ec
+[passfort-docs-riskmodels]: https://help.passfort.com/en/introduction-to-passfort-s-terms.html#UUID-c66c0e29-d6ff-a907-7f04-5dc25343e4e2_UUID-a3aed091-ecd5-3f31-a026-82ba5fa75037
+[passfort-docs-allchecks]: https://help.passfort.com/en/checks-128888.html
+[passfort-marketing]: https://www.moodys.com/web/en/us/kyc/products/passfort.html
+[passfort-docs-companydata]: https://help.passfort.com/en/checks-for-company-profiles.html#UUID-65716b6e-1ab7-edb1-89a9-f3242bd3b0b9_UUID-2bcf7301-5783-10f5-69fb-45e584b05b3e
 [flask-docs]: https://flask.palletsprojects.com/en/1.0.x/
 [express-docs]: https://expressjs.com/en/4x/api.html
 [http-signatures-draft-12]:
