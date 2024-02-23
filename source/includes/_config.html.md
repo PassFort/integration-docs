@@ -63,7 +63,7 @@ integration and will be discussed in their respective sections.
 ## Pricing
 
 The `pricing` field defines whether you intend to make your integration
-available to Passfort for reselling, instead of requiring that PassFort
+available to Passfort for reselling, instead of requiring that Passfort
 customers have a direct commercial relationship with the data provider.
 
 ### Fields
