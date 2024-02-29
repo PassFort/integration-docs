@@ -1,0 +1,17 @@
+{
+  "provider_data": "Demo result. Did not make request to provider.",
+  "warnings": [],
+  "errors": [],
+  "external_resources": [
+     {
+      "type": "EMBED",
+      "url": "http://host.docker.internal:8080/external_resource",
+      "id": "8AA89547-89FC-4EAD-ACEC-FFA36F451337",
+      "label": "Example embed"
+     }
+  ],
+  "result": {
+    "decision": "PASS",
+    "summary": "It's a pass..."
+  }
+}

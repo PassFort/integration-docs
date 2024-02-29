@@ -1,0 +1,38 @@
+{
+    "check_type": "DOCUMENT_VERIFICATION",
+    "check_template": {
+        "type": "ONE_TIME_CALLBACK",
+        "request_timeout": 15,
+        "callback_timeout": 15
+    },
+    "pricing": {
+        "supports_reselling": true,
+        "maximum_cost": 200
+    },
+    "supported_countries": ["GBR", "USA", "CAN"],
+    "credentials": {
+        "fields": [
+           {
+               "type": "string",
+               "name": "username",
+               "label": "Username"
+           },
+           {
+               "type": "password",
+               "name": "password",
+               "label": "Password"
+           }
+        ]
+    },
+    "config": {
+        "fields": [
+            {
+                "type": "boolean",
+                "name": "enhanced_verification",
+                "label": "Enable Enhanced Verification",
+                "subtext": "Fall back to a manual process when a document cannot be automatically verified.",
+                "default": false
+            }
+        ]
+    }
+}
