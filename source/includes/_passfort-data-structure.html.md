@@ -1,6 +1,6 @@
 # Data Structure
 
-PassFort structures data on individual and company entities in a standard
+Passfort structures data on individual and company entities in a standard
 format throughout the product. Additionally, many data structure types are
 common across different checks.
 
